@@ -1,32 +1,59 @@
 <template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
+  <div>
+    <SideNav />
+    <div :class="[{ nav_open: showNav }]" class="main-container">
+      <router-view />
     </div>
-    <router-view />
   </div>
 </template>
 
+<script>
+import { mapGetters } from "vuex";
+import SideNav from "./components/SideNav.vue";
+
+export default {
+  components: {
+    SideNav
+  },
+  computed: {
+    ...mapGetters(["showNav"])
+  },
+  methods: {}
+};
+</script>
+
 <style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
+html {
+  box-sizing: border-box;
+  font-size: 10px;
 }
-
-#nav {
-  padding: 30px;
-
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
+body {
+  margin: 0;
+  background: #c0c0c0;
+  font-family: "Cabin", sans-serif;
+  font-size: 1.4rem;
+}
+h1,
+h2,
+h3,
+h4 {
+  font-family: "Roboto", sans-serif;
+  margin: 0;
+}
+p {
+  margin: 0;
+}
+.main-container {
+  margin-left: 50px;
+  transition: margin-left 0.5s;
+  .section-with-margin {
+    padding: 15px;
+    @media (min-width: 768px) {
+      padding: 50px;
     }
   }
+}
+.nav_open {
+  margin-left: 250px;
 }
 </style>
