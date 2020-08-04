@@ -56,6 +56,7 @@
 <script>
 // import { mapGetters } from "vuex";
 
+// add more to this page
 export default {
   data() {
     return {
