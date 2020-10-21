@@ -48,7 +48,7 @@
       </button>
     </form>
     <a @click="showLoginForm = !showLoginForm">{{
-      showLoginForm ? "Create Account" : "Back to Login"
+      showLoginForm ? "Create account" : "Already have an account?"
     }}</a>
   </section>
 </template>

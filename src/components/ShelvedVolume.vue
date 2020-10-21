@@ -26,7 +26,7 @@
         {{ book.pageCount }} pages
       </p>
       <p v-if="!editVolumeInfo && book.currentPage">
-        {{ book.currentPage }}/{{ book.pageCount }}p
+        {{ book.currentPage }}/{{ book.pageCount }}p {{ percentRead }}
       </p>
       <div v-if="editVolumeInfo">
         <span>Page:</span>
@@ -41,7 +41,7 @@
         <span>Finish by:</span>
         <input type="date" v-model="book.goalDate" />
       </div>
-      <p v-if="goalProgress">{{ goalProgress }}p left today!</p>
+      <p v-if="goalProgress">{{ goalProgress }}</p>
       <font-awesome-icon icon="edit" class="edit-icon" @click="editCard" />
     </div>
   </div>
@@ -67,7 +67,8 @@ export default {
   computed: {
     ...mapGetters(["userProfile", "currentShelf"]),
     goalProgress: function() {
-      if (this.book.currentPage && this.book.goalDate) {
+      let progress = null;
+      if (this.book.currentPage >= 0 && this.book.goalDate) {
         const today = new Date();
         today.setHours(0, 0, 0, 0);
         const goalDateObject = new Date(this.book.goalDate.replace(/-/g, "/"));
@@ -78,7 +79,23 @@ export default {
         );
         // use that number to calculate pagesPerDay, instead of currentPage
         // return pagesPerDay - (currentPage - newpagevalue)
-        return pagesPerDay - (this.book.currentPage - this.book.goalToday.page);
+        progress = pagesPerDay - (this.book.currentPage - this.book.goalToday.page);
+      } else if (this.book.currentPage === this.book.pageCount) {
+        return "You finished! Nice work!";
+      } else if (!this.book.goalDate) {
+        return null;
+      }
+      if (progress > 0) {
+        return `Read ${progress}p today to stay on track to meet your goal`;
+      } else if (progress <= 0) {
+        return "You're on track to finish on time!";
+      } else {
+        return null;
+      }
+    },
+    percentRead: function() {
+      if (this.book.currentPage > 0) {
+        return `(${Math.round(this.book.currentPage / this.book.pageCount * 100)}%)`;
       } else {
         return null;
       }
