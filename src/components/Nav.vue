@@ -53,6 +53,12 @@ export default {
 </script>
 
 <style lang="scss">
+.nav-container {
+  height: 50px;
+  @media (min-width: 768px) {
+    height: 0px;
+  }
+}
 .sidenav-container {
   display: none;
   @media (min-width: 768px) {
@@ -103,7 +109,7 @@ export default {
   }
 }
 .bottom-nav {
-  position: fixed;
+  /* position: fixed; */
   bottom: 0;
   width: 100%;
   height: 50px;

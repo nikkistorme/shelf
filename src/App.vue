@@ -33,7 +33,7 @@ body {
   height: -webkit-fill-available;
   margin: 0;
   font-family: "Cabin", sans-serif;
-  font-size: 1.4rem;
+  font-size: 1.6rem;
   background: #c0c0c0;
   overflow: hidden;
 }
@@ -44,16 +44,31 @@ h4 {
   font-family: "Roboto", sans-serif;
   margin: 0;
 }
+input {
+  font-size: 16px;
+}
 p {
   margin: 0;
 }
+.nav-and-main-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  @media (min-width: 768px) {
+    display: block;
+  }
+  .nav-container {
+    order: 2;
+  }
+}
 .main-container {
-  transition: margin-left 0.5s;
+  flex: 1;
+  /* transition: margin-left 0.5s;
   height: 91vh;
   height: -webkit-calc(100vh - 50px);
   height: -moz-calc(100vh - 50px);
   height: calc(100vh - 50px);
-  margin-bottom: 50px;
+  margin-bottom: 50px; */
   overflow: auto;
   @media (min-width: 768px) {
     margin-left: 50px;
