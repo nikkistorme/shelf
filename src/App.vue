@@ -50,9 +50,10 @@ p {
 .main-container {
   transition: margin-left 0.5s;
   height: 91vh;
-  height: -webkit-calc(100vh - 75px);
-  height: -moz-calc(100vh - 75px);
-  height: calc(100vh - 75px);
+  height: -webkit-calc(100vh - 50px);
+  height: -moz-calc(100vh - 50px);
+  height: calc(100vh - 50px);
+  margin-bottom: 50px;
   overflow: auto;
   @media (min-width: 768px) {
     margin-left: 50px;

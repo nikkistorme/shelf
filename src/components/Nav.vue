@@ -106,7 +106,7 @@ export default {
   position: fixed;
   bottom: 0;
   width: 100%;
-  height: 75px;
+  height: 50px;
   background-color: black;
   @media (min-width: 768px) {
     display: none;
@@ -118,7 +118,7 @@ export default {
   align-items: center;
   height: 100%;
   a {
-    font-size: 30px;
+    font-size: 25px;
     color: #818181;
   }
 }
