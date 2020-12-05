@@ -1,6 +1,6 @@
 <template>
   <div>
-    <SideNav />
+    <Nav />
     <div :class="[{ nav_open: showNav }]" class="main-container">
       <router-view />
     </div>
@@ -9,11 +9,11 @@
 
 <script>
 import { mapGetters } from "vuex";
-import SideNav from "./components/SideNav.vue";
+import Nav from "./components/Nav.vue";
 
 export default {
   components: {
-    SideNav
+    Nav
   },
   computed: {
     ...mapGetters(["showNav"])
@@ -24,6 +24,7 @@ export default {
 
 <style lang="scss">
 html {
+  overflow: hidden;
   box-sizing: border-box;
   font-size: 10px;
 }
@@ -44,8 +45,13 @@ p {
   margin: 0;
 }
 .main-container {
-  margin-left: 50px;
   transition: margin-left 0.5s;
+  height: calc(100vh - 50px);
+  overflow: auto;
+  @media (min-width: 768px) {
+    margin-left: 50px;
+    height: 100vh;
+  }
   .section-with-margin {
     padding: 15px;
     @media (min-width: 768px) {

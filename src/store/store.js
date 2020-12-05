@@ -2,6 +2,8 @@ import Vue from "vue";
 import Vuex from "vuex";
 const fb = require("../firebaseConfig.js");
 
+import { findVolumeUpdatePage } from "../helpers";
+
 Vue.use(Vuex);
 
 export const store = new Vuex.Store({
@@ -179,6 +181,28 @@ export const store = new Vuex.Store({
           return s;
         });
         console.log("newShelves", newShelves);
+        fb.usersCollection
+          .doc(state.currentUser.uid)
+          .update({
+            shelves: newShelves
+          })
+          .then(() => {
+            dispatch("fetchUserProfile");
+            commit("setStatus", "success");
+            resolve();
+          })
+          .catch(error => {
+            console.log("error", error);
+            commit("setStatus", error.message);
+            reject();
+          });
+      });
+    },
+    updatePage({ commit, dispatch, state }, payload) {
+      return new Promise((resolve, reject) => {
+        console.log("Begin updatePage");
+        const shelves = state.userProfile.shelves;
+        const newShelves = findVolumeUpdatePage(payload, shelves);
         fb.usersCollection
           .doc(state.currentUser.uid)
           .update({
