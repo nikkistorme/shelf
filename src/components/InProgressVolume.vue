@@ -138,7 +138,7 @@ export default {
   display: flex;
   margin-top: 5px;
   &-button {
-    height: 28px;
+    height: 30px;
     border: none;
     padding: 0;
     font-size: 18px;
