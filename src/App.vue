@@ -52,7 +52,7 @@ input {
 p {
   margin: 0;
 }
-.nav-and-main-container {
+/* .nav-and-main-container {
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -62,15 +62,15 @@ p {
   .nav-container {
     order: 2;
   }
-}
+} */
 .main-container {
-  flex: 1;
-  /* transition: margin-left 0.5s;
+  transition: margin-left 0.5s;
   height: 91vh;
   height: -webkit-calc(100vh - 50px);
   height: -moz-calc(100vh - 50px);
   height: calc(100vh - 50px);
-  margin-bottom: 50px; */
+  margin-bottom: 50px;
+  /* flex: 1; */
   overflow: hidden;
   @media (min-width: 768px) {
     margin-left: 50px;
