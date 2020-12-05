@@ -24,7 +24,6 @@ export default {
 
 <style lang="scss">
 html {
-  overflow: hidden;
   box-sizing: border-box;
   font-size: 10px;
 }
@@ -33,6 +32,7 @@ body {
   background: #c0c0c0;
   font-family: "Cabin", sans-serif;
   font-size: 1.4rem;
+  overflow: hidden;
 }
 h1,
 h2,
@@ -46,6 +46,9 @@ p {
 }
 .main-container {
   transition: margin-left 0.5s;
+  height: 91vh;
+  width: -webkit-calc(100vh - 50px);
+  width: -moz-calc(100vh - 50px);
   height: calc(100vh - 50px);
   overflow: auto;
   @media (min-width: 768px) {
