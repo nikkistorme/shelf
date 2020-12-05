@@ -69,7 +69,9 @@ p {
   height: -moz-calc(100vh - 50px);
   height: calc(100vh - 50px);
   margin-bottom: 50px; */
-  overflow: auto;
+  overflow: scroll;
+  -webkit-overflow-scrolling: touch;
+  /* overflow: auto; */
   @media (min-width: 768px) {
     margin-left: 50px;
     height: 100vh;
