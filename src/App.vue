@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="nav-and-main-container">
     <Nav />
     <div :class="[{ nav_open: showNav }]" class="main-container">
       <router-view />
@@ -23,16 +23,21 @@ export default {
 </script>
 
 <style lang="scss">
-html {
-  overflow: hidden;
+* {
   box-sizing: border-box;
+}
+html {
+  height: -webkit-fill-available;
   font-size: 10px;
 }
 body {
+  height: 100vh;
+  height: -webkit-fill-available;
   margin: 0;
-  background: #c0c0c0;
   font-family: "Cabin", sans-serif;
-  font-size: 1.4rem;
+  font-size: 1.6rem;
+  background: #c0c0c0;
+  overflow: hidden;
 }
 h1,
 h2,
@@ -41,19 +46,40 @@ h4 {
   font-family: "Roboto", sans-serif;
   margin: 0;
 }
+input {
+  font-size: 16px;
+}
 p {
   margin: 0;
 }
+/* .nav-and-main-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  @media (min-width: 768px) {
+    display: block;
+  }
+  .nav-container {
+    order: 2;
+  }
+} */
 .main-container {
   transition: margin-left 0.5s;
+  height: 91vh;
+  height: -webkit-calc(100vh - 50px);
+  height: -moz-calc(100vh - 50px);
   height: calc(100vh - 50px);
-  overflow: auto;
+  margin-bottom: 50px;
+  /* flex: 1; */
+  overflow: hidden;
   @media (min-width: 768px) {
     margin-left: 50px;
     height: 100vh;
   }
   .section-with-margin {
+    height: 100%;
     padding: 15px;
+    overflow: auto;
     @media (min-width: 768px) {
       padding: 50px;
     }

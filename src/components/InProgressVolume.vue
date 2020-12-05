@@ -21,7 +21,7 @@
       </p>
       <div class="update-page">
         <button class="update-page-button" @click="updatePage">
-          {{ editMode ? "📘" : "📖" }}
+          <font-awesome-icon icon="bookmark" class="bookmark-icon" />
         </button>
         <input
           class="update-page-input"
@@ -136,13 +136,18 @@ export default {
 }
 .update-page {
   display: flex;
-  justify-content: space-between;
   margin-top: 5px;
   &-button {
-    height: 22px;
+    height: 30px;
+    border: none;
+    padding: 0;
+    font-size: 18px;
+    outline: none;
+    background: none;
   }
   &-input {
     max-width: 75px;
+    margin-left: 5px;
   }
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="nav-container">
     <div class="sidenav-container">
       <div class="sidenav-tease">
         <button @click="openNav">>></button>
@@ -53,6 +53,12 @@ export default {
 </script>
 
 <style lang="scss">
+/* .nav-container {
+  height: 50px;
+  @media (min-width: 768px) {
+    height: 0px;
+  }
+} */
 .sidenav-container {
   display: none;
   @media (min-width: 768px) {
