@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="nav-container">
     <div class="sidenav-container">
       <div class="sidenav-tease">
         <button @click="openNav">>></button>
@@ -106,7 +106,7 @@ export default {
   position: fixed;
   bottom: 0;
   width: 100%;
-  height: 50px;
+  height: 75px;
   background-color: black;
   @media (min-width: 768px) {
     display: none;
@@ -118,7 +118,7 @@ export default {
   align-items: center;
   height: 100%;
   a {
-    font-size: 25px;
+    font-size: 30px;
     color: #818181;
   }
 }

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="nav-and-main-container">
     <Nav />
     <div :class="[{ nav_open: showNav }]" class="main-container">
       <router-view />
@@ -24,14 +24,17 @@ export default {
 
 <style lang="scss">
 html {
+  height: -webkit-fill-available;
   box-sizing: border-box;
   font-size: 10px;
 }
 body {
+  height: 100vh;
+  height: -webkit-fill-available;
   margin: 0;
-  background: #c0c0c0;
   font-family: "Cabin", sans-serif;
   font-size: 1.4rem;
+  background: #c0c0c0;
   overflow: hidden;
 }
 h1,
@@ -47,9 +50,9 @@ p {
 .main-container {
   transition: margin-left 0.5s;
   height: 91vh;
-  width: -webkit-calc(100vh - 50px);
-  width: -moz-calc(100vh - 50px);
-  height: calc(100vh - 50px);
+  height: -webkit-calc(100vh - 75px);
+  height: -moz-calc(100vh - 75px);
+  height: calc(100vh - 75px);
   overflow: auto;
   @media (min-width: 768px) {
     margin-left: 50px;
