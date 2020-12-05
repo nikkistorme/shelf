@@ -23,9 +23,11 @@ export default {
 </script>
 
 <style lang="scss">
+* {
+  box-sizing: border-box;
+}
 html {
   height: -webkit-fill-available;
-  box-sizing: border-box;
   font-size: 10px;
 }
 body {
@@ -69,13 +71,15 @@ p {
   height: -moz-calc(100vh - 50px);
   height: calc(100vh - 50px);
   margin-bottom: 50px; */
-  overflow: auto;
+  overflow: hidden;
   @media (min-width: 768px) {
     margin-left: 50px;
     height: 100vh;
   }
   .section-with-margin {
+    height: 100%;
     padding: 15px;
+    overflow: auto;
     @media (min-width: 768px) {
       padding: 50px;
     }
