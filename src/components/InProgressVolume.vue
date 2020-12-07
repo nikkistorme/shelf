@@ -7,7 +7,7 @@
       />
     </div>
     <div class="book-info">
-      <h3>{{ volume.title }}</h3>
+      <h3 @click="logVolume()">{{ volume.title }}</h3>
       <p>by {{ volume.author }}</p>
       <div class="pages">
         <p>
@@ -100,6 +100,9 @@ export default {
         console.log("editing book info");
         this.newPage = this.volume.currentPage;
       }
+    },
+    logVolume() {
+      console.log(this.volume);
     }
   }
 };

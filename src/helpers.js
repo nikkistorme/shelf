@@ -17,7 +17,7 @@ const defaultVolume = {
   startDate: "0000-00-00",
   goalDate: "0000-00-00",
   goalToday: {
-    date: null,
+    date: "0000-00-00",
     page: 0
   }
 };
