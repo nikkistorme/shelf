@@ -15,7 +15,7 @@
       />
     </div>
     <div class="book-info">
-      <h3 v-if="!editVolumeInfo">{{ book.title }}</h3>
+      <h3 v-if="!editVolumeInfo" @click="logVolume()">{{ book.title }}</h3>
       <input type="text" v-if="editVolumeInfo" v-model="book.title" />
       <p v-if="!editVolumeInfo">By: {{ book.author }}</p>
       <div v-if="editVolumeInfo">
@@ -39,7 +39,7 @@
       </p>
       <div v-if="editVolumeInfo">
         <span>Finish by:</span>
-        <input type="date" v-model="book.goalDate" />
+        <input type="date" v-model="book.goalDate" @change="test()" />
       </div>
       <p v-if="goalProgress">{{ goalProgress }}</p>
       <font-awesome-icon icon="edit" class="edit-icon" @click="editCard" />
@@ -127,8 +127,10 @@ export default {
     },
     test() {
       console.log("test");
-      console.log("post edit book", this.book.imageLinks.thumbnail);
-      console.log("pre edit book", this.bookCopy.imageLinks.thumbnail);
+      console.log(this.book.goalDate);
+    },
+    logVolume() {
+      console.log(this.book);
     }
   }
 };

@@ -11,14 +11,58 @@
 import { mapGetters } from "vuex";
 import Nav from "./components/Nav.vue";
 
+const getTodayISO = () => {
+  let today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const y = today.getFullYear();
+  const m = today.getMonth() + 1;
+  const d = today.getDate();
+  today = `${y}-${m <= 9 ? "0" + m : m}-${d <= 9 ? "0" + d : d}`;
+  return today;
+};
+
 export default {
   components: {
     Nav
   },
   computed: {
-    ...mapGetters(["showNav"])
+    ...mapGetters(["userProfile", "showNav"])
   },
-  methods: {}
+  watch: {
+    userProfile: function(newUser) {
+      const userClone = JSON.stringify(newUser);
+      let userShelves = this.userProfile.shelves;
+      for (let i = 0; i < userShelves.length; i++) {
+        for (let j = 0; j < userShelves[i].volumes.length; j++) {
+          // eslint-disable-next-line prettier/prettier
+          let lastUpdatedGoalProgress = userShelves[i].volumes[j].goalToday;
+          let todayDate = getTodayISO();
+          console.log("todayDate", todayDate);
+          if (lastUpdatedGoalProgress.date !== todayDate) {
+            console.log("goalToday is different from todayDate");
+            userShelves[i].volumes[j].goalToday.date = todayDate;
+            // eslint-disable-next-line prettier/prettier
+            userShelves[i].volumes[j].goalToday.page = userShelves[i].volumes[j].currentPage;
+            console.log(
+              `updated goalToday.date for ${userShelves[i].volumes[j].name}`
+            );
+          } else if (
+            lastUpdatedGoalProgress.page > userShelves[i].volumes[j].currentPage
+          ) {
+            // eslint-disable-next-line prettier/prettier
+            userShelves[i].volumes[j].goalToday.page = userShelves[i].volumes[j].currentPage;
+            console.log(
+              `updated goalToday.page for ${this.userProfile.shelves[i].volumes[j].name}`
+            );
+          }
+        }
+      }
+      console.log("update shelf info?", userClone !== JSON.stringify(newUser));
+      if (userClone !== JSON.stringify(newUser)) {
+        this.$store.dispatch("updateShelves");
+      }
+    }
+  }
 };
 </script>
 

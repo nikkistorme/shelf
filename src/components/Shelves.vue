@@ -48,39 +48,6 @@ export default {
     chosenShelf: function(newShelf) {
       console.log("changed shelf");
       this.$store.commit("setCurrentShelf", newShelf);
-    },
-    userProfile: function(newUser) {
-      const userClone = JSON.stringify(newUser);
-      for (let i = 0; i < this.userProfile.shelves.length; i++) {
-        for (let j = 0; j < this.userProfile.shelves[i].volumes.length; j++) {
-          // eslint-disable-next-line prettier/prettier
-          let lastUpdatedGoalProgress = this.userProfile.shelves[i].volumes[j].goalToday;
-          let todayDate = new Date();
-          todayDate.setHours(0, 0, 0, 0);
-          todayDate = todayDate.toDateString();
-          if (lastUpdatedGoalProgress.date !== todayDate) {
-            this.userProfile.shelves[i].volumes[j].goalToday.date = todayDate;
-            // eslint-disable-next-line prettier/prettier
-            this.userProfile.shelves[i].volumes[j].goalToday.page = this.userProfile.shelves[i].volumes[j].currentPage;
-            console.log(
-              `updated goalToday.date for ${this.userProfile.shelves[i].volumes[j].name}`
-            );
-          } else if (
-            lastUpdatedGoalProgress.page >
-            this.userProfile.shelves[i].volumes[j].currentPage
-          ) {
-            // eslint-disable-next-line prettier/prettier
-            this.userProfile.shelves[i].volumes[j].goalToday.page = this.userProfile.shelves[i].volumes[j].currentPage;
-            console.log(
-              `updated goalToday.page for ${this.userProfile.shelves[i].volumes[j].name}`
-            );
-          }
-        }
-      }
-      console.log("update shelf info?", userClone !== JSON.stringify(newUser));
-      if (userClone !== JSON.stringify(newUser)) {
-        this.$store.dispatch("updateShelves");
-      }
     }
   },
   methods: {
