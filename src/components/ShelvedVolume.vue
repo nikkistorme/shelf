@@ -186,7 +186,7 @@ export default {
   }
   &.expanded {
     width: 100%;
-    height: 130px;
+    height: 200px;
     border-bottom: 1px solid rgba(0, 0, 0, 0.3);
     @media (min-width: 768px) {
       width: 485px;
