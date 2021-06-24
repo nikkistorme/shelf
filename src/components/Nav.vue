@@ -78,7 +78,8 @@ export default {
   z-index: 1; /* Stay on top */
   top: 0; /* Stay at the top */
   left: 0;
-  background-color: #111; /* Black*/
+  background-color: #fff; /* Black*/
+  border-right: #000 solid 2px;
   overflow-x: hidden; /* Disable horizontal scroll */
   padding-top: 60px; /* Place content 60px from the top */
   transition: 0.5s; /* 0.5 second transition effect to slide in the sidenav */
@@ -113,7 +114,8 @@ export default {
   bottom: 0;
   width: 100%;
   height: 50px;
-  background-color: black;
+  background-color: #fff;
+  border-top: #000 solid 2px;
   @media (min-width: 768px) {
     display: none;
   }
@@ -129,6 +131,6 @@ export default {
   }
 }
 a.router-link-exact-active {
-  color: white;
+  color: black;
 }
 </style>

@@ -80,7 +80,7 @@ body {
   margin: 0;
   font-family: "Cabin", sans-serif;
   font-size: 1.6rem;
-  background: #c0c0c0;
+  background: #fff;
   overflow: hidden;
 }
 h1,

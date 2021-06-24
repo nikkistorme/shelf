@@ -1,5 +1,8 @@
 <template>
-  <div class="shelved-book" :class="{ expanded: book.expanded }">
+  <div
+    class="shelved-book"
+    :class="{ expanded: book.expanded, edit: editVolumeInfo }"
+  >
     <div class="img-container">
       <img
         :src="book.imageLinks.thumbnail"
@@ -30,9 +33,9 @@
       </p>
       <div v-if="editVolumeInfo">
         <span>Page:</span>
-        <input type="number" v-model="book.currentPage" />
+        <input class="number-input" type="number" v-model="book.currentPage" />
         <span>/</span>
-        <input type="number" v-model="book.pageCount" />
+        <input class="number-input" type="number" v-model="book.pageCount" />
       </div>
       <p v-if="!editVolumeInfo && book.goalDate !== '0000-00-00'">
         Finish by {{ book.goalDate }}
@@ -197,6 +200,11 @@ export default {
       @media (min-width: 768px) {
         width: calc(485px - 138px);
       }
+    }
+  }
+  &.edit {
+    .number-input {
+      max-width: 75px;
     }
   }
 }
