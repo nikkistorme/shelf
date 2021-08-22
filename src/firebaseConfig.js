@@ -18,5 +18,14 @@ const auth = firebase.auth();
 const currentUser = auth.currentUser;
 
 const usersCollection = db.collection("users");
+const shelvesCollection = db.collection("shelves");
+const booksCollection = db.collection("books");
 
-export { db, auth, currentUser, usersCollection };
+export {
+  db,
+  auth,
+  currentUser,
+  usersCollection,
+  shelvesCollection,
+  booksCollection
+};

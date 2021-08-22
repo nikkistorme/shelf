@@ -14,10 +14,10 @@ const defaultVolume = {
   publisher: "",
   title: "",
   currentPage: 0,
-  startDate: "0000-00-00",
-  goalDate: "0000-00-00",
+  startDate: "",
+  goalDate: "",
   goalToday: {
-    date: "0000-00-00",
+    date: "",
     page: 0
   }
 };
@@ -63,3 +63,16 @@ const findVolumeUpdatePage = (injectedVolume, oldShelves) => {
 };
 
 export { findVolumeUpdatePage };
+
+const volumeInReadingShelf = (shelf, volume) => {
+  if (shelf.id === "default-reading") {
+    shelf.volumes.find(v => {
+      console.log("match?", v.description === volume.description)
+      return v.description === volume.description;
+    });
+  } else {
+    return false;
+  }
+};
+
+export { volumeInReadingShelf };

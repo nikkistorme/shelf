@@ -12,7 +12,11 @@ export const store = new Vuex.Store({
     userProfile: {},
     status: null,
     currentShelf: "default-reading",
-    showNav: false
+    showNav: false,
+    drawer: {
+      open: false,
+      content: {}
+    }
   },
   getters: {
     currentUser: state => {
@@ -26,6 +30,9 @@ export const store = new Vuex.Store({
     },
     userProfile: state => {
       return state.userProfile;
+    },
+    drawer: state => {
+      return state.drawer;
     }
   },
   mutations: {
@@ -46,6 +53,16 @@ export const store = new Vuex.Store({
     },
     changeNav: state => {
       state.showNav = !state.showNav;
+    },
+    closeDrawer: state => {
+      state.drawer.open = false;
+      setTimeout(() => {
+        state.drawer.content = {};
+      }, 500);
+    },
+    setDrawer: (state, payload) => {
+      state.drawer.open = true;
+      state.drawer.content = payload;
     }
   },
   actions: {
@@ -203,6 +220,41 @@ export const store = new Vuex.Store({
         console.log("Begin updatePage");
         const shelves = state.userProfile.shelves;
         const newShelves = findVolumeUpdatePage(payload, shelves);
+        fb.usersCollection
+          .doc(state.currentUser.uid)
+          .update({
+            shelves: newShelves
+          })
+          .then(() => {
+            dispatch("fetchUserProfile");
+            commit("setStatus", "success");
+            resolve();
+          })
+          .catch(error => {
+            console.log("error", error);
+            commit("setStatus", error.message);
+            reject();
+          });
+      });
+    },
+    markAsRead({ commit, dispatch, state }, payload) {
+      return new Promise((resolve, reject) => {
+        console.log("Begin markAsRead");
+        const currentShelves = state.userProfile.shelves;
+        let finishedBook = payload;
+        finishedBook.currentPage = finishedBook.pageCount;
+        finishedBook.goalDate = "";
+        const newShelves = currentShelves.map(s => {
+          if (s.id === "default-reading") {
+            s.volumes = s.volumes.filter(v => {
+              return v.title !== finishedBook.title;
+            });
+          }
+          if (s.id === "default-read") {
+            s.volumes.push(finishedBook);
+          }
+          return s;
+        });
         fb.usersCollection
           .doc(state.currentUser.uid)
           .update({

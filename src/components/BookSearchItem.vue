@@ -91,6 +91,9 @@ export default {
     width: calc(258px - 58px);
     will-change: opacity;
     transition: all 0.3s ease;
+    * {
+      margin: 0;
+    }
     @media (min-width: 768px) {
       padding: 10px;
     }
