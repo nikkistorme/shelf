@@ -37,7 +37,7 @@
         <span>/</span>
         <input class="number-input" type="number" v-model="book.pageCount" />
       </div>
-      <p v-if="!editVolumeInfo && book.goalDate !== '0000-00-00'">
+      <p v-if="!editVolumeInfo && book.goalDate">
         Finish by {{ book.goalDate }}
       </p>
       <div v-if="editVolumeInfo">
@@ -71,7 +71,7 @@ export default {
     ...mapGetters(["userProfile", "currentShelf"]),
     goalProgress: function() {
       let progress = null;
-      if (this.book.currentPage >= 0 && this.book.goalDate !== "0000-00-00") {
+      if (this.book.currentPage >= 0 && this.book.goalDate) {
         const today = new Date();
         today.setHours(0, 0, 0, 0);
         const goalDateObject = new Date(this.book.goalDate.replace(/-/g, "/"));
@@ -86,7 +86,7 @@ export default {
           pagesPerDay - (this.book.currentPage - this.book.goalToday.page);
       } else if (this.book.currentPage === this.book.pageCount) {
         return "You finished! Nice work!";
-      } else if (this.book.goalDate === "0000-00-00") {
+      } else if (!this.book.goalDate) {
         return null;
       }
       if (progress > 0) {

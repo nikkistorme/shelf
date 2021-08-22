@@ -1,49 +1,40 @@
 <template>
   <section id="home" class="section-with-margin">
-    <h2>{{ inProgressShelf.name }}</h2>
-    <InProgressVolume
-      v-for="(volume, i) in inProgressShelf.volumes"
-      :key="i"
-      :volume="volume"
-    />
+    <Shelf v-for="(shelf, i) in sortedShelves" :key="i" :shelf="shelf" />
   </section>
 </template>
 
 <script>
-import { cloneDeep as _cloneDeep } from "lodash";
 import { mapGetters } from "vuex";
-import InProgressVolume from "./InProgressVolume.vue";
-
-const sortVolumes = (a, b) => {
-  if (a.goalDate !== "0000-00-00" && b.goalDate !== "0000-00-00") {
-    return a.goalDate > b.goalDate;
-  } else if (a.goalDate !== "0000-00-00") {
-    return -1;
-  } else if (b.goalDate !== "0000-00-00") {
-    return 1;
-  } else {
-    return 0;
-  }
-};
+import Shelf from "./Shelf.vue";
 
 export default {
   components: {
-    InProgressVolume
+    Shelf
   },
   data() {
     return { editMode: false };
   },
   computed: {
     ...mapGetters(["userProfile", "currentUser"]),
-    inProgressShelf: function() {
-      if (this.userProfile.name) {
-        let shelf = _cloneDeep(
-          this.userProfile.shelves.find(s => s.id === "default-reading")
-        );
-        shelf.volumes.sort((a, b) => sortVolumes(a, b));
-        return shelf;
+    sortedShelves: function() {
+      if (this.userProfile.shelves) {
+        const allShelves = this.userProfile.shelves;
+        const filteredShelves = allShelves.filter(s => {
+          return s.volumes.length > 0;
+        });
+        const sortedShelves = filteredShelves.sort((a, b) => {
+          if (a.id === 'default-reading') {
+            return -1;
+          } else if (a.volumes.length > b.volumes.length) {
+            return -1;
+          } else if (a.volumes.length < b.volumes.length) {
+            return 1;
+          } else return 0;
+        });
+        return sortedShelves;
       } else {
-        return {};
+        return [];
       }
     }
   }
@@ -51,6 +42,13 @@ export default {
 </script>
 
 <style lang="scss">
+section {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  padding: 2rem;
+}
 #home h2 {
   margin-bottom: 1em;
   text-decoration: underline;

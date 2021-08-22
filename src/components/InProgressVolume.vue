@@ -15,7 +15,7 @@
           {{ percentRead(volume) }}
         </p>
       </div>
-      <p v-if="volume.goalDate !== '0000-00-00'">
+      <p v-if="volume.goalDate">
         🗓 {{ volume.goalDate }}
         <span v-if="goalProgress(volume)">({{ goalProgress(volume) }})</span>
       </p>
@@ -56,7 +56,7 @@ export default {
   methods: {
     goalProgress(volume) {
       let progress = null;
-      if (volume.currentPage >= 0 && volume.goalDate !== "0000-00-00") {
+      if (volume.currentPage >= 0 && volume.goalDate) {
         const today = new Date();
         today.setHours(0, 0, 0, 0);
         const goalDateObject = new Date(volume.goalDate.replace(/-/g, "/"));
@@ -70,7 +70,7 @@ export default {
         progress = pagesPerDay - (volume.currentPage - volume.goalToday.page);
       } else if (volume.currentPage === volume.pageCount) {
         return "Finished!";
-      } else if (volume.goalDate === "0000-00-00") {
+      } else if (!volume.goalDate) {
         return null;
       }
       if (progress > 0) {
