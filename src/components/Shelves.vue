@@ -1,19 +1,20 @@
 <template>
   <section id="read" class="section-with-margin">
-    <select name="selectShelf" v-model="chosenShelf">
-      <option :value="null">Choose a Shelf</option>
-      <option
-        v-for="(shelf, i) in userProfile.shelves"
-        :key="i"
-        :value="shelf.id"
-        >{{ shelf.name }}</option
-      >
+    <select
+      name="selectShelf"
+      v-model="chosenShelf"
+      @change="updateActiveShelf"
+    >
+      <option :value="{}">All Books</option>
+      <option v-for="(shelf, i) in shelves" :key="i" :value="shelf.id">
+        {{ shelf.name }}
+      </option>
     </select>
     <div class="shelf-contents">
       <ShelvedVolume
-        v-for="(volume, i) in fullShelf.volumes"
+        v-for="(book, i) in booksOnChosenShelf"
         :key="i"
-        :book="volume"
+        :book="book"
       />
     </div>
   </section>
@@ -30,30 +31,50 @@ export default {
   },
   data() {
     return {
-      chosenShelf: "default-reading"
+      chosenShelf: ""
     };
   },
   computed: {
-    ...mapGetters(["userProfile", "currentUser"]),
-    fullShelf: function() {
-      // make sure to not compute until profile comes back from Firebase
-      if (this.userProfile.name) {
-        return this.userProfile.shelves.find(s => s.id === this.chosenShelf);
+    ...mapGetters(["books", "shelves", "userProfile", "currentUser"]),
+    booksOnChosenShelf: function() {
+      if (
+        this.chosenShelf?.length &&
+        this.shelves?.length &&
+        this.books?.length
+      ) {
+        console.log("1");
+        console.log('this.shelves', this.shelves);
+        console.log('this.chosenShelf', this.chosenShelf);
+        console.log('this.books', this.books);
+        const chosenShelfObject = this.shelves.find(
+          s => s.id === this.chosenShelf
+        );
+        console.log('chosenShelfObject', chosenShelfObject);
+        const books = chosenShelfObject.books.map(bookId => {
+          return this.books.find(b => b.id === bookId);
+        });
+        console.log("books", books);
+        return books;
+      } else if (this.books.length) {
+        console.log("2");
+        return this.books;
       } else {
+        console.log("3");
         return [];
       }
     }
   },
-  watch: {
-    chosenShelf: function(newShelf) {
-      console.log("changed shelf");
-      this.$store.commit("setCurrentShelf", newShelf);
+  methods: {
+    ...mapMutations(["setUserProfile"]),
+    updateActiveShelf() {
+      console.log("udpating active shelf");
+      this.userProfile.activeShelf = this.chosenShelf;
+      this.$store.dispatch("updateUser", this.userProfile);
     }
   },
-  methods: {
-    ...mapMutations(["setCurrentShelf"]),
-    test() {
-      console.log("test");
+  watch: {
+    userProfile: function(newUser) {
+      this.chosenShelf = newUser.activeShelf;
     }
   }
 };

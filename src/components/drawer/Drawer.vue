@@ -89,6 +89,7 @@ export default {
     },
     goalProgress(book) {
       let progress = null;
+      console.log("book", book);
       if (book.currentPage >= 0 && book.goalDate) {
         const today = new Date();
         today.setHours(0, 0, 0, 0);
@@ -98,7 +99,7 @@ export default {
         const pagesPerDay = Math.round(
           (book.pageCount - book.goalToday.page) / progressDays
         );
-        // use that number to calculate pagesPerDay, instead of currentPage
+        // use that number to calculate pagesPerDay
         // return pagesPerDay - (currentPage - newpagevalue)
         progress = pagesPerDay - (book.currentPage - book.goalToday.page);
       } else if (book.currentPage === book.pageCount) {
@@ -130,7 +131,7 @@ export default {
       this.$store.dispatch("markAsRead", this.drawer.content);
     }
   }
-}
+};
 </script>
 
 <style lang="scss">

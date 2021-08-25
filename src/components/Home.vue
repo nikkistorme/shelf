@@ -16,23 +16,25 @@ export default {
     return { editMode: false };
   },
   computed: {
-    ...mapGetters(["userProfile", "currentUser"]),
+    ...mapGetters(["shelves", "userProfile", "currentUser"]),
     sortedShelves: function() {
-      if (this.userProfile.shelves) {
-        const allShelves = this.userProfile.shelves;
+      if (this.shelves) {
+        const allShelves = this.shelves;
         const filteredShelves = allShelves.filter(s => {
-          return s.volumes.length > 0;
+          return s.books.length > 0;
         });
-        const sortedShelves = filteredShelves.sort((a, b) => {
-          if (a.id === 'default-reading') {
-            return -1;
-          } else if (a.volumes.length > b.volumes.length) {
-            return -1;
-          } else if (a.volumes.length < b.volumes.length) {
-            return 1;
-          } else return 0;
-        });
-        return sortedShelves;
+        if (filteredShelves.length > 1) {
+          filteredShelves.sort((a, b) => {
+            if (a.id === "default-reading") {
+              return -1;
+            } else if (a.books.length > b.books.length) {
+              return -1;
+            } else if (a.books.length < b.books.length) {
+              return 1;
+            } else return 0;
+          });
+        }
+        return filteredShelves;
       } else {
         return [];
       }

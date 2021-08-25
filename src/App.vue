@@ -11,7 +11,7 @@
 
 <script>
 import Header from "./components/Header.vue";
-import Drawer from "./components/Drawer.vue";
+import Drawer from "./components/drawer/Drawer.vue";
 
 export default {
   components: {
@@ -34,15 +34,24 @@ body {
   margin: 0;
   font-size: 1.6rem;
 }
+p {
+  margin: 0;
+}
 h1,
 h2,
 h3,
 h4 {
   margin: 0;
-  font-family: 'Alegreya', serif;
+  font-family: "Alegreya", serif;
 }
 h1 {
   font-size: 4rem;
+}
+h4 {
+  font-weight: normal;
+}
+input {
+  font-size: 16px;
 }
 .content {
   position: relative;

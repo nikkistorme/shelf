@@ -1,13 +1,10 @@
 <template>
-  <div
-    class="shelved-book"
-    :class="{ expanded: book.expanded, edit: editVolumeInfo }"
-  >
+  <div class="shelved-book" :class="{ edit: editVolumeInfo }">
     <div class="img-container">
       <img
         :src="book.imageLinks.thumbnail"
         :alt="book.description"
-        @click="expandCard"
+        @click="openDrawer(book)"
         v-if="!editVolumeInfo"
       />
       <textarea
@@ -25,16 +22,9 @@
         <span>By:</span>
         <input type="text" v-model="book.author" />
       </div>
-      <p v-if="!editVolumeInfo && !book.currentPage">
-        {{ book.pageCount }} pages
-      </p>
-      <p v-if="!editVolumeInfo && book.currentPage">
-        {{ book.currentPage }}/{{ book.pageCount }}p {{ percentRead }}
-      </p>
+      <p v-if="!editVolumeInfo">{{ book.pageCount }} pages</p>
       <div v-if="editVolumeInfo">
-        <span>Page:</span>
-        <input class="number-input" type="number" v-model="book.currentPage" />
-        <span>/</span>
+        <span>Pages:</span>
         <input class="number-input" type="number" v-model="book.pageCount" />
       </div>
       <p v-if="!editVolumeInfo && book.goalDate">
@@ -44,7 +34,6 @@
         <span>Finish by:</span>
         <input type="date" v-model="book.goalDate" @change="test()" />
       </div>
-      <p v-if="goalProgress">{{ goalProgress }}</p>
       <font-awesome-icon icon="edit" class="edit-icon" @click="editCard" />
     </div>
   </div>
@@ -52,6 +41,7 @@
 
 <script>
 import { mapGetters } from "vuex";
+import { mapMutations } from "vuex";
 
 export default {
   props: {
@@ -68,49 +58,10 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["userProfile", "currentShelf"]),
-    goalProgress: function() {
-      let progress = null;
-      if (this.book.currentPage >= 0 && this.book.goalDate) {
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        const goalDateObject = new Date(this.book.goalDate.replace(/-/g, "/"));
-        const progressMilliseconds = Math.abs(goalDateObject - today);
-        const progressDays = progressMilliseconds / (60 * 60 * 24 * 1000);
-        const pagesPerDay = Math.round(
-          (this.book.pageCount - this.book.goalToday.page) / progressDays
-        );
-        // use that number to calculate pagesPerDay, instead of currentPage
-        // return pagesPerDay - (currentPage - newpagevalue)
-        progress =
-          pagesPerDay - (this.book.currentPage - this.book.goalToday.page);
-      } else if (this.book.currentPage === this.book.pageCount) {
-        return "You finished! Nice work!";
-      } else if (!this.book.goalDate) {
-        return null;
-      }
-      if (progress > 0) {
-        return `Read ${progress}p today to stay on track to meet your goal`;
-      } else if (progress <= 0) {
-        return "You're on track to finish on time!";
-      } else {
-        return null;
-      }
-    },
-    percentRead: function() {
-      if (this.book.currentPage > 0) {
-        return `(${Math.round(
-          (this.book.currentPage / this.book.pageCount) * 100
-        )}%)`;
-      } else {
-        return null;
-      }
-    }
+    ...mapGetters(["userProfile", "currentShelf"])
   },
   methods: {
-    expandCard() {
-      this.book.expanded = !this.book.expanded;
-    },
+    ...mapMutations(["setDrawer"]),
     changeImage() {
       if (!this.imageHasChanged) {
         this.imageHasChanged = true;
@@ -123,10 +74,13 @@ export default {
         console.log("saving new book info");
         console.log("post edit book", this.book);
         console.log("pre edit book", this.bookCopy);
-        this.$store.dispatch("updateShelves");
+        this.$store.dispatch("updateBook", this.book);
       } else {
         console.log("editing book info");
       }
+    },
+    openDrawer(book) {
+      this.$store.commit("setDrawer", book);
     },
     test() {
       console.log("test");
@@ -184,7 +138,7 @@ export default {
       width: 100%;
     }
   }
-  &.expanded {
+  /* &.expanded {
     width: 100%;
     height: 200px;
     border-bottom: 1px solid rgba(0, 0, 0, 0.3);
@@ -201,7 +155,7 @@ export default {
         width: calc(485px - 138px);
       }
     }
-  }
+  } */
   &.edit {
     .number-input {
       max-width: 75px;

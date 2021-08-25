@@ -1,6 +1,6 @@
 <template>
   <div class="shelf">
-    <div class="shelf-content">
+    <div class="shelf-content" v-if="sortedBooks">
       <div class="book" v-for="(book, i) in sortedBooks" :key="i">
         <div class="img" @click="openDrawer(book)">
           <img :src="book.imageLinks.thumbnail" :alt="book.title" />
@@ -37,9 +37,19 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(["showNav"]),
+    ...mapGetters(["books", "showNav"]),
+    booksOnShelf: function() {
+      if (this.shelf.books && this.books.length) {
+        const mappedBooks = this.shelf.books.map(bookId => {
+          return this.books.find(b => b.id === bookId);
+        });
+        return mappedBooks;
+      } else {
+        return [];
+      }
+    },
     sortedBooks: function() {
-      let sorted = this.shelf.volumes;
+      let sorted = this.booksOnShelf;
       sorted.sort((a, b) => sortVolumes(a, b));
       return sorted;
     }
@@ -73,7 +83,7 @@ export default {
   height: 25px;
   width: 100%;
   background: white;
-  border: .5px black solid;
+  border: 0.5px black solid;
   padding-left: 2px;
   box-shadow: black 0px 2px 5px -2px;
 }
