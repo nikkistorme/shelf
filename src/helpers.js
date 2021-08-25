@@ -1,15 +1,9 @@
 const defaultVolume = {
   author: "",
-  categories: [],
   description: "",
   expanded: false,
-  imageLinks: {},
-  industryIdentifiers: [],
-  language: "",
-  maturityRating: "",
+  image: "",
   pageCount: 0,
-  previewLink: "",
-  printType: "",
   publishedDate: "",
   publisher: "",
   title: "",
@@ -46,14 +40,14 @@ const findVolumeUpdatePage = (injectedVolume, oldShelves) => {
   }).identifier;
   newShelves = oldShelves.map(s => {
     if (s.id === "default-reading") {
-      for (let i = 0; i < s.volumes.length; i++) {
-        let vol = s.volumes[i];
+      for (let i = 0; i < s.books.length; i++) {
+        let vol = s.books[i];
         const isbn13 = vol.industryIdentifiers.find(ii => {
           return ii.type === "ISBN_13";
         }).identifier;
         if (isbn13 === volumeIsbn13) {
           vol = injectedVolume;
-          s.volumes[i] = vol;
+          s.books[i] = vol;
         }
       }
     }
@@ -66,8 +60,8 @@ export { findVolumeUpdatePage };
 
 const volumeInReadingShelf = (shelf, volume) => {
   if (shelf.id === "default-reading") {
-    shelf.volumes.find(v => {
-      console.log("match?", v.description === volume.description)
+    shelf.books.find(v => {
+      console.log("match?", v.description === volume.description);
       return v.description === volume.description;
     });
   } else {

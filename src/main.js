@@ -19,7 +19,7 @@ let app;
 fb.auth.onAuthStateChanged(user => {
   if (user) {
     store.commit("setCurrentUser", user);
-    store.dispatch("fetchUserProfile");
+    store.dispatch("getUserShelvesBooks");
   }
   if (!app) {
     app = new Vue({

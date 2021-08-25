@@ -14,12 +14,9 @@
       <div>
         <select name="selectShelf" v-model="chosenShelf">
           <option :value="null">Choose a Shelf</option>
-          <option
-            v-for="(shelf, i) in userProfile.shelves"
-            :key="i"
-            :value="shelf.id"
-            >{{ shelf.name }}</option
-          >
+          <option v-for="(shelf, i) in shelves" :key="i" :value="shelf.id">
+            {{ shelf.name }}
+          </option>
         </select>
         <button @click.stop="addToShelf(book)">Add to Shelf</button>
       </div>
@@ -43,7 +40,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["userProfile"])
+    ...mapGetters(["currentUser", "shelves", "userProfile"])
   },
   methods: {
     expandCard() {
@@ -51,17 +48,14 @@ export default {
       this.book.expanded = !this.book.expanded;
     },
     addToShelf(book) {
-      console.log("Adding ${book} to ${this.chosenShelf}");
+      console.log(`Adding ${book.title} to ${this.chosenShelf}`);
       book.expanded = false;
+      book.user = this.currentUser.uid;
       const payload = {
         book: book,
         shelf: this.chosenShelf
       };
-      this.$store.dispatch("addVolumeToShelf", payload);
-    },
-    test() {
-      console.log("test");
-      console.log("userProfile.shelves", this.userProfile.shelves);
+      this.$store.dispatch("createBookAndAddToShelf", payload);
     }
   }
 };
