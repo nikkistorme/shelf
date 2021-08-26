@@ -1,7 +1,11 @@
 <template>
   <header>
-    <h1>Shelf</h1>
-    <div class="hamburger-circle" :class="{ expanded: showNav }">
+    <h1 @click="test">Shelf</h1>
+    <div
+      class="hamburger-circle"
+      :class="{ expanded: showNav }"
+      v-if="userProfile.name"
+    >
       <div class="hamburger" @click="changeNav">
         <div></div>
         <div></div>
@@ -31,15 +35,18 @@ import { mapMutations } from "vuex";
 
 export default {
   computed: {
-    ...mapGetters(["showNav"])
+    ...mapGetters(["showNav", "userProfile"])
   },
   methods: {
     ...mapMutations(["changeNav"]),
     openNav() {
       this.$store.commit("changeNav");
+    },
+    test() {
+      console.log(this.userProfile);
     }
   }
-}
+};
 </script>
 
 <style lang="scss">
