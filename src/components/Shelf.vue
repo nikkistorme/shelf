@@ -71,12 +71,14 @@ export default {
 }
 .shelf-content {
   display: flex;
+  display: -webkit-flex;
   flex-direction: row;
   width: 100%;
   padding: 2px;
   overflow-x: auto;
   overflow-y: hidden;
   justify-content: flex-start;
+  -webkit-justify-content: flex-start;
   align-items: flex-end;
 }
 .shelf-floor {

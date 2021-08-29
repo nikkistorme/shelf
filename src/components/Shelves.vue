@@ -100,8 +100,11 @@ export default {
   }
   .shelf-contents {
     display: flex;
+    display: -webkit-flex;
     flex-wrap: wrap;
+    -webkit-flex-wrap: wrap;
     justify-content: space-between;
+    -webkit-justify-content: space-between;
     @media (min-width: 768px) {
       justify-content: flex-start;
     }

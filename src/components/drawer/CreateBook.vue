@@ -26,6 +26,7 @@
         v-model="book.totalPages"
         class="input"
         type="number"
+        pattern="\d*"
         placeholder="#"
       />
       <label for="total-pages">total pages</label>
@@ -36,6 +37,7 @@
         v-model="book.readPages"
         class="input"
         type="number"
+        pattern="\d*"
         placeholder="#"
       />
       <label for="pages-read">pages read</label>
