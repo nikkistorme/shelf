@@ -1,3 +1,5 @@
+import Vue from "vue";
+
 const setUserBooks = (state, payload) => {
   state.books = payload;
 };
@@ -28,14 +30,16 @@ const changeNav = state => {
 };
 
 const setDrawer = (state, payload) => {
-  state.drawer.open = true;
-  state.drawer.content = payload;
+  Vue.set(state.drawer, "open", true);
+  Vue.set(state.drawer, "content", payload.content);
+  Vue.set(state.drawer, "type", payload.type);
 };
 
 const closeDrawer = state => {
-  state.drawer.open = false;
+  Vue.set(state.drawer, "open", false);
   setTimeout(() => {
-    state.drawer.content = {};
+    Vue.set(state.drawer, "content", {});
+    Vue.set(state.drawer, "type", "");
   }, 500);
 };
 

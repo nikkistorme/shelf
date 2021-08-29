@@ -1,11 +1,7 @@
 <template>
   <div class="shelf">
-    <div class="shelf-content" v-if="sortedBooks">
-      <div class="book" v-for="(book, i) in sortedBooks" :key="i">
-        <div class="img" @click="openDrawer(book)">
-          <img :src="book.imageLinks.thumbnail" :alt="book.title" />
-        </div>
-      </div>
+    <div class="shelf-content" v-if="booksOnShelf">
+      <Book v-for="(book, i) in booksOnShelf" :key="i" :book="book" />
     </div>
     <div class="shelf-floor">
       <h4>{{ shelf.name }}</h4>
@@ -15,7 +11,8 @@
 
 <script>
 import { mapGetters } from "vuex";
-import { mapMutations } from "vuex";
+
+import Book from "./Book.vue";
 
 const sortVolumes = (a, b) => {
   if (a.goalDate && b.goalDate) {
@@ -36,28 +33,28 @@ export default {
       required: true
     }
   },
+  components: {
+    Book
+  },
   computed: {
     ...mapGetters(["books", "showNav"]),
     booksOnShelf: function() {
-      if (this.shelf.books && this.books.length) {
-        const mappedBooks = this.shelf.books.map(bookId => {
-          return this.books.find(b => b.id === bookId);
+      if (this.shelf?.id === "In Progress") {
+        console.log("In Progress Shelf");
+        let booksArray = this.books.filter(b => {
+          return b.inProgress;
         });
-        return mappedBooks;
+        return booksArray;
+      }
+      if (this.shelf?.id && this.books.length) {
+        let booksArray = this.books.filter(b => {
+          return b.shelves.includes(this.shelf.id);
+        });
+        booksArray.sort((a, b) => sortVolumes(a, b));
+        return booksArray;
       } else {
         return [];
       }
-    },
-    sortedBooks: function() {
-      let sorted = this.booksOnShelf;
-      sorted.sort((a, b) => sortVolumes(a, b));
-      return sorted;
-    }
-  },
-  methods: {
-    ...mapMutations(["setDrawer"]),
-    openDrawer(book) {
-      this.$store.commit("setDrawer", book);
     }
   }
 };
@@ -77,7 +74,10 @@ export default {
   flex-direction: row;
   width: 100%;
   padding: 2px;
-  overflow: auto;
+  overflow-x: auto;
+  overflow-y: hidden;
+  justify-content: flex-start;
+  align-items: flex-end;
 }
 .shelf-floor {
   height: 25px;
@@ -86,19 +86,5 @@ export default {
   border: 0.5px black solid;
   padding-left: 2px;
   box-shadow: black 0px 2px 5px -2px;
-}
-.book {
-  padding-left: 1rem;
-}
-.img {
-  position: relative;
-  height: 100px;
-  min-width: 67px;
-  img {
-    height: 100%;
-    width: 100%;
-    object-fit: contain;
-    object-position: bottom;
-  }
 }
 </style>

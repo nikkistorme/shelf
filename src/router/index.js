@@ -2,6 +2,8 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 import firebase from "firebase";
 
+import { store } from "../store/store";
+
 import Home from "../components/Home.vue";
 import Shelves from "../components/Shelves.vue";
 import AddBook from "../components/AddBook.vue";
@@ -31,8 +33,10 @@ router.beforeEach((to, from, next) => {
   } else if (requiresAuth && !currentUser && to.path !== "/login") {
     next("/login");
   } else if (requiresAuth && currentUser) {
+    store.commit("closeDrawer");
     next();
   } else {
+    store.commit("closeDrawer");
     next();
   }
 });

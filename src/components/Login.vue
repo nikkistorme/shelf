@@ -3,9 +3,11 @@
     <div class="account_card">
       <h2>{{ !showLoginForm ? "Create account" : "Sign in" }}</h2>
       <p>
-        <span v-if="!showLoginForm">Already have an account?</span>
+        <span>
+          {{ showLoginForm ? "Need an account?" : "Already have an account?" }}
+        </span>
         <i @click="showLoginForm = !showLoginForm">
-          {{ showLoginForm ? "Create account" : "Sign in" }}
+          {{ showLoginForm ? "Create one" : "Sign in" }}
         </i>
       </p>
       <form class="account_form" v-on:submit.prevent="submitForm">
@@ -35,6 +37,7 @@
             v-model="signupForm.password"
           />
           <button
+            class="black_button"
             type="submit"
             :disabled="
               !signupForm.email ||
@@ -61,6 +64,7 @@
             v-model="loginForm.password"
           />
           <button
+            class="black_button"
             type="submit"
             :disabled="!loginForm.email || !loginForm.password"
           >
@@ -122,6 +126,7 @@ export default {
   flex-direction: column;
   align-items: center;
   max-width: 450px;
+  min-width: 300px;
   padding: 2rem;
   border-radius: 10px;
   background-color: white;
@@ -137,48 +142,8 @@ export default {
     display: flex;
     flex-direction: column;
   }
-  button {
-    padding: 1rem;
-    border: none;
-    border-radius: 10px;
-    margin-top: 1rem;
-    font-weight: bold;
-    color: white;
-    background-color: #000;
-    outline: 0;
-    cursor: pointer;
-    &:disabled {
-      background-color: #d2d2d2;
-      pointer-events: none;
-    }
-  }
-}
-.input {
-  padding: 1rem;
-  border: none;
-  border-radius: 10px;
-  margin-top: 1rem;
-  outline: none;
-  box-shadow: grey 0px 0px 10px -4px;
-}
-.compound_input {
-  margin-top: 1rem;
-  display: flex;
-  box-shadow: grey 0px 0px 10px -4px;
-  border-radius: 10px;
-  overflow: hidden;
-  input {
-    flex: 1;
-    width: 50%;
-    border: none;
-    outline: none;
-    padding: 1rem;
-    &:nth-child(n + 2) {
-      border-left: 1px #d2d2d2 solid;
-    }
-    &:input:placeholder-shown {
-      background-color: grey;
-    }
+  .black_button {
+    margin-top: 2rem;
   }
 }
 </style>
