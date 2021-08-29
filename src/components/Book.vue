@@ -37,6 +37,7 @@ export default {
   position: relative;
   height: 200px;
   min-width: 134px;
+  width: 134px;
   img {
     height: 100%;
     width: 100%;
