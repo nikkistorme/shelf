@@ -30,6 +30,7 @@ export default {
 @import "./assets/styles/buttons.scss";
 * {
   box-sizing: border-box;
+  -webkit-appearance: none;
 }
 html {
   height: -webkit-fill-available;
