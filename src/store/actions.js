@@ -1,4 +1,5 @@
 const fb = require("../firebaseConfig.js");
+import { v4 as uuidv4 } from "uuid";
 
 // Accounts
 const signUpAction = ({ commit, dispatch, state }, payload) => {
@@ -181,6 +182,27 @@ const fetchUserShelves = ({ commit, state }) => {
   });
 };
 
+const addBookToShelf = ({ commit, dispatch }, payload) => {
+  return new Promise((resolve, reject) => {
+    console.log("Begin addBookToShelf");
+    fb.shelvesCollection
+      .doc(payload.id)
+      .update({ books: payload.books })
+      .then(() => {
+        console.log("addBookToShelf success");
+        commit("setStatus", "success");
+        dispatch("fetchUserShelves");
+        resolve();
+      })
+      .catch(error => {
+        console.log("addBookToShelf failure");
+        console.log("error", error);
+        commit("setStatus", error.message);
+        reject();
+      });
+  });
+};
+
 // Books
 const fetchUserBooks = ({ commit, state }) => {
   console.log("Begin fetchUserBooks");
@@ -193,7 +215,6 @@ const fetchUserBooks = ({ commit, state }) => {
         let booksArray = [];
         querySnapshot.forEach(doc => {
           let book = doc.data();
-          book.id = doc.id;
           booksArray.push(book);
         });
         commit("setUserBooks", booksArray);
@@ -208,29 +229,54 @@ const fetchUserBooks = ({ commit, state }) => {
   });
 };
 
-const createBookAndAddToShelf = ({ commit, dispatch, state }, payload) => {
+// const createBookAndAddToShelf = ({ commit, dispatch, state }, payload) => {
+//   return new Promise((resolve, reject) => {
+//     console.log("Begin createBookAndAddToShelf");
+//     commit("setStatus", "loading");
+//     const newShelf = state.shelves.find(s => s.id === payload.shelf);
+//     fb.booksCollection.add(payload.book).then(newBookRef => {
+//       newShelf.books.push(newBookRef.id);
+//       fb.shelvesCollection
+//         .doc(payload.shelf)
+//         .update({
+//           books: newShelf.books
+//         })
+//         .then(() => {
+//           dispatch("fetchUser");
+//           commit("setStatus", "success");
+//           resolve();
+//         })
+//         .catch(error => {
+//           console.log("error", error);
+//           commit("setStatus", error.message);
+//           reject();
+//         });
+//     });
+//   });
+// };
+
+const createBook = ({ commit, dispatch, state }, payload) => {
   return new Promise((resolve, reject) => {
-    console.log("Begin createBookAndAddToShelf");
+    console.log("Begin createBook");
     commit("setStatus", "loading");
-    const newShelf = state.shelves.find(s => s.id === payload.shelf);
-    fb.booksCollection.add(payload.book).then(newBookRef => {
-      newShelf.books.push(newBookRef.id);
-      fb.shelvesCollection
-        .doc(payload.shelf)
-        .update({
-          books: newShelf.books
-        })
-        .then(() => {
-          dispatch("fetchUser");
-          commit("setStatus", "success");
-          resolve();
-        })
-        .catch(error => {
-          console.log("error", error);
-          commit("setStatus", error.message);
-          reject();
-        });
-    });
+    const book = payload;
+    book.user = state.currentUser.uid;
+    book.id = uuidv4();
+    fb.booksCollection
+      .doc(book.id)
+      .set(book)
+      .then(() => {
+        console.log("createBook success");
+        commit("setStatus", "success");
+        dispatch("fetchUserBooks");
+        resolve(book);
+      })
+      .catch(error => {
+        console.log("createBook failure");
+        console.log("error", error);
+        commit("setStatus", error.message);
+        reject();
+      });
   });
 };
 
@@ -255,13 +301,34 @@ const updateBook = ({ commit, dispatch }, payload) => {
   });
 };
 
+const deleteBook = ({ commit, dispatch }, payload) => {
+  return new Promise((resolve, reject) => {
+    console.log("Begin deleteBook");
+    fb.booksCollection
+      .doc(payload.id)
+      .delete()
+      .then(() => {
+        console.log("deleteBook success");
+        dispatch("fetchUserBooks");
+        commit("setStatus", "success");
+        resolve();
+      })
+      .catch(error => {
+        console.log("deleteBook failure");
+        console.log("error", error);
+        commit("setStatus", error.message);
+        reject();
+      });
+  });
+};
+
 const updatePage = ({ commit, dispatch }, payload) => {
   return new Promise((resolve, reject) => {
     console.log("Begin updatePage");
     fb.booksCollection
       .doc(payload.id)
       .update({
-        currentPage: payload.currentPage
+        readPages: payload.readPages
       })
       .then(() => {
         console.log("updatePage success");
@@ -278,42 +345,6 @@ const updatePage = ({ commit, dispatch }, payload) => {
   });
 };
 
-const markAsRead = ({ commit, dispatch, state }, payload) => {
-  return new Promise((resolve, reject) => {
-    console.log("Begin markAsRead");
-    const currentShelves = state.shelves;
-    let finishedBook = payload;
-    finishedBook.currentPage = finishedBook.pageCount;
-    finishedBook.goalDate = "";
-    const newShelves = currentShelves.map(s => {
-      if (s.id === "default-reading") {
-        s.books = s.books.filter(v => {
-          return v.title !== finishedBook.title;
-        });
-      }
-      if (s.id === "default-read") {
-        s.books.push(finishedBook);
-      }
-      return s;
-    });
-    fb.usersCollection
-      .doc(state.currentUser.uid)
-      .update({
-        shelves: newShelves
-      })
-      .then(() => {
-        dispatch("fetchUser");
-        commit("setStatus", "success");
-        resolve();
-      })
-      .catch(error => {
-        console.log("error", error);
-        commit("setStatus", error.message);
-        reject();
-      });
-  });
-};
-
 export default {
   signUpAction,
   signInAction,
@@ -322,9 +353,11 @@ export default {
   getUserShelvesBooks,
   updateUser,
   fetchUserShelves,
+  addBookToShelf,
   fetchUserBooks,
-  createBookAndAddToShelf,
+  // createBookAndAddToShelf,
+  createBook,
   updateBook,
-  updatePage,
-  markAsRead
+  deleteBook,
+  updatePage
 };

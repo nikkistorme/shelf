@@ -1,5 +1,6 @@
 <template>
   <section id="home" class="section-with-margin">
+    <Shelf v-if="inProgress.name" :shelf="inProgress" />
     <Shelf v-for="(shelf, i) in sortedShelves" :key="i" :shelf="shelf" />
   </section>
 </template>
@@ -8,32 +9,37 @@
 import { mapGetters } from "vuex";
 import Shelf from "./Shelf.vue";
 
+import shelf from "../helpers";
+
 export default {
   components: {
     Shelf
   },
-  data() {
-    return { editMode: false };
-  },
   computed: {
-    ...mapGetters(["shelves", "userProfile", "currentUser"]),
+    ...mapGetters(["books", "shelves", "userProfile", "currentUser"]),
+    inProgress: function() {
+      if (this.books?.length) {
+        let inProgressShelf = { ...shelf };
+        inProgressShelf.id = "In Progress";
+        const inProgressBook = this.books.find(b => {
+          return b.inProgress;
+        });
+        if (inProgressBook) {
+          inProgressShelf.name = "In Progress";
+        }
+        return inProgressShelf;
+      } else {
+        return { ...shelf };
+      }
+    },
     sortedShelves: function() {
       if (this.shelves) {
         const allShelves = this.shelves;
         const filteredShelves = allShelves.filter(s => {
-          return s.books.length > 0;
-        });
-        if (filteredShelves.length > 1) {
-          filteredShelves.sort((a, b) => {
-            if (a.id === "default-reading") {
-              return -1;
-            } else if (a.books.length > b.books.length) {
-              return -1;
-            } else if (a.books.length < b.books.length) {
-              return 1;
-            } else return 0;
+          return this.books.find(b => {
+            return b.shelves.includes(s.id);
           });
-        }
+        });
         return filteredShelves;
       } else {
         return [];

@@ -1,27 +1,13 @@
 <template>
   <header>
-    <h1>Shelf</h1>
-    <div class="hamburger-circle" :class="{ expanded: showNav }">
-      <div class="hamburger" @click="changeNav">
+    <div class="hamburger-circle" v-if="userProfile.name">
+      <div class="hamburger" @click="openNav">
         <div></div>
         <div></div>
         <div></div>
       </div>
-      <nav>
-        <router-link class="link1" to="/home">
-          <font-awesome-icon icon="home" class="home-icon" />
-        </router-link>
-        <router-link to="/shelves">
-          <font-awesome-icon icon="book" class="book-icon" />
-        </router-link>
-        <router-link to="/add-book">
-          <font-awesome-icon icon="book-medical" class="search-icon" />
-        </router-link>
-        <router-link to="/account">
-          <font-awesome-icon icon="user" class="user-icon" />
-        </router-link>
-      </nav>
     </div>
+    <h1>Shelf</h1>
   </header>
 </template>
 
@@ -31,15 +17,18 @@ import { mapMutations } from "vuex";
 
 export default {
   computed: {
-    ...mapGetters(["showNav"])
+    ...mapGetters(["userProfile"])
   },
   methods: {
-    ...mapMutations(["changeNav"]),
+    ...mapMutations(["setDrawer"]),
     openNav() {
-      this.$store.commit("changeNav");
+      const newDrawer = {
+        type: "nav"
+      };
+      this.$store.commit("setDrawer", newDrawer);
     }
   }
-}
+};
 </script>
 
 <style lang="scss">
@@ -48,11 +37,13 @@ header {
   align-items: center;
   padding: 1rem 2rem;
   margin-bottom: 2rem;
+  h1 {
+    margin-left: 5rem;
+  }
 }
 .hamburger-circle {
   position: fixed;
-  right: 5px;
-  top: 5px;
+  left: 1rem;
   background-color: #fff;
   box-shadow: #000 0 0 20px -6px;
   border-radius: 50%;
@@ -62,10 +53,10 @@ header {
   transition: 0.25s;
   .hamburger {
     cursor: pointer;
-    position: fixed;
+    position: absolute;
     z-index: 3;
-    top: 19px;
-    right: 19px;
+    top: 13px;
+    right: 14px;
     div {
       width: 21px;
       height: 2px;
@@ -75,33 +66,33 @@ header {
     }
   }
 }
-.expanded {
-  top: -150px;
-  right: -160px;
-  width: 400px;
-  height: 400px;
-  nav {
-    transition-delay: 0.25s;
-    display: initial;
-    opacity: 1;
-    pointer-events: initial;
-  }
-}
-nav {
-  position: absolute;
-  pointer-events: none;
-  width: 100%;
-  bottom: 25%;
-  left: 10%;
-  opacity: 0;
-  transition: opacity 0.1s;
-  a {
-    font-size: 30px;
-    color: #818181;
-    margin: 10px;
-    &.router-link-exact-active {
-      color: black;
-    }
-  }
-}
+// .expanded {
+//   top: -150px;
+//   right: -160px;
+//   width: 400px;
+//   height: 400px;
+//   nav {
+//     transition-delay: 0.25s;
+//     display: initial;
+//     opacity: 1;
+//     pointer-events: initial;
+//   }
+// }
+// nav {
+//   position: absolute;
+//   pointer-events: none;
+//   width: 100%;
+//   bottom: 25%;
+//   left: 10%;
+//   opacity: 0;
+//   transition: opacity 0.1s;
+//   a {
+//     font-size: 30px;
+//     color: #818181;
+//     margin: 10px;
+//     &.router-link-exact-active {
+//       color: black;
+//     }
+//   }
+// }
 </style>

@@ -12,8 +12,9 @@ export const store = new Vuex.Store({
     books: [],
     currentUser: {},
     drawer: {
+      content: {},
       open: false,
-      content: {}
+      type: ""
     },
     shelves: [],
     showNav: false,

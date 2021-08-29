@@ -21,9 +21,16 @@ export default {
 };
 </script>
 
+<style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
+
 <style lang="scss">
+@import "./assets/styles/circle.css";
+@import "./assets/styles/fonts.scss";
+@import "./assets/styles/forms.scss";
+@import "./assets/styles/buttons.scss";
 * {
   box-sizing: border-box;
+  -webkit-appearance: none;
 }
 html {
   height: -webkit-fill-available;
@@ -33,38 +40,24 @@ body {
   height: 100vh;
   margin: 0;
   font-size: 1.6rem;
-}
-p {
-  margin: 0;
-}
-h1,
-h2,
-h3,
-h4 {
-  margin: 0;
-  font-family: "Alegreya", serif;
-}
-h1 {
-  font-size: 4rem;
-}
-h4 {
-  font-weight: normal;
-}
-input {
-  font-size: 16px;
+  font-family: Arial, Helvetica, sans-serif;
 }
 .content {
   position: relative;
-  overflow: hidden;
+  overflow-x: hidden;
   height: 100%;
   .header_img {
     position: absolute;
     z-index: -1;
+    height: 20vh;
   }
 }
 main {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+.full_width {
+  width: 100%;
 }
 </style>

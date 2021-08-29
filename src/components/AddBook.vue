@@ -1,7 +1,10 @@
 <template>
-  <section class="search section-with-margin">
-    <!-- <CreateBookForm /> -->
-    <AddBookForm :search="search" :getVolume="getVolume" />
+  <section id="add_book" class="search section-with-margin">
+    <BookSearchForm :search="search" :getVolume="getVolume" />
+    <p class="or">or</p>
+    <button class="black_button" @click="createBook">
+      Add Manually
+    </button>
     <div class="search-results" v-if="results">
       <BookSearchItem v-for="(book, i) in results" :key="i" :book="book" />
     </div>
@@ -9,14 +12,16 @@
 </template>
 
 <script>
-// import { mapMutations } from "vuex";
-import { defaultVolume, stringFromArrayOfStrings } from "../helpers";
-import AddBookForm from "./AddBookForm.vue";
+import { mapMutations } from "vuex";
+
+import BookSearchForm from "./BookSearchForm";
 import BookSearchItem from "./BookSearchItem";
+
+const helpers = require("../helpers");
 
 export default {
   components: {
-    AddBookForm,
+    BookSearchForm,
     BookSearchItem
   },
   data() {
@@ -30,6 +35,7 @@ export default {
     };
   },
   methods: {
+    ...mapMutations(["setDrawer"]),
     getVolume() {
       const keywordUrl = `${this.search.keyword}`;
       let authorUrl = "";
@@ -53,31 +59,55 @@ export default {
         .then(data => {
           const dataVolumes = data.items.map(v => {
             if (v.volumeInfo) {
-              let newVolume = Object.assign({}, defaultVolume, v.volumeInfo);
-              if (newVolume.authors) {
-                newVolume.author = stringFromArrayOfStrings(newVolume.authors);
+              const oldVolume = Object.assign(
+                {},
+                helpers.default.book,
+                v.volumeInfo
+              );
+              let newVolume = { ...helpers.default.book };
+              if (oldVolume.authors) {
+                newVolume.author = helpers.default.stringFromArrayOfStrings(
+                  oldVolume.authors
+                );
               }
-              delete newVolume.allowAnonLogging;
-              delete newVolume.averageRating;
-              delete newVolume.canonicalVolumeLink;
-              delete newVolume.infoLink;
-              delete newVolume.panelizationSummary;
-              delete newVolume.readingModes;
+              newVolume.description = oldVolume.description;
+              if (oldVolume.imageLinks?.thumbnail) {
+                newVolume.image = oldVolume.imageLinks.thumbnail;
+              }
+              newVolume.title = oldVolume.title;
+              newVolume.totalPages = oldVolume.pageCount;
               return newVolume;
             }
           });
-          console.log("dataVolumes", dataVolumes);
           this.results = [];
           this.results = this.results.concat(dataVolumes);
         });
+    },
+    createBook() {
+      let newBook = { ...helpers.default.book };
+      const newDrawer = {
+        content: newBook,
+        type: "addBook"
+      };
+      this.$store.commit("setDrawer", newDrawer);
     }
   }
 };
 </script>
 
 <style lang="scss">
+#add_book {
+  .or {
+    margin-top: 1rem;
+  }
+}
 .search {
+  text-align: center;
+  .black_button {
+    margin-top: 1rem;
+  }
   .search-results {
+    margin-top: 1rem;
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
