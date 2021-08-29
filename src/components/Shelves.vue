@@ -99,8 +99,13 @@ export default {
     margin-bottom: 2rem;
   }
   .shelf-contents {
-    display: flex;
+    -ms-box-orient: horizontal;
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -moz-flex;
     display: -webkit-flex;
+    display: flex;
     flex-wrap: wrap;
     -webkit-flex-wrap: wrap;
     justify-content: space-between;
