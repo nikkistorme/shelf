@@ -54,7 +54,7 @@
       track-by="id"
     />
     <button
-      class="black_button full_width"
+      class="gtm_add_book_submit black_button full_width"
       type="submit"
       :disabled="disableButton"
     >
