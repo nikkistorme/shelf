@@ -4,7 +4,7 @@
       <font-awesome-icon icon="edit" v-if="!editMode" @click="editBook" />
     </button>
     <div class="inspect_book" v-if="!editMode">
-      <div class="drawer_img">
+      <div class="drawer_img" @click="test">
         <img :src="book.image" :alt="book.title" />
       </div>
       <h2>{{ book.title }}</h2>
@@ -32,16 +32,38 @@
             v-if="updateProgressMode"
             v-on:submit.prevent="updateProgress(book)"
           >
+            <p>From page</p>
             <input
-              v-model="book.readPages"
+              v-model="startingPage"
               class="input"
               type="number"
               pattern="\d*"
               :max="book.totalPages"
             />
-            <p>/ {{ book.totalPages }}</p>
+            <p>to</p>
+            <input
+              v-model="newPage"
+              class="input"
+              type="number"
+              pattern="\d*"
+              :max="book.totalPages"
+            />
+            <p>in</p>
+            <input
+              v-model="sessionDuration"
+              class="input"
+              type="number"
+              pattern="\d*"
+            />
+            <p>minutes</p>
             <div class="update_progress_buttons" v-if="updateProgressMode">
-              <button type="submit" class="black_button">Update</button>
+              <button
+                type="submit"
+                class="black_button"
+                :disabled="newPage < startingPage"
+              >
+                Update
+              </button>
               <button class="green_button" @click="finishBook(book)">
                 Finish
               </button>
@@ -50,17 +72,23 @@
         </div>
         <button
           class="black_button"
-          @click="updateProgressMode = true"
+          @click="startUpdateProgressMode()"
           v-if="!updateProgressMode"
         >
           Update Progress
         </button>
       </div>
+      <div class="inspect_book_row" v-if="remainingTime()">
+        <p>At this rate, you'll finish in {{ remainingTime() }}</p>
+      </div>
       <div class="inspect_book_row finished_row" v-if="book.finished">
         <font-awesome-icon icon="check-circle" class="finished_icon" />
         <p>Finished on {{ dateFinished }}</p>
       </div>
-      <div class="inspect_book_row">
+      <div
+        class="inspect_book_row"
+        v-if="!book.inProgress || book.changes.length"
+      >
         <button
           class="black_button"
           @click="startReading"
@@ -68,6 +96,13 @@
         >
           {{ book.finished ? "Read Again" : "Start Reading" }}
         </button>
+        <ul v-if="book.changes.length">
+          <li v-for="(change, i) in book.changes" :key="i">
+            <p>{{ historyMessage(change) }}</p>
+          </li>
+        </ul>
+      </div>
+      <div class="inspect_book_row">
         <button class="red_button" @click="deleteBook(book)">
           Remove Book
         </button>
@@ -141,6 +176,7 @@
 <script>
 import { mapGetters } from "vuex";
 import Multiselect from "vue-multiselect";
+import helpers from "../../helpers";
 
 import ProgressCircle from "../ProgressCircle";
 
@@ -160,7 +196,10 @@ export default {
       selectedShelves: [],
       updateProgressMode: false,
       editMode: false,
-      finishedDate: ""
+      finishedDate: "",
+      startingPage: 0,
+      newPage: 0,
+      sessionDuration: 0
     };
   },
   mounted() {
@@ -185,34 +224,7 @@ export default {
     },
     dateFinished: function() {
       if (this.book.finished) {
-        const date = new Date(this.book.finished);
-        const weekDays = [
-          "Sunday",
-          "Monday",
-          "Tuesday",
-          "Wednesday",
-          "Thursday",
-          "Friday",
-          "Saturday"
-        ];
-        const months = [
-          "January",
-          "February",
-          "March",
-          "April",
-          "May",
-          "June",
-          "July",
-          "August",
-          "September",
-          "October",
-          "November",
-          "December"
-        ];
-        const dateString = `${weekDays[date.getDay()]} ${
-          months[date.getMonth()]
-        } ${date.getDate()}`;
-        return dateString;
+        return helpers.formatTimestamp(this.book.finished);
       } else {
         return "";
       }
@@ -220,7 +232,53 @@ export default {
   },
   methods: {
     test() {
-      console.log(this.finishedDate);
+      console.log(this.book.changes);
+    },
+    remainingTime() {
+      const pagesLeft = this.book.totalPages - this.book.readPages;
+      const changesWithDuration = this.book.changes.filter(c => {
+        return c.payload.duration > 0;
+      });
+      const pagesPerMinData = changesWithDuration.map(c => {
+        const pagesRead = c.payload.newValue - c.payload.oldValue;
+        return pagesRead / c.payload.duration;
+      });
+      if (pagesPerMinData.length) {
+        const averageDuration =
+          pagesPerMinData.reduce((a, b) => a + b) / pagesPerMinData.length;
+        const pagesPerMin = Math.round((1 / averageDuration) * 100) / 100;
+        const timeRemaining = pagesLeft / averageDuration;
+        const hoursRemaining = Math.floor(timeRemaining / 60);
+        const minutesRemaining = Math.round(
+          timeRemaining - hoursRemaining * 60
+        );
+        return `${hoursRemaining} hrs ${minutesRemaining} mins (${pagesPerMin} p/min)`;
+      } else {
+        return "";
+      }
+    },
+    historyMessage(change) {
+      const time = this.formatTimestamp(change.payload.timestamp);
+      let duration = "";
+      let prettyAction = "";
+      if (change.payload.duration) {
+        duration = ` in ${change.payload.duration} minutes`;
+      }
+      if (change.action === "updatePage") {
+        prettyAction = `Read ${change.payload.oldValue}-${change.payload.newValue}${duration}`;
+      } else {
+        // eslint-disable-next-line prettier/prettier
+        prettyAction = "Updated book info"
+      }
+      return `${time} - ${prettyAction}`;
+    },
+    formatTimestamp(timestamp) {
+      return helpers.formatTimestamp(timestamp);
+    },
+    startUpdateProgressMode() {
+      this.startingPage = this.book.readPages;
+      this.newPage = this.book.readPages;
+      this.updateProgressMode = true;
     },
     editBook() {
       const fullDate = new Date(this.book.finished);
@@ -246,20 +304,35 @@ export default {
       } else if (book.readPages === book.totalPages) {
         book.inProgress = false;
       }
-      this.$store.dispatch("updateBook", book).then(() => {
-        this.editMode = false;
+      let newChange = helpers.addChange("updateBook", {
+        oldValue: null,
+        newValue: null,
+        duration: null
       });
+      this.$store
+        .dispatch("updateBook", { book: this.book, change: newChange })
+        .then(() => {
+          this.editMode = false;
+        });
     },
     startReading() {
       this.book.inProgress = true;
       this.book.finished = "";
       this.book.readPages = 0;
-      this.$store.dispatch("updateBook", this.book);
+      const payload = { book: this.book, action: "startReading" };
+      this.$store.dispatch("startReading", payload);
     },
     updateProgress() {
-      this.$store.dispatch("updatePage", this.book).then(() => {
-        this.updateProgressMode = false;
+      let newChange = helpers.addChange("updatePage", {
+        oldValue: this.startingPage,
+        newValue: this.newPage,
+        duration: parseInt(this.sessionDuration)
       });
+      this.$store
+        .dispatch("updatePage", { book: this.book, change: newChange })
+        .then(() => {
+          this.updateProgressMode = false;
+        });
     },
     deleteBook(book) {
       this.$store.dispatch("deleteBook", book).then(() => {
@@ -270,7 +343,8 @@ export default {
       book.readPages = book.totalPages;
       book.inProgress = false;
       book.finished = Date.now();
-      this.$store.dispatch("updateBook", book);
+      const payload = { book: book, action: "finishBook" };
+      this.$store.dispatch("updateBook", payload);
     }
   },
   watch: {
@@ -278,7 +352,7 @@ export default {
       this.book.shelves = newShelves.map(s => {
         return s.id;
       });
-      this.$store.dispatch("updateBook", this.book);
+      // this.$store.dispatch("updateBook", this.book);
     },
     finishedDate: function(date) {
       this.book.finished = new Date(date);

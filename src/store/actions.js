@@ -283,9 +283,10 @@ const createBook = ({ commit, dispatch, state }, payload) => {
 const updateBook = ({ commit, dispatch }, payload) => {
   return new Promise((resolve, reject) => {
     console.log("Begin updateBook");
+    payload.book.changes.unshift(payload.change);
     fb.booksCollection
-      .doc(payload.id)
-      .set(payload)
+      .doc(payload.book.id)
+      .set(payload.book)
       .then(() => {
         console.log("updateBook success");
         dispatch("fetchUserBooks");
@@ -325,10 +326,12 @@ const deleteBook = ({ commit, dispatch }, payload) => {
 const updatePage = ({ commit, dispatch }, payload) => {
   return new Promise((resolve, reject) => {
     console.log("Begin updatePage");
+    payload.book.changes.unshift(payload.change);
     fb.booksCollection
-      .doc(payload.id)
+      .doc(payload.book.id)
       .update({
-        readPages: payload.readPages
+        readPages: payload.change.payload.newValue,
+        changes: payload.book.changes
       })
       .then(() => {
         console.log("updatePage success");
@@ -338,6 +341,33 @@ const updatePage = ({ commit, dispatch }, payload) => {
       })
       .catch(error => {
         console.log("updatePage failure");
+        console.log("error", error);
+        commit("setStatus", error.message);
+        reject();
+      });
+  });
+};
+
+const startReading = ({ commit, dispatch }, payload) => {
+  return new Promise((resolve, reject) => {
+    console.log("Begin startReading");
+    payload.book.changes.unshift(payload.change);
+    fb.booksCollection
+      .doc(payload.book.id)
+      .update({
+        inProgress: true,
+        finished: false,
+        readPages: 0,
+        changes: payload.book.changes
+      })
+      .then(() => {
+        console.log("startReading success");
+        dispatch("fetchUserBooks");
+        commit("setStatus", "success");
+        resolve();
+      })
+      .catch(error => {
+        console.log("startReading failure");
         console.log("error", error);
         commit("setStatus", error.message);
         reject();
@@ -359,5 +389,6 @@ export default {
   createBook,
   updateBook,
   deleteBook,
-  updatePage
+  updatePage,
+  startReading
 };

@@ -15,19 +15,31 @@ const book = {
   startDate: "",
   title: "",
   totalPages: 0,
-  user: ""
+  user: "",
+  changes: []
+};
+
+const blankChange = {
+  action: "",
+  payload: {
+    timestamp: "", // Always store UTC
+    oldValue: null,
+    newValue: null
+  }
 };
 
 const shelf = {
   id: "",
   name: "",
-  user: ""
+  user: "",
+  changes: []
 };
 
 const user = {
   activeShelf: "",
   id: "",
-  name: ""
+  name: "",
+  changes: []
 };
 
 const stringFromArrayOfStrings = array => {
@@ -43,9 +55,57 @@ const stringFromArrayOfStrings = array => {
   return newString;
 };
 
+const addChange = (action, change) => {
+  let newChange = Object.assign({}, blankChange);
+  newChange.action = action;
+  newChange.payload = {
+    timestamp: Date.now(),
+    oldValue: change.oldValue,
+    newValue: change.newValue,
+    duration: change.duration ? change.duration : 0
+  };
+  return newChange;
+};
+
+const formatTimestamp = timestamp => {
+  let date = new Date(timestamp);
+  const weekDays = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday"
+  ];
+  const months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December"
+  ];
+  return `
+    ${weekDays[date.getDay()]} 
+    ${months[date.getMonth()]} 
+    ${date.getDate()}, 
+    ${date.getHours()}:${date.getMinutes() > 9 ? "" : 0}${date.getMinutes()} 
+    ${date.getHours() >= 12 ? "pm" : "am"}`;
+};
+
 export default {
   book,
+  blankChange,
   shelf,
   user,
-  stringFromArrayOfStrings
+  stringFromArrayOfStrings,
+  addChange,
+  formatTimestamp
 };
