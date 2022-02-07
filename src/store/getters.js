@@ -5,6 +5,9 @@ const shelves = state => state.shelves;
 const showNav = state => state.showNav;
 const status = state => state.status;
 const userProfile = state => state.userProfile;
+const getBookById = state => id => {
+  return state.books.find(book => book.id === id);
+};
 
 export default {
   books,
@@ -13,5 +16,6 @@ export default {
   shelves,
   showNav,
   status,
-  userProfile
+  userProfile,
+  getBookById
 };
