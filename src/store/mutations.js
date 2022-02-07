@@ -10,7 +10,6 @@ const setCurrentUser = (state, payload) => {
 
 const setUserProfile = (state, payload) => {
   state.userProfile = payload;
-  console.log("state.userProfile", state.userProfile);
 };
 
 const removeUser = state => {

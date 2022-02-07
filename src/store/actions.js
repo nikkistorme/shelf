@@ -326,7 +326,11 @@ const deleteBook = ({ commit, dispatch }, payload) => {
 const updatePage = ({ commit, dispatch }, payload) => {
   return new Promise((resolve, reject) => {
     console.log("Begin updatePage");
-    payload.book.changes.unshift(payload.change);
+    if (payload.book.changes?.length) {
+      payload.book.changes.unshift(payload.change);
+    } else {
+      payload.book.changes = [payload.change];
+    }
     fb.booksCollection
       .doc(payload.book.id)
       .update({
@@ -351,11 +355,14 @@ const updatePage = ({ commit, dispatch }, payload) => {
 const startReading = ({ commit, dispatch }, payload) => {
   return new Promise((resolve, reject) => {
     console.log("Begin startReading");
+    if (!payload.book.changes) {
+      payload.book.changes = [];
+    }
     payload.book.changes.unshift(payload.change);
     fb.booksCollection
       .doc(payload.book.id)
       .update({
-        inProgress: true,
+        inProgress: payload.change.payload.newValue,
         finished: false,
         readPages: 0,
         changes: payload.book.changes
@@ -363,11 +370,45 @@ const startReading = ({ commit, dispatch }, payload) => {
       .then(() => {
         console.log("startReading success");
         dispatch("fetchUserBooks");
+      })
+      .then(() => {
         commit("setStatus", "success");
         resolve();
       })
       .catch(error => {
         console.log("startReading failure");
+        console.log("error", error);
+        commit("setStatus", error.message);
+        reject();
+      });
+  });
+};
+
+const finishReading = ({ commit, dispatch }, payload) => {
+  return new Promise((resolve, reject) => {
+    console.log("Begin finishReading");
+    if (!payload.book.changes) {
+      payload.book.changes = [];
+    }
+    payload.book.changes.unshift(payload.change);
+    fb.booksCollection
+      .doc(payload.book.id)
+      .update({
+        inProgress: false,
+        finished: payload.change.payload.newValue,
+        readPages: payload.book.totalPages,
+        changes: payload.book.changes
+      })
+      .then(() => {
+        console.log("finishReading success");
+        dispatch("fetchUserBooks");
+      })
+      .then(() => {
+        commit("setStatus", "success");
+        resolve();
+      })
+      .catch(error => {
+        console.log("finishReading failure");
         console.log("error", error);
         commit("setStatus", error.message);
         reject();
@@ -390,5 +431,6 @@ export default {
   updateBook,
   deleteBook,
   updatePage,
-  startReading
+  startReading,
+  finishReading
 };

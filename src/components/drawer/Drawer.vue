@@ -7,7 +7,7 @@
       <CreateBook v-if="drawer.type === 'addBook'" :book="drawer.content" />
       <InspectBook
         v-if="drawer.type === 'inspectBook'"
-        :book="drawer.content"
+        :bookId="drawer.content.id"
       />
       <Navigation v-if="drawer.type === 'nav'" />
     </div>
@@ -49,56 +49,6 @@ export default {
     },
     close() {
       this.$store.commit("closeDrawer");
-    },
-    percentRead(book) {
-      if (book.currentPage > 0) {
-        return `(${Math.round((book.currentPage / book.totalPages) * 100)}%)`;
-      } else {
-        return null;
-      }
-    },
-    goalProgress(book) {
-      let progress = null;
-      console.log("book", book);
-      if (book.currentPage >= 0 && book.goalDate) {
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        const goalDateObject = new Date(book.goalDate.replace(/-/g, "/"));
-        const progressMilliseconds = Math.abs(goalDateObject - today);
-        const progressDays = progressMilliseconds / (60 * 60 * 24 * 1000);
-        const pagesPerDay = Math.round(
-          (book.totalPages - book.goalToday.page) / progressDays
-        );
-        // use that number to calculate pagesPerDay
-        // return pagesPerDay - (currentPage - newpagevalue)
-        progress = pagesPerDay - (book.currentPage - book.goalToday.page);
-      } else if (book.currentPage === book.totalPages) {
-        return "Finished!";
-      } else if (!book.goalDate) {
-        return null;
-      }
-      if (progress > 0) {
-        return `${progress}p left today`;
-      } else if (progress <= 0) {
-        return "✔️";
-      } else {
-        return null;
-      }
-    },
-    updatePage() {
-      this.editMode = !this.editMode;
-      if (!this.editMode) {
-        console.log("saving new book info");
-        this.drawer.content.currentPage = this.newPage;
-        this.$store.dispatch("updatePage", this.drawer.content);
-      } else {
-        console.log("editing book info");
-        this.newPage = this.drawer.content.currentPage;
-      }
-    },
-    finishBook() {
-      this.editMode = false;
-      this.$store.dispatch("markAsRead", this.drawer.content);
     }
   }
 };

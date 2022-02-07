@@ -95,9 +95,10 @@ const formatTimestamp = timestamp => {
   return `
     ${weekDays[date.getDay()]} 
     ${months[date.getMonth()]} 
-    ${date.getDate()}, 
-    ${date.getHours()}:${date.getMinutes() > 9 ? "" : 0}${date.getMinutes()} 
-    ${date.getHours() >= 12 ? "pm" : "am"}`;
+    ${date.getDate()}`;
+  // ,
+  // ${date.getHours()}:${date.getMinutes() > 9 ? "" : 0}${date.getMinutes()}
+  // ${date.getHours() >= 12 ? "pm" : "am"}`;
 };
 
 export default {

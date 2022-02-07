@@ -64,7 +64,7 @@
               >
                 Update
               </button>
-              <button class="green_button" @click="finishBook(book)">
+              <button class="green_button" @click="finishReading()">
                 Finish
               </button>
             </div>
@@ -78,17 +78,14 @@
           Update Progress
         </button>
       </div>
-      <div class="inspect_book_row" v-if="remainingTime()">
-        <p>At this rate, you'll finish in {{ remainingTime() }}</p>
+      <div class="inspect_book_row" v-if="currentlyReading && remainingTime()">
+        <p class="inspect_book_row_remaining_time">{{ remainingTime() }}</p>
       </div>
       <div class="inspect_book_row finished_row" v-if="book.finished">
         <font-awesome-icon icon="check-circle" class="finished_icon" />
         <p>Finished on {{ dateFinished }}</p>
       </div>
-      <div
-        class="inspect_book_row"
-        v-if="!book.inProgress || book.changes.length"
-      >
+      <div class="inspect_book_row" v-if="!book.inProgress || book.changes">
         <button
           class="black_button"
           @click="startReading"
@@ -96,7 +93,7 @@
         >
           {{ book.finished ? "Read Again" : "Start Reading" }}
         </button>
-        <ul v-if="book.changes.length">
+        <ul v-if="book.changes">
           <li v-for="(change, i) in book.changes" :key="i">
             <p>{{ historyMessage(change) }}</p>
           </li>
@@ -182,8 +179,8 @@ import ProgressCircle from "../ProgressCircle";
 
 export default {
   props: {
-    book: {
-      type: Object,
+    bookId: {
+      type: String,
       required: true
     }
   },
@@ -212,7 +209,10 @@ export default {
     this.finished = this.book.finished;
   },
   computed: {
-    ...mapGetters(["shelves"]),
+    ...mapGetters(["shelves", "books", "getBookById"]),
+    book: function() {
+      return this.getBookById(this.bookId);
+    },
     percentComplete: function() {
       if (this.book.totalPages && this.book.readPages) {
         let percent = this.book.readPages / this.book.totalPages;
@@ -228,6 +228,23 @@ export default {
       } else {
         return "";
       }
+    },
+    currentlyReading: function() {
+      if (this.book?.changes) {
+        const updates = this.book.changes;
+        const mostRecentProgressUpdate = updates.find(u =>
+          ["updatePage", "finishReading"].includes(u.action)
+        );
+        if (mostRecentProgressUpdate) {
+          const inProgress =
+            mostRecentProgressUpdate.action === "finishReading" ? false : true;
+          return inProgress;
+        } else {
+          return false;
+        }
+      } else {
+        return false;
+      }
     }
   },
   methods: {
@@ -236,13 +253,17 @@ export default {
     },
     remainingTime() {
       const pagesLeft = this.book.totalPages - this.book.readPages;
-      const changesWithDuration = this.book.changes.filter(c => {
-        return c.payload.duration > 0;
-      });
-      const pagesPerMinData = changesWithDuration.map(c => {
-        const pagesRead = c.payload.newValue - c.payload.oldValue;
-        return pagesRead / c.payload.duration;
-      });
+      let changesWithDuration = [];
+      let pagesPerMinData = [];
+      if (this.book.changes?.length) {
+        changesWithDuration = this.book.changes.filter(c => {
+          return c.payload.duration > 0;
+        });
+        pagesPerMinData = changesWithDuration.map(c => {
+          const pagesRead = c.payload.newValue - c.payload.oldValue;
+          return pagesRead / c.payload.duration;
+        });
+      }
       if (pagesPerMinData.length) {
         const averageDuration =
           pagesPerMinData.reduce((a, b) => a + b) / pagesPerMinData.length;
@@ -252,7 +273,7 @@ export default {
         const minutesRemaining = Math.round(
           timeRemaining - hoursRemaining * 60
         );
-        return `${hoursRemaining} hrs ${minutesRemaining} mins (${pagesPerMin} p/min)`;
+        return `${hoursRemaining} hrs ${minutesRemaining} mins remaining (${pagesPerMin} p/min)`;
       } else {
         return "";
       }
@@ -266,6 +287,8 @@ export default {
       }
       if (change.action === "updatePage") {
         prettyAction = `Read ${change.payload.oldValue}-${change.payload.newValue}${duration}`;
+      } else if (change.action === "finishedReading") {
+        prettyAction = `Finished reading`;
       } else {
         // eslint-disable-next-line prettier/prettier
         prettyAction = "Updated book info"
@@ -316,35 +339,45 @@ export default {
         });
     },
     startReading() {
-      this.book.inProgress = true;
-      this.book.finished = "";
-      this.book.readPages = 0;
-      const payload = { book: this.book, action: "startReading" };
-      this.$store.dispatch("startReading", payload);
+      let newChange = helpers.addChange("startReading", {
+        oldValue: false,
+        newValue: true
+      });
+      this.$store.dispatch("startReading", {
+        book: this.book,
+        change: newChange
+      });
     },
     updateProgress() {
-      let newChange = helpers.addChange("updatePage", {
-        oldValue: this.startingPage,
-        newValue: this.newPage,
-        duration: parseInt(this.sessionDuration)
-      });
-      this.$store
-        .dispatch("updatePage", { book: this.book, change: newChange })
-        .then(() => {
-          this.updateProgressMode = false;
+      if (this.updateProgressMode) {
+        let newChange = helpers.addChange("updatePage", {
+          oldValue: this.startingPage,
+          newValue: this.newPage,
+          duration: parseInt(this.sessionDuration)
         });
+        this.$store
+          .dispatch("updatePage", { book: this.book, change: newChange })
+          .then(() => {
+            this.updateProgressMode = false;
+          });
+      }
     },
     deleteBook(book) {
       this.$store.dispatch("deleteBook", book).then(() => {
         this.$store.commit("closeDrawer");
       });
     },
-    finishBook(book) {
-      book.readPages = book.totalPages;
-      book.inProgress = false;
-      book.finished = Date.now();
-      const payload = { book: book, action: "finishBook" };
-      this.$store.dispatch("updateBook", payload);
+    finishReading() {
+      let newChange = helpers.addChange("finishReading", {
+        oldValue: 0,
+        newValue: Date.now(),
+        duration: 0
+      });
+      this.updateProgressMode = false;
+      this.$store.dispatch("finishReading", {
+        book: this.book,
+        change: newChange
+      });
     }
   },
   watch: {
@@ -352,10 +385,23 @@ export default {
       this.book.shelves = newShelves.map(s => {
         return s.id;
       });
-      // this.$store.dispatch("updateBook", this.book);
+      let newChange = helpers.addChange("updateShelves", {
+        oldValue: this.book.shelves,
+        newValue: newShelves.map(s => {
+          return s.id;
+        }),
+        duration: 0
+      });
+      this.$store.dispatch("updateBook", {
+        book: this.book,
+        change: newChange
+      });
     },
     finishedDate: function(date) {
       this.book.finished = new Date(date);
+    },
+    getBookById: function(book) {
+      this.book = book;
     }
   }
 };
