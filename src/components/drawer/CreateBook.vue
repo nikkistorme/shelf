@@ -31,7 +31,7 @@
       />
       <label for="total-pages">total pages</label>
     </div>
-    <div class="page_input full_width">
+    <!-- <div class="page_input full_width">
       <input
         name="pages-read"
         v-model="book.readPages"
@@ -41,7 +41,7 @@
         placeholder="#"
       />
       <label for="pages-read">pages read</label>
-    </div>
+    </div> -->
     <Multiselect
       v-model="selectedShelves"
       :options="shelves"
@@ -66,6 +66,7 @@
 <script>
 import { mapGetters } from "vuex";
 import { mapMutations } from "vuex";
+import helpers from "../../helpers";
 
 import Multiselect from "vue-multiselect";
 
@@ -99,26 +100,41 @@ export default {
     ...mapMutations(["setDrawer"]),
     addBook(book) {
       console.log(`Adding ${book.title}`);
-      book.readPages = Number.parseInt(book.readPages);
+      // book.readPages = Number.parseInt(book.readPages);
       book.totalPages = Number.parseInt(book.totalPages);
-      if (!book.readPages) {
-        book.inProgress = false;
-        book.finished = "";
-      } else if (book.totalPages > book.readPages) {
-        book.inProgress = true;
-        book.finished = "";
-      } else if (book.readPages === book.totalPages) {
-        book.inProgress = false;
-        book.finished = Date.now();
-      }
-      console.log("🚀 ~ file: CreateBook.vue ~ line 96 ~ addBook ~ book", book);
-      this.$store.dispatch("createBook", book).then(freshBook => {
-        const newDrawer = {
-          content: freshBook,
-          type: "inspectBook"
-        };
-        this.$store.commit("setDrawer", newDrawer);
+      // if (!book.readPages) {
+      //   book.inProgress = false;
+      //   book.finished = "";
+      // } else if (book.totalPages > book.readPages) {
+      //   book.inProgress = true;
+      //   book.finished = "";
+      // } else if (book.readPages === book.totalPages) {
+      //   book.inProgress = false;
+      //   book.finished = Date.now();
+      // }
+      let newChange = helpers.addChange("addBook", {
+        oldValue: null,
+        newValue: null,
+        duration: null
       });
+      this.book = helpers.addChangeToBook(book, newChange);
+      console.log("🚀 ~ file: CreateBook.vue ~ line 96 ~ addBook ~ book", book);
+      this.$store
+        .dispatch("addBook", { book: this.book, change: newChange })
+        .then(newBook => {
+          const newDrawer = {
+            content: newBook,
+            type: "inspectBook"
+          };
+          this.$store.commit("setDrawer", newDrawer);
+        });
+      // this.$store.dispatch("createBook", book).then(freshBook => {
+      //   const newDrawer = {
+      //     content: freshBook,
+      //     type: "inspectBook"
+      //   };
+      //   this.$store.commit("setDrawer", newDrawer);
+      // });
     }
   },
   watch: {

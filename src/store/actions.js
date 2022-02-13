@@ -255,24 +255,24 @@ const fetchUserBooks = ({ commit, state }) => {
 //   });
 // };
 
-const createBook = ({ commit, dispatch, state }, payload) => {
+const addBook = ({ commit, dispatch, state }, payload) => {
   return new Promise((resolve, reject) => {
-    console.log("Begin createBook");
+    console.log("Begin addBook");
     commit("setStatus", "loading");
-    const book = payload;
+    let book = payload.book;
     book.user = state.currentUser.uid;
     book.id = uuidv4();
     fb.booksCollection
       .doc(book.id)
       .set(book)
       .then(() => {
-        console.log("createBook success");
+        console.log("addBook success");
         commit("setStatus", "success");
         dispatch("fetchUserBooks");
         resolve(book);
       })
       .catch(error => {
-        console.log("createBook failure");
+        console.log("addBook failure");
         console.log("error", error);
         commit("setStatus", error.message);
         reject();
@@ -427,7 +427,7 @@ export default {
   addBookToShelf,
   fetchUserBooks,
   // createBookAndAddToShelf,
-  createBook,
+  addBook,
   updateBook,
   deleteBook,
   updatePage,
