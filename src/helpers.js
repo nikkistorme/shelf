@@ -32,7 +32,11 @@ const shelf = {
   id: "",
   name: "",
   user: "",
-  changes: []
+  changes: [],
+  sort: {
+    method: "",
+    descending: false
+  }
 };
 
 const user = {
@@ -65,6 +69,15 @@ const addChange = (action, change) => {
     duration: change.duration ? change.duration : 0
   };
   return newChange;
+};
+
+const addChangeToBook = (book, change) => {
+  if (book.changes?.length) {
+    book.changes.unshift(change);
+  } else {
+    book.changes = [change];
+  }
+  return book;
 };
 
 const formatTimestamp = timestamp => {
@@ -108,5 +121,6 @@ export default {
   user,
   stringFromArrayOfStrings,
   addChange,
+  addChangeToBook,
   formatTimestamp
 };

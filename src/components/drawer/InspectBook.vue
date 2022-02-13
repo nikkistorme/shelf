@@ -4,7 +4,7 @@
       <font-awesome-icon icon="edit" v-if="!editMode" @click="editBook" />
     </button>
     <div class="inspect_book" v-if="!editMode">
-      <div class="drawer_img" @click="test">
+      <div class="drawer_img" v-if="book.image" @click="test">
         <img :src="book.image" :alt="book.title" />
       </div>
       <h2>{{ book.title }}</h2>
@@ -285,7 +285,11 @@ export default {
       if (change.payload.duration) {
         duration = ` in ${change.payload.duration} minutes`;
       }
-      if (change.action === "updatePage") {
+      if (change.action === "addBook") {
+        prettyAction = `Added book to library`;
+      } else if (change.action === "startReading") {
+        prettyAction = "Started reading";
+      } else if (change.action === "updatePage") {
         prettyAction = `Read ${change.payload.oldValue}-${change.payload.newValue}${duration}`;
       } else if (change.action === "finishedReading") {
         prettyAction = `Finished reading`;
@@ -382,20 +386,19 @@ export default {
   },
   watch: {
     selectedShelves: function(newShelves) {
-      this.book.shelves = newShelves.map(s => {
-        return s.id;
-      });
-      let newChange = helpers.addChange("updateShelves", {
-        oldValue: this.book.shelves,
-        newValue: newShelves.map(s => {
-          return s.id;
-        }),
-        duration: 0
-      });
-      this.$store.dispatch("updateBook", {
-        book: this.book,
-        change: newChange
-      });
+      const newShelvesIds = newShelves.map(s => s.id);
+      if (newShelvesIds !== this.book.shelves) {
+        console.log("Book shelves change detected");
+        let newChange = helpers.addChange("updateShelves", {
+          oldValue: this.book.shelves,
+          newValue: newShelvesIds,
+          duration: 0
+        });
+        this.$store.dispatch("updateBook", {
+          book: this.book,
+          change: newChange
+        });
+      }
     },
     finishedDate: function(date) {
       this.book.finished = new Date(date);

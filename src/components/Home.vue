@@ -1,13 +1,12 @@
 <template>
   <section id="home" class="section-with-margin">
-    <Shelf v-if="inProgress.name" :shelf="inProgress" />
     <Shelf v-for="(shelf, i) in sortedShelves" :key="i" :shelf="shelf" />
   </section>
 </template>
 
 <script>
 import { mapGetters } from "vuex";
-import Shelf from "./Shelf.vue";
+import Shelf from "./Shelf/Shelf.vue";
 
 import shelf from "../helpers";
 
@@ -35,10 +34,13 @@ export default {
     sortedShelves: function() {
       if (this.shelves) {
         const allShelves = this.shelves;
-        const filteredShelves = allShelves.filter(s => {
+        let filteredShelves = allShelves.filter(s => {
           return this.books.find(b => {
             return b.shelves.includes(s.id);
           });
+        });
+        filteredShelves.sort((a, b) => {
+          return a.inProgressShelf ? -1 : b.inProgressShelf ? 1 : 0;
         });
         return filteredShelves;
       } else {
