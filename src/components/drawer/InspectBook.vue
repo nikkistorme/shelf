@@ -387,13 +387,16 @@ export default {
   watch: {
     selectedShelves: function(newShelves) {
       const newShelvesIds = newShelves.map(s => s.id);
-      if (newShelvesIds !== this.book.shelves) {
+      // eslint-disable-next-line prettier/prettier
+      const shelfUnchanged = newShelvesIds.sort().join(",") === this.book.shelves.sort().join(",");
+      if (!shelfUnchanged) {
         console.log("Book shelves change detected");
         let newChange = helpers.addChange("updateShelves", {
           oldValue: this.book.shelves,
           newValue: newShelvesIds,
           duration: 0
         });
+        this.book.shelves = newShelvesIds;
         this.$store.dispatch("updateBook", {
           book: this.book,
           change: newChange
