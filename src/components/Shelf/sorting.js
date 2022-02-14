@@ -51,10 +51,8 @@ sortOptions.sortByDateAddedAscending = (a, b) => {
 sortOptions.sortByDateStartedDescending = (a, b) => {
   // eslint-disable-next-line prettier/prettier
   let aDateStarted = a.changes?.find(c => c.action === "startReading")?.payload.timestamp;
-  console.log("🚀 ~ file: sorting.js ~ line 34 ~ aDateStarted", aDateStarted);
   // eslint-disable-next-line prettier/prettier
   let bDateStarted = b.changes?.find(c => c.action === "startReading")?.payload.timestamp;
-  console.log("🚀 ~ file: sorting.js ~ line 37 ~ bDateStarted", bDateStarted);
   if (!aDateStarted) {
     aDateStarted = 0;
   }
