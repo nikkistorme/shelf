@@ -21,62 +21,70 @@
         label="name"
         track-by="id"
       />
-      <div class="inspect_book_row progress_row" v-if="book.inProgress">
+      <div
+        class="inspect_book_row"
+        v-if="book.inProgress && !updateProgressMode"
+      >
         <div class="tracker">
           <ProgressCircle :percent="percentComplete" />
-          <p v-if="!updateProgressMode">
-            {{ book.readPages }} / {{ book.totalPages }}
-          </p>
-          <form
-            class="update_progress_input"
-            v-if="updateProgressMode"
-            v-on:submit.prevent="updateProgress(book)"
-          >
-            <p>From page</p>
-            <input
-              v-model="startingPage"
-              class="input"
-              type="number"
-              pattern="\d*"
-              :max="book.totalPages"
-            />
-            <p>to</p>
-            <input
-              v-model="newPage"
-              class="input"
-              type="number"
-              pattern="\d*"
-              :max="book.totalPages"
-            />
-            <p>in</p>
-            <input
-              v-model="sessionDuration"
-              class="input"
-              type="number"
-              pattern="\d*"
-            />
-            <p>minutes</p>
-            <div class="update_progress_buttons" v-if="updateProgressMode">
-              <button
-                type="submit"
-                class="black_button"
-                :disabled="disableProgressUpdate"
-              >
-                Update
-              </button>
-              <button class="green_button" @click="finishReading()">
-                Finish
-              </button>
-            </div>
-          </form>
+          <p>{{ book.readPages }} / {{ book.totalPages }}</p>
         </div>
         <button
           class="black_button"
-          @click="startUpdateProgressMode()"
+          @click="toggleUpdateProgressMode"
           v-if="!updateProgressMode"
         >
           Update Progress
         </button>
+      </div>
+      <div class="inspect_book_row progress_row">
+        <form
+          class="update_progress_input"
+          v-if="updateProgressMode"
+          v-on:submit.prevent="updateProgress(book)"
+        >
+          <div class="update_progress_row">
+            <p class="session_item">From page</p>
+            <input
+              v-model="startingPage"
+              class="input session_item"
+              type="number"
+              pattern="\d*"
+              :max="book.totalPages"
+            />
+            <p class="session_item">to</p>
+            <input
+              v-model="newPage"
+              class="input session_item"
+              type="number"
+              pattern="\d*"
+              :max="book.totalPages"
+            />
+            <p class="session_item">in</p>
+            <input
+              v-model="sessionDuration"
+              class="input session_item"
+              type="number"
+              pattern="\d*"
+            />
+            <p class="session_item">minutes</p>
+          </div>
+          <div class="update_progress_row" v-if="updateProgressMode">
+            <button class="red_button" @click="toggleUpdateProgressMode">
+              Cancel
+            </button>
+            <button
+              type="submit"
+              class="black_button"
+              :disabled="disableProgressUpdate"
+            >
+              Update
+            </button>
+            <button class="green_button" @click="finishReading()">
+              Finish
+            </button>
+          </div>
+        </form>
       </div>
       <div class="inspect_book_row" v-if="currentlyReading && remainingTime()">
         <p class="inspect_book_row_remaining_time">{{ remainingTime() }}</p>
@@ -311,10 +319,14 @@ export default {
     formatTimestamp(timestamp) {
       return helpers.formatTimestamp(timestamp);
     },
-    startUpdateProgressMode() {
-      this.startingPage = this.book.readPages;
-      this.newPage = this.book.readPages;
-      this.updateProgressMode = true;
+    toggleUpdateProgressMode() {
+      if (this.updateProgressMode) {
+        this.updateProgressMode = false;
+      } else {
+        this.startingPage = this.book.readPages;
+        this.newPage = this.book.readPages;
+        this.updateProgressMode = true;
+      }
     },
     editBook() {
       const fullDate = new Date(this.book.finished);
@@ -482,27 +494,28 @@ export default {
     object-position: top;
   }
 }
-.progress_row {
-  .tracker {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-  }
-}
-.update_progress_input {
+.tracker {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
+}
+.update_progress_input {
   flex: 1;
   input {
     margin: 0;
   }
 }
-.update_progress_buttons {
+.update_progress_row {
   display: flex;
-  justify-content: flex-end;
+  align-items: center;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+  .session_item {
+    margin-right: 10px;
+  }
   button {
-    width: 67px;
+    flex: 1;
   }
 }
 .finished_icon {
