@@ -60,7 +60,7 @@
               <button
                 type="submit"
                 class="black_button"
-                :disabled="newPage < startingPage"
+                :disabled="disableProgressUpdate"
               >
                 Update
               </button>
@@ -142,7 +142,7 @@
         />
         <label for="total-pages">total pages</label>
       </div>
-      <div class="page_input full_width">
+      <!-- <div class="page_input full_width">
         <input
           name="pages-read"
           v-model="book.readPages"
@@ -152,7 +152,7 @@
           placeholder="#"
         />
         <label for="pages-read">pages read</label>
-      </div>
+      </div> -->
       <div class="full_width" v-if="book.readPages >= book.totalPages">
         <label for="finished-date">Finished on</label>
         <input
@@ -246,11 +246,19 @@ export default {
       } else {
         return false;
       }
+    },
+    disableProgressUpdate: function() {
+      const end = parseInt(this.startingPage);
+      const current = parseInt(this.newPage);
+      return current > end ? false : true;
     }
   },
   methods: {
     test() {
       console.log(this.book.changes);
+    },
+    logToConsole: function() {
+      console.log(this.newPage);
     },
     remainingTime() {
       const pagesLeft = this.book.totalPages - this.book.readPages;
