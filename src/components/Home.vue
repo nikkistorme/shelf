@@ -1,6 +1,8 @@
 <template>
   <section id="home" class="section-with-margin">
-    <Shelf v-for="(shelf, i) in sortedShelves" :key="i" :shelf="shelf" />
+    <div class="home-shelves">
+      <Shelf v-for="(shelf, i) in sortedShelves" :key="i" :shelf="shelf" />
+    </div>
   </section>
 </template>
 
@@ -62,5 +64,13 @@ section {
 #home h2 {
   margin-bottom: 1em;
   text-decoration: underline;
+}
+.home-shelves {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  @media (min-width: 1025px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-column-gap: 4vw;
+  }
 }
 </style>
