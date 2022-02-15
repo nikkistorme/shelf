@@ -182,20 +182,22 @@ const fetchUserShelves = ({ commit, state }) => {
   });
 };
 
-const addBookToShelf = ({ commit, dispatch }, payload) => {
+const updateShelfSort = ({ commit }, payload) => {
   return new Promise((resolve, reject) => {
-    console.log("Begin addBookToShelf");
+    console.log("Begin updateShelfSort");
+    commit("setStatus", "loading");
     fb.shelvesCollection
       .doc(payload.id)
-      .update({ books: payload.books })
+      .update({
+        sort: payload.sort
+      })
       .then(() => {
-        console.log("addBookToShelf success");
+        console.log("updateShelfSort success");
         commit("setStatus", "success");
-        dispatch("fetchUserShelves");
         resolve();
       })
       .catch(error => {
-        console.log("addBookToShelf failure");
+        console.log("updateShelfSort failure");
         console.log("error", error);
         commit("setStatus", error.message);
         reject();
@@ -229,32 +231,6 @@ const fetchUserBooks = ({ commit, state }) => {
   });
 };
 
-// const createBookAndAddToShelf = ({ commit, dispatch, state }, payload) => {
-//   return new Promise((resolve, reject) => {
-//     console.log("Begin createBookAndAddToShelf");
-//     commit("setStatus", "loading");
-//     const newShelf = state.shelves.find(s => s.id === payload.shelf);
-//     fb.booksCollection.add(payload.book).then(newBookRef => {
-//       newShelf.books.push(newBookRef.id);
-//       fb.shelvesCollection
-//         .doc(payload.shelf)
-//         .update({
-//           books: newShelf.books
-//         })
-//         .then(() => {
-//           dispatch("fetchUser");
-//           commit("setStatus", "success");
-//           resolve();
-//         })
-//         .catch(error => {
-//           console.log("error", error);
-//           commit("setStatus", error.message);
-//           reject();
-//         });
-//     });
-//   });
-// };
-
 const addBook = ({ commit, dispatch, state }, payload) => {
   return new Promise((resolve, reject) => {
     console.log("Begin addBook");
@@ -284,6 +260,9 @@ const updateBook = ({ commit, dispatch }, payload) => {
   return new Promise((resolve, reject) => {
     console.log("Begin updateBook");
     payload.book.changes.unshift(payload.change);
+    payload.book.changes.sort((a, b) => {
+      return a.payload.timestamp > b.payload.timestamp ? -1 : 1;
+    });
     fb.booksCollection
       .doc(payload.book.id)
       .set(payload.book)
@@ -331,6 +310,9 @@ const updatePage = ({ commit, dispatch }, payload) => {
     } else {
       payload.book.changes = [payload.change];
     }
+    payload.book.changes.sort((a, b) => {
+      return a.payload.timestamp > b.payload.timestamp ? -1 : 1;
+    });
     fb.booksCollection
       .doc(payload.book.id)
       .update({
@@ -359,6 +341,9 @@ const startReading = ({ commit, dispatch }, payload) => {
       payload.book.changes = [];
     }
     payload.book.changes.unshift(payload.change);
+    payload.book.changes.sort((a, b) => {
+      return a.payload.timestamp > b.payload.timestamp ? -1 : 1;
+    });
     fb.booksCollection
       .doc(payload.book.id)
       .update({
@@ -391,6 +376,9 @@ const finishReading = ({ commit, dispatch }, payload) => {
       payload.book.changes = [];
     }
     payload.book.changes.unshift(payload.change);
+    payload.book.changes.sort((a, b) => {
+      return a.payload.timestamp > b.payload.timestamp ? -1 : 1;
+    });
     fb.booksCollection
       .doc(payload.book.id)
       .update({
@@ -424,9 +412,8 @@ export default {
   getUserShelvesBooks,
   updateUser,
   fetchUserShelves,
-  addBookToShelf,
+  updateShelfSort,
   fetchUserBooks,
-  // createBookAndAddToShelf,
   addBook,
   updateBook,
   deleteBook,
