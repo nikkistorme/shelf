@@ -211,7 +211,8 @@ export default {
   computed: {
     ...mapGetters(["shelves", "books", "getBookById"]),
     book: function() {
-      return this.getBookById(this.bookId);
+      let updatedBook = this.getBookById(this.bookId);
+      return updatedBook;
     },
     percentComplete: function() {
       if (this.book.totalPages && this.book.readPages) {

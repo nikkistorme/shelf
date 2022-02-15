@@ -9,11 +9,17 @@
         <select
           v-model="shelf.sort.method"
           name="shelfSort"
-          @change="changeSortMethod(shelf.sort.method)"
+          @change="changeSortMethod"
         >
           <option value="dateAdded">Date Added</option>
           <option value="dateStarted" v-if="shelf.inProgressShelf"
             >Date Started</option
+          >
+          <option value="percentComplete" v-if="shelf.inProgressShelf"
+            >Progress</option
+          >
+          <option value="lastUpdatedProgress" v-if="shelf.inProgressShelf"
+            >Last Updated Progress</option
           >
           <option value="dateAddedToShelf" v-if="!shelf.inProgressShelf"
             >Date Added To Shelf</option
@@ -70,11 +76,12 @@ export default {
     logToConsole: function() {
       console.log(this.shelf);
     },
-    changeSortMethod: function(newMethod) {
-      console.log(newMethod);
+    changeSortMethod: function() {
+      this.$store.dispatch("updateShelfSort", this.shelf);
     },
     changeSortDirection: function() {
       this.shelf.sort.descending = !this.shelf.sort.descending;
+      this.$store.dispatch("updateShelfSort", this.shelf);
     }
   }
 };
@@ -108,13 +115,23 @@ export default {
   width: 100%;
   padding: 0 10px;
   background: white;
-  box-shadow: black 0px 2px 5px -2px;
+  box-shadow: gray 5px 5px 10px;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
 }
 .shelf-sort {
   display: flex;
   select {
     border: none;
+    margin-right: 5px;
     background: none;
+    text-align: right;
+  }
+  svg {
+    font-size: 20px;
+  }
+  .fa-sort-up {
+    align-self: flex-end;
   }
 }
 </style>
