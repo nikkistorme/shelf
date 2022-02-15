@@ -56,18 +56,23 @@ export default {
 
 <style lang="scss">
 .drawer {
-  height: 100%;
-  width: 0;
   position: fixed;
-  z-index: 10;
   top: 0;
+  left: -600px;
+  height: 100%;
+  width: 100%;
+  max-width: 600px;
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
   background-color: #fff;
   overflow-x: hidden;
-  transition: width 0.5s;
+  z-index: 10;
+  transition: left 0.5s ease;
+  box-shadow: gray 0px 0px 40px;
 }
 .open {
-  transition: all 0.5s;
-  width: 100%;
+  /* transition: all 0.5s; */
+  left: 0;
   .top_level_info {
     opacity: 1;
   }
