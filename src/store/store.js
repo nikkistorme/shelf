@@ -1,27 +1,30 @@
-import Vue from "vue";
-import Vuex from "vuex";
+import { createStore } from "vuex";
 
 import getters from "./getters";
 import mutations from "./mutations";
-import actions from "./actions";
+import actions from "./actions/actions";
 
-Vue.use(Vuex);
-
-export const store = new Vuex.Store({
+export default createStore({
   state: {
+    user: { uid: "" },
+    userProfile: {},
     books: [],
-    currentUser: {},
-    drawer: {
-      content: {},
-      open: false,
-      type: ""
-    },
     shelves: [],
-    showNav: false,
-    status: "",
-    userProfile: {}
+    detailedBook: "",
+    loading: {
+      user: false,
+      books: false,
+      shelves: false,
+    },
+    open: {
+      modal: false,
+      profileDropdown: false,
+      bookDetails: false,
+      updateProgress: false,
+      updateGoal: false,
+    },
   },
   getters,
   mutations,
-  actions
+  actions,
 });

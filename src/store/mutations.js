@@ -1,55 +1,75 @@
-import Vue from "vue";
-
-const setUserBooks = (state, payload) => {
-  state.books = payload;
+const setUser = (state, user) => {
+  state.user = user;
 };
 
-const setCurrentUser = (state, payload) => {
-  state.currentUser = payload;
+const setUserLoading = (state, loading) => {
+  state.loading.user = loading;
 };
 
-const setUserProfile = (state, payload) => {
-  state.userProfile = payload;
+const setUserProfile = (state, profile) => {
+  state.userProfile = profile;
 };
 
-const removeUser = state => {
-  state.currentUser = null;
+const setBooks = (state, books) => {
+  state.books = books;
 };
 
-const setStatus = (state, payload) => {
-  state.status = payload;
+const setDetailedBook = (state, book) => {
+  state.detailedBook = book;
 };
 
-const setUserShelves = (state, payload) => {
-  state.shelves = payload;
+const addShelf = (state, shelf) => {
+  state.shelves.push(shelf);
 };
 
-const changeNav = state => {
-  state.showNav = !state.showNav;
+const setShelves = (state, shelves) => {
+  state.shelves = shelves;
 };
 
-const setDrawer = (state, payload) => {
-  Vue.set(state.drawer, "open", true);
-  Vue.set(state.drawer, "content", payload.content);
-  Vue.set(state.drawer, "type", payload.type);
+const setShelf = (state, shelf) => {
+  state.shelves = state.shelves.filter((s) => s.id !== shelf.id);
+  state.shelves.push(shelf);
 };
 
-const closeDrawer = state => {
-  Vue.set(state.drawer, "open", false);
-  setTimeout(() => {
-    Vue.set(state.drawer, "content", {});
-    Vue.set(state.drawer, "type", "");
-  }, 500);
+const toggleModal = (state) => {
+  state.open.modal = !state.open.modal;
+};
+
+const setModal = (state, boolean) => {
+  state.open.modal = boolean;
+};
+
+const closeAllModals = (state) => {
+  Object.keys(state.open).forEach((key) => {
+    state.open[key] = false;
+  });
+};
+
+const toggleProfileDropdown = (state) => {
+  state.open.profileDropdown = !state.open.profileDropdown;
+};
+
+const toggleUpdateProgress = (state) => {
+  state.open.updateProgress = !state.open.updateProgress;
+};
+
+const toggleUpdateGoal = (state) => {
+  state.open.updateGoal = !state.open.updateGoal;
 };
 
 export default {
-  setUserBooks,
-  setCurrentUser,
+  setUser,
+  setUserLoading,
   setUserProfile,
-  removeUser,
-  setStatus,
-  setUserShelves,
-  changeNav,
-  setDrawer,
-  closeDrawer
+  setBooks,
+  setDetailedBook,
+  addShelf,
+  setShelves,
+  setShelf,
+  toggleModal,
+  closeAllModals,
+  setModal,
+  toggleProfileDropdown,
+  toggleUpdateProgress,
+  toggleUpdateGoal,
 };

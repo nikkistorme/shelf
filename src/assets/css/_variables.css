@@ -1,0 +1,32 @@
+:root {
+  --font-size-root: 1.6rem;
+  --font-size-1: var(--font-size-root);
+  --font-size-2: calc(var(--font-size-1) * 1.618);
+  --font-size-3: calc(var(--font-size-2) * 1.618);
+  --font-size-4: calc(var(--font-size-3) * 1.618);
+  --font-size-5: calc(var(--font-size-4) * 1.618);
+
+  --line-height-root: calc(var(--font-size-root) * 1.618);
+
+  --spacing-root: 16px;
+  --spacing-size-1: var(--spacing-root);
+  --spacing-size-2: calc(var(--spacing-size-1) * 1.618);
+  --spacing-size-3: calc(var(--spacing-size-2) * 1.618);
+  --spacing-size-4: calc(var(--spacing-size-3) * 1.618);
+
+  --color-blue: #327fb7;
+  --color-green: #71c591;
+  --color-red: #e25f55;
+  --color-grey: #ded9e2;
+
+  --box-shadow-1: 0 0 10px rgba(0, 0, 0, 0.16);
+  --box-shadow-2: 0 0 15px rgba(0, 0, 0, 0.16);
+
+  --border-radius-1: 10px;
+  --border-radius-2: 15px;
+  --border-radius-3: 20px;
+
+  --default-input-padding: calc(var(--spacing-size-1) / 2) var(--spacing-root);
+  --default-input-border: 2px solid var(--color-grey);
+  --default-input-border-radius: var(--border-radius-1);
+}

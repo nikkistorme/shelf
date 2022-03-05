@@ -1,10 +1,13 @@
 .DS_Store
 node_modules
-/dist
+dist
+dist-ssr
 
 # local env files
+.env
 .env.local
 .env.*.local
+.env.old
 
 # Log files
 npm-debug.log*
@@ -22,4 +25,3 @@ pnpm-debug.log*
 *.sw?
 
 .vercel
-.env

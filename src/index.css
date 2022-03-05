@@ -1,0 +1,38 @@
+@import url(./assets/css/_variables.css);
+@import "./assets/css/utilities.css";
+@import "./assets/css/typography.css";
+@import "./assets/css/ui.css";
+
+* {
+  box-sizing: border-box;
+  -webkit-appearance: none;
+}
+
+html {
+  font-size: 10px;
+}
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+}
+
+#app {
+  margin-bottom: calc(var(--spacing-size-3) + 60px);
+}
+
+ul {
+  padding: 0;
+  margin: 0;
+}
+
+li {
+  list-style-type: none;
+}
+
+hr {
+  width: 100%;
+  margin: var(--spacing-size-1) 0;
+  border: none;
+  border-top: 2px solid var(--color-grey);
+}

@@ -1,42 +1,35 @@
-import Vue from "vue";
-import VueRouter from "vue-router";
-import firebase from "firebase";
+import { createRouter, createWebHistory } from "vue-router";
+import fb from "../firebase";
 
-import { store } from "../store/store";
+import LoginPage from "../views/LoginPage.vue";
+import HomePage from "../views/HomePage.vue";
+import LibraryPage from "../views/LibraryPage.vue";
+import SocialPage from "../views/SocialPage.vue";
+import AccountPage from "../views/AccountPage.vue";
 
-import Home from "../components/Home.vue";
-import Shelves from "../components/Shelves.vue";
-import AddBook from "../components/AddBook.vue";
-import Account from "../components/Account.vue";
-import Login from "../components/Login.vue";
+const routes = [
+  { path: "/", component: LoginPage },
+  { path: "/home", component: HomePage, meta: { requiresAuth: true } },
+  { path: "/library", component: LibraryPage, meta: { requiresAuth: true } },
+  { path: "/social", component: SocialPage, meta: { requiresAuth: true } },
+  { path: "/account", component: AccountPage, meta: { requiresAuth: true } },
+  { path: "/*", redirect: "/home" },
+];
 
-Vue.use(VueRouter);
-
-const router = new VueRouter({
-  mode: "history",
-  routes: [
-    { path: "*", redirect: "/home" },
-    { path: "/home", component: Home, meta: { requiresAuth: true } },
-    { path: "/shelves", component: Shelves, meta: { requiresAuth: true } },
-    { path: "/add-book", component: AddBook, meta: { requiresAuth: true } },
-    { path: "/account", component: Account, meta: { requiresAuth: true } },
-    { path: "/login", component: Login }
-  ]
+const router = createRouter({
+  history: createWebHistory(),
+  routes,
 });
 
 router.beforeEach((to, from, next) => {
-  const requiresAuth = to.matched.some(x => x.meta.requiresAuth);
-  const currentUser = firebase.auth().currentUser;
+  const requiresAuth = to.matched.some((x) => x.meta.requiresAuth);
+  const currentUser = fb.auth.currentUser;
 
-  if (to.path === "/login" && currentUser) {
+  if (to.path === "/" && currentUser) {
     next("/home");
-  } else if (requiresAuth && !currentUser && to.path !== "/login") {
-    next("/login");
-  } else if (requiresAuth && currentUser) {
-    store.commit("closeDrawer");
-    next();
+  } else if (requiresAuth && !currentUser && to.path !== "/") {
+    next("/");
   } else {
-    store.commit("closeDrawer");
     next();
   }
 });
