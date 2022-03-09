@@ -1,9 +1,9 @@
 <template>
   <header
     v-if="isAuthenticated"
-    class="site-header d-flex al-center jc-space-between"
+    class="site-header d-flex ai-center jc-space-between"
   >
-    <div class="left d-flex al-center">
+    <div class="left d-flex ai-center">
       <HeaderLogo />
       <HeaderNavigation />
       <HeaderSearch />

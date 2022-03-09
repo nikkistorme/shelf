@@ -1,5 +1,5 @@
 <template>
-  <nav class="header-nav d-flex al-center mr-4">
+  <nav class="header-nav d-flex ai-center mr-4">
     <ul class="nav-list d-flex">
       <li class="nav-list-item"><router-link to="/home">Home</router-link></li>
       <li class="nav-list-item">

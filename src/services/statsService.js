@@ -30,10 +30,7 @@ const groupUpdatesByDate = (updates) => {
   let groupedUpdates = {};
   updates.forEach((update) => {
     const date = new Date(update.payload.timestamp);
-    const month = date.getMonth() + 1;
-    const day = date.getDate();
-    const year = date.getFullYear();
-    const dateString = `${month}/${day}/${year}`;
+    const dateString = getFormattedDate(date);
     if (groupedUpdates[dateString]) {
       groupedUpdates[dateString].push(update);
     } else {
@@ -63,6 +60,51 @@ const pagesReadToday = (books) => {
     }
   });
   return pages;
+};
+
+const isDateInThisWeek = (timestamp) => {
+  const today = new Date();
+  const lastSevenDays = new Date();
+  lastSevenDays.setDate(lastSevenDays.getDate() - 7);
+  return timestamp > lastSevenDays.valueOf() && timestamp <= today.valueOf();
+};
+
+const pagesReadThisWeek = (books) => {
+  let pages = 0;
+  books.forEach((book) => {
+    if (book.changes?.length) {
+      const weekChanges = book.changes.filter(
+        (change) =>
+          change.action === "updatePage" &&
+          isDateInThisWeek(change.payload.timestamp)
+      );
+      if (weekChanges.length) {
+        console.log(`${book.title} updates this week`, weekChanges);
+      }
+      weekChanges.forEach((change) => {
+        console.log(
+          "🚀 ~ change",
+          change.payload.newValue - change.payload.oldValue
+        );
+        pages += change.payload.newValue - change.payload.oldValue;
+      });
+    }
+  });
+  return pages;
+};
+
+const minutesPerPage = (changes) => {
+  let pagesPerMinData = [];
+  changesWithDuration(changes).forEach((change) => {
+    const pagesRead = change.payload.newValue - change.payload.oldValue;
+    pagesPerMinData.push(pagesRead / change.payload.duration);
+  });
+  if (pagesPerMinData.length > 0) {
+    const averageDuration =
+      pagesPerMinData.reduce((a, b) => a + b) / pagesPerMinData.length;
+    const minPerPage = Math.round((1 / averageDuration) * 10) / 10;
+    return minPerPage;
+  } else return 0;
 };
 
 const timeRemaining = (book) => {
@@ -119,10 +161,43 @@ const overallPace = (book) => {
   };
 };
 
+const goalPace = (book) => {
+  const pagesRemaining = getPagesRemaining(book);
+  const today = new Date();
+  const goalDate = new Date(book.goal.goalDate);
+  const diffTime = Math.abs(goalDate - today);
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  const pace = Math.ceil(pagesRemaining / diffDays);
+  const minPerPage = minutesPerPage(book.changes);
+  const minsPerDay = Math.ceil(minPerPage * pace);
+  const hoursPerDay = Math.floor(minsPerDay / 60);
+  const leftoverMinsPerDay = minsPerDay - hoursPerDay * 60;
+  return {
+    pagesPerDay: pace,
+    minsPerDay: minsPerDay,
+    hoursPerDay: hoursPerDay,
+    leftoverMinsPerDay: leftoverMinsPerDay,
+  };
+};
+
+const getBooksWithGoals = (books) => {
+  return books.filter((book) => book.goal && book.goal?.goalDate > Date.now());
+};
+
+const getFormattedDate = (timestamp) => {
+  const date = new Date(timestamp);
+  return date.toLocaleDateString();
+};
+
 export default {
   changesWithDuration,
   groupUpdatesByDate,
   pagesReadToday,
+  pagesReadThisWeek,
   timeRemaining,
   overallPace,
+  getProgressUpdates,
+  goalPace,
+  getBooksWithGoals,
+  getFormattedDate,
 };

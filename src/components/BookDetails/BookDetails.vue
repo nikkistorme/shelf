@@ -1,7 +1,7 @@
 <template>
   <div
     v-if="detailedBook.id"
-    class="detailed-book d-flex flex-column al-center"
+    class="detailed-book d-flex flex-column ai-center"
   >
     <div class="d-flex w-100">
       <div class="detailed-book__cover d-flex jc-center mr-2 mb-3">
@@ -17,19 +17,31 @@
     </div>
     <BookDetailsStats />
     <HistoryCard />
+    <div class="d-flex jc-end w-100">
+      <InlineButton
+        text="Remove book from library"
+        color="red"
+        underline
+        class="mt-1"
+        @click="removeBook"
+      />
+    </div>
   </div>
 </template>
 
 <script>
 import { mapGetters } from "vuex";
+import { mapActions } from "vuex";
 
 import BookDetailsStats from "./BookDetailsStats.vue";
 import HistoryCard from "./HistoryCard.vue";
+import InlineButton from "../buttons/InlineButton.vue";
 
 export default {
   components: {
     BookDetailsStats,
     HistoryCard,
+    InlineButton,
   },
   props: {
     bookId: {
@@ -39,6 +51,13 @@ export default {
   },
   computed: {
     ...mapGetters(["detailedBook"]),
+  },
+  methods: {
+    ...mapActions(["removeBook"]),
+    removeBook() {
+      console.log("remove book");
+      // this.removeBook(this.detailedBook.id);
+    },
   },
 };
 </script>

@@ -17,7 +17,9 @@
             <div>
               <p class="history-card__date" @click="expandDate(change)">
                 <span>{{ change.label }}</span>
-                <span>({{ pagesReadInGroupedUpdate(change) }}p)</span>
+                <span v-if="pagesReadInGroupedUpdate(change)">
+                  ({{ pagesReadInGroupedUpdate(change) }}p)</span
+                >
               </p>
               <ul
                 class="history-card__times"
@@ -29,9 +31,9 @@
                 <li
                   v-for="(update, j) in groupedUpdates[change.label]"
                   :key="j"
-                  class="history-card__time d-flex al-center"
+                  class="history-card__time d-flex ai-center"
                 >
-                  <div class="d-flex al-center">
+                  <div class="d-flex ai-center">
                     <p>
                       <span>{{ timeFromStamp(update.payload.timestamp) }}</span>
                       <span> ~ </span>
@@ -119,12 +121,25 @@ export default {
     historyMessage(update) {
       let duration = "";
       switch (update.action) {
+        case "addBook":
+          return "Added to library";
+        case "startReading":
+          return `Started reading`;
         case "updatePage":
           if (update.payload.duration > 0) {
             duration = ` in ${update.payload.duration}m`;
           }
           return `Page ${update.payload.oldValue}-${update.payload.newValue}${duration}`;
+        case "setGoal":
+          return `Set goal to ${
+            update.fields.goal.targetPage === this.detailedBook.totalPages
+              ? "finish"
+              : `page ${update.fields.goal.targetPage}`
+          } by ${statsService.getFormattedDate(update.fields.goal.goalDate)}`;
+        case "finishReading":
+          return `Finished reading`;
         default:
+          console.log("🚀 ~ update.action", update.action);
           return "Updated";
       }
     },
@@ -135,11 +150,14 @@ export default {
       );
     },
     pagesReadInGroupedUpdate(change) {
-      const targetDayUpdates = this.groupedUpdates[change.label];
-      const lastPage = targetDayUpdates[0].payload.newValue;
-      const earliestPage =
-        targetDayUpdates[targetDayUpdates.length - 1].payload.oldValue;
-      return lastPage - earliestPage;
+      let targetDayUpdates = this.groupedUpdates[change.label];
+      targetDayUpdates = statsService.getProgressUpdates(targetDayUpdates);
+      if (targetDayUpdates?.length > 0) {
+        const lastPage = targetDayUpdates[0].payload.newValue;
+        const earliestPage =
+          targetDayUpdates[targetDayUpdates.length - 1].payload.oldValue;
+        return lastPage - earliestPage;
+      } else return 0;
     },
   },
 };

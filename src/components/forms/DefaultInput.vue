@@ -9,6 +9,8 @@
       :type="type"
       :placeholder="placeholder"
       :value="modelValue"
+      :disabled="disabled"
+      :max="max"
       @input="update"
     />
   </div>
@@ -23,11 +25,20 @@ export default {
     placeholder: { type: String, default: "" },
     modelValue: { type: String, default: "" },
     type: { type: String, default: "text" },
+    disabled: { type: Boolean, default: false },
+    max: { type: Number, default: null },
   },
   emits: ["update:modelValue"],
   methods: {
     update(event) {
-      this.$emit("update:modelValue", event.target.value);
+      if (this.type === "number") {
+        if (this.max && event.target.value > this.max) {
+          event.target.value = this.max;
+        }
+        this.$emit("update:modelValue", parseInt(event.target.value));
+      } else {
+        this.$emit("update:modelValue", event.target.value);
+      }
     },
   },
 };
@@ -50,5 +61,8 @@ export default {
 }
 .default-input__input:focus {
   border-color: var(--color-blue);
+}
+.default-input__input:disabled {
+  opacity: 0.6;
 }
 </style>

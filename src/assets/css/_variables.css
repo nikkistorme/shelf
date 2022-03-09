@@ -1,5 +1,6 @@
 :root {
   --font-size-root: 1.6rem;
+  --font-size-small: 1.4rem;
   --font-size-1: var(--font-size-root);
   --font-size-2: calc(var(--font-size-1) * 1.618);
   --font-size-3: calc(var(--font-size-2) * 1.618);
@@ -15,6 +16,7 @@
   --spacing-size-4: calc(var(--spacing-size-3) * 1.618);
 
   --color-blue: #327fb7;
+  --color-blue-light: #5c9cec;
   --color-green: #71c591;
   --color-red: #e25f55;
   --color-grey: #ded9e2;

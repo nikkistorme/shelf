@@ -1,11 +1,11 @@
 <template>
   <main class="login-page">
-    <div class="login-page__form-card d-flex al-center flex-column">
+    <div class="login-page__form-card d-flex ai-center flex-column">
       <h4 v-if="activeForm === 'sign-up'">Create Account</h4>
       <h4 v-if="activeForm === 'login'">Login</h4>
       <h4 v-if="activeForm === 'password-reset'">Forgot Password</h4>
       <form
-        class="login-page__form d-flex flex-column al-center w-100"
+        class="login-page__form d-flex flex-column ai-center w-100"
         @submit.prevent="submitForm"
       >
         <DefaultInput

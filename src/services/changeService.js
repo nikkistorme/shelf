@@ -1,14 +1,22 @@
 const changeSchema = {
   action: "",
+  timestamp: 0, // Always store UTC
   payload: {
     timestamp: "", // Always store UTC
     oldValue: null,
     newValue: null,
   },
   fields: {
-    readPages: 0,
-    progressUpdateStartType: "",
-    progressUpdateEndType: "",
+    readPages: null,
+    progressUpdateStartType: null,
+    progressUpdateEndType: null,
+    goal: {
+      startDate: null,
+      goalDate: null,
+      targetPage: null,
+    },
+    finishedDate: null,
+    inProgress: null,
   },
 };
 
@@ -24,9 +32,10 @@ const makeChange = (action, change) => {
   return newChange;
 };
 
-const makeChangeFromForm = (action, form) => {
+const makeChangeFromForm = (action, form, oldValue = null) => {
   let newChange = Object.assign({}, changeSchema);
   newChange.action = action;
+  newChange.timestamp = Date.now();
   newChange.payload.timestamp = Date.now();
   switch (action) {
     case "updatePage":
@@ -39,6 +48,29 @@ const makeChangeFromForm = (action, form) => {
       newChange.fields.readPages = form.endAt;
       newChange.fields.progressUpdateStartType = form.startType;
       newChange.fields.progressUpdateEndType = form.endType;
+      break;
+    case "setGoal":
+      newChange.payload = {
+        timestamp: Date.now(),
+        oldValue: oldValue,
+        newValue: form,
+      };
+      newChange.fields.goal.startDate = Date.now();
+      newChange.fields.goal.goalDate = form.goalDate;
+      newChange.fields.goal.targetPage = form.targetPage;
+      break;
+    case "finishReading":
+      newChange.payload = {
+        timestamp: Date.now(),
+        oldValue: oldValue,
+        newValue: Date.now(),
+      };
+      newChange.fields.finishedDate = Date.now();
+      newChange.fields.readPages = form.endAt;
+      newChange.fields.inProgress = false;
+      newChange.fields.goal.startDate = 0;
+      newChange.fields.goal.goalDate = 0;
+      newChange.fields.goal.targetPage = 0;
       break;
     default:
       break;

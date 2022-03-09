@@ -9,7 +9,7 @@
     </div>
     <div class="home-shelf__floor d-flex jc-space-between w-100">
       <h5 class="home-shelf__name" @click="test">{{ shelf.name }}</h5>
-      <div v-if="shelf.sort" class="home-shelf__sort d-flex al-center">
+      <div v-if="shelf.sort" class="home-shelf__sort d-flex ai-center">
         <select
           :id="`shelf-sort__${shelf.id}`"
           v-model="shelf.sort.method"
@@ -45,15 +45,18 @@ export default {
   components: { ShelvedBook, ArrowDown },
   props: {
     shelfId: { type: String, default: "" },
+    inProgress: { type: Boolean, default: false },
   },
   emits: ["update:shelf"],
   computed: {
-    ...mapGetters(["books", "getShelfById"]),
+    ...mapGetters(["books", "getShelfById", "inProgressBooks"]),
     shelf() {
       return this.getShelfById(this.shelfId);
     },
     booksOnThisShelf() {
-      if (this?.shelf?.id && this.books.length) {
+      if (this.inProgress) {
+        return this.inProgressBooks;
+      } else if (this?.shelf?.id && this.books.length) {
         let books = this.books.filter((book) =>
           book.shelves.includes(this.shelf.id)
         );

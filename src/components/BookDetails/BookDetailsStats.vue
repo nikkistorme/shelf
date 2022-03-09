@@ -5,10 +5,18 @@
   >
     <div class="split-card-top w-100 d-flex flex-column">
       <DetailedBookProgress />
+      <hr
+        class="detailed-book__stats-divide"
+        :class="{ hidden: updateProgressOpen }"
+      />
     </div>
     <UpdateProgress />
-    <div class="split-card-middle w-100 d-flex">
+    <div class="split-card-middle w-100 d-flex flex-column">
       <DetailedBookGoals />
+      <hr
+        class="detailed-book__stats-divide"
+        :class="{ hidden: updateGoalOpen }"
+      />
     </div>
     <UpdateGoal />
     <div class="split-card-bottom w-100 d-flex mb-2">
@@ -43,5 +51,13 @@ export default {
 <style>
 .detailed-book__stats-text {
   margin-bottom: calc(var(--spacing-size-1) / 4);
+}
+.detailed-book__stats-divide {
+  margin: 0;
+  transition: all 0.2s 0.3s ease-in-out;
+}
+.detailed-book__stats-divide.hidden {
+  opacity: 0;
+  transition: all 0.2s ease-in-out;
 }
 </style>

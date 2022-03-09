@@ -1,5 +1,5 @@
 <template>
-  <div class="site-bottom-nav d-flex al-center">
+  <div class="site-bottom-nav d-flex ai-center">
     <nav class="w-100">
       <ul class="d-flex jc-space-around">
         <li class="nav-list-item">

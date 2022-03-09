@@ -1,0 +1,22 @@
+:root {
+  --vdp-elem-font-size: var(--font-size-1);
+  --vdp-border-radius: var(--default-input-border-radius);
+  --vdp-selected-bg-color: var(--color-green);
+  --elem-border-radius: var(--default-input-border-radius);
+}
+
+.v3dp__datepicker {
+  display: flex;
+  justify-content: center;
+}
+
+.v3dp__input_wrapper input {
+  width: 100%;
+}
+
+.v3dp__popout {
+  position: static !important;
+  display: block !important;
+  width: calc(100% - (var(--spacing-size-1) * 2)) !important;
+  width: 100% !important;
+}

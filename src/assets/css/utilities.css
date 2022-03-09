@@ -22,14 +22,19 @@
   flex-wrap: wrap;
 }
 
-.al-center {
+.ai-center {
   align-items: center;
   -webkit-align-items: center;
 }
 
-.al-end {
+.ai-end {
   align-items: flex-end;
   -webkit-align-items: flex-end;
+}
+
+.as-stretch {
+  align-self: stretch;
+  -webkit-align-self: stretch;
 }
 
 .jc-center {
@@ -50,6 +55,11 @@
 .jc-start {
   justify-content: flex-start;
   -webkit-justify-content: flex-start;
+}
+
+.jc-end {
+  justify-content: flex-end;
+  -webkit-justify-content: flex-end;
 }
 
 .p-1 {

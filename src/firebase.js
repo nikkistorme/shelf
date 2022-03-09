@@ -2,6 +2,9 @@ import firebase from "firebase/compat/app";
 import "firebase/compat/firestore";
 import "firebase/compat/auth";
 
+console.log(import.meta);
+console.log(import.meta.env);
+
 const config = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
   authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
@@ -10,9 +13,8 @@ const config = {
   storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
   messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGE_SENDER_ID,
   appId: import.meta.env.VITE_FIREBASE_APP_ID,
-  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
 };
-console.log("🚀 ~ config", config);
 firebase.initializeApp(config);
 
 const db = firebase.firestore();
@@ -29,7 +31,7 @@ const fb = {
   currentUser,
   usersCollection,
   shelvesCollection,
-  booksCollection
+  booksCollection,
 };
 
 export default fb;

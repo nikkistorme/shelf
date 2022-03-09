@@ -11,6 +11,11 @@ const getBooks = async ({ commit }) => {
   }
 };
 
+const getDetailedBook = async ({ getters, commit }, id) => {
+  const detailedBook = getters.getBookById(id);
+  commit("setDetailedBook", detailedBook);
+};
+
 const updatePage = async ({ commit }, bookAndChange) => {
   try {
     bookAndChange.book.readPages = bookAndChange.change.payload.newValue;
@@ -26,13 +31,44 @@ const updatePage = async ({ commit }, bookAndChange) => {
   commit("setDetailedBook", bookAndChange.book);
 };
 
-const getDetailedBook = async ({ getters, commit }, id) => {
-  const detailedBook = getters.getBookById(id);
-  commit("setDetailedBook", detailedBook);
+const setGoal = async ({ commit }, bookAndChange) => {
+  try {
+    bookAndChange.book.goal = bookAndChange.change.fields.goal;
+    bookAndChange.book = changeService.addChangeToBook(
+      bookAndChange.book,
+      bookAndChange.change
+    );
+    await bookService.setGoal(bookAndChange.book);
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+  commit("setDetailedBook", bookAndChange.book);
+};
+
+const finishReading = async ({ commit }, bookAndChange) => {
+  try {
+    bookAndChange.book.finishedDate = bookAndChange.change.fields.finishedDate;
+    bookAndChange.book.goal = bookAndChange.change.fields.goal;
+    bookAndChange.book.readPages = bookAndChange.change.fields.readPages;
+    bookAndChange.book.inProgress = bookAndChange.change.fields.inProgress;
+    bookAndChange.book = changeService.addChangeToBook(
+      bookAndChange.book,
+      bookAndChange.change
+    );
+    console.log("🚀 ~ bookAndChange.book", bookAndChange.book);
+    await bookService.finishReading(bookAndChange.book);
+  } catch (error) {
+    console.log("🚀 ~ error", error);
+    throw error;
+  }
+  commit("setDetailedBook", bookAndChange.book);
 };
 
 export default {
   getBooks,
   updatePage,
   getDetailedBook,
+  setGoal,
+  finishReading,
 };

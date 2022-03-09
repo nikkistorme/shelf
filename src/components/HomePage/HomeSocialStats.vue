@@ -1,5 +1,5 @@
 <template>
-  <div class="home-social card d-flex flex-column al-center w-100">
+  <div class="home-social card d-flex flex-column ai-center w-100">
     <SocialIcon />
     <p class="mt-2">
       <i

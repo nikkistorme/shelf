@@ -43,13 +43,13 @@
         <p class="update-progress__text">minutes (optional)</p>
       </div>
       <div class="mt-1 d-flex jc-space-between">
-        <InlineButton text="Finished?" color="green" underline />
-        <DefaultButton
-          type="submit"
-          text="Update"
-          flavor="tiny"
-          @click="updateProgress"
+        <InlineButton
+          text="Finished?"
+          color="green"
+          underline
+          @click="finish"
         />
+        <DefaultButton type="submit" text="Update" flavor="tiny" />
       </div>
     </form>
   </div>
@@ -58,6 +58,7 @@
 <script>
 import { mapGetters } from "vuex";
 import { mapMutations } from "vuex";
+import { mapActions } from "vuex";
 
 import changeService from "../../services/changeService.js";
 
@@ -84,6 +85,7 @@ export default {
       endAt: this.$store.getters.detailedBook.readPages,
       endType: "pages",
       duration: 0,
+      oldFinishedDate: this.$store.getters.detailedBook.finishedDate,
     };
   },
   computed: {
@@ -134,6 +136,7 @@ export default {
   },
   methods: {
     ...mapMutations(["toggleUpdateProgress"]),
+    ...mapActions(["updatePage", "finishReading"]),
     test() {
       console.log(this.$store.getters.detailedBook.readPages);
     },
@@ -150,19 +153,33 @@ export default {
       }
     },
     async updateProgress() {
-      this.convertPercentsToPages();
       if (this.updateProgressOpen) {
+        this.convertPercentsToPages();
         let newChange = changeService.makeChangeFromForm(
           "updatePage",
           this.form
         );
-        await this.$store.dispatch("updatePage", {
+        await this.updatePage({
           book: this.detailedBook,
           change: newChange,
         });
         this.toggleUpdateProgress();
         this.resetForm();
       }
+    },
+    async finish() {
+      this.toggleUpdateProgress();
+      this.endAt = this.detailedBook.totalPages;
+      let newChange = changeService.makeChangeFromForm(
+        "finishReading",
+        this.form,
+        this.oldFinishedDate
+      );
+      console.log("🚀 ~ newChange", newChange);
+      await this.finishReading({
+        book: this.detailedBook,
+        change: newChange,
+      });
     },
     resetForm() {
       this.startAt = this.detailedBook.readPages;

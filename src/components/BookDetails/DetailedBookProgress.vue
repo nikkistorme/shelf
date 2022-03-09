@@ -1,6 +1,6 @@
 <template>
-  <div class="detailed-book__progress d-flex mb-1">
-    <ProgressCircle class="mr-1" :percent="percentComplete" />
+  <div class="detailed-book__progress d-flex ai-center mb-1">
+    <ProgressCircle class="as-stretch mr-1" :percent="percentComplete" />
     <div>
       <p class="detailed-book__stats-text">
         {{ detailedBook.readPages }} / {{ detailedBook.totalPages }}

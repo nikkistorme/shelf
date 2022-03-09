@@ -1,6 +1,10 @@
 <template>
   <main class="home-page d-grid ji-center">
-    <HomeShelf v-if="inProgressShelf" :shelf-id="inProgressShelf" />
+    <HomeShelf
+      v-if="inProgressShelf"
+      :shelf-id="inProgressShelf"
+      :in-progress="true"
+    />
     <HomeGoalStats />
     <HomePredictionStats />
     <HomeSocialStats />
@@ -36,6 +40,7 @@ export default {
   grid-gap: var(--spacing-size-2);
   padding: var(--spacing-size-2) var(--spacing-size-1);
 }
+/* .home-page > * */
 @media (min-width: 768px) {
   .home-page {
     grid-template-columns: repeat(2, 1fr);

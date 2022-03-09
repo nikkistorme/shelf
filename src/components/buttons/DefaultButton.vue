@@ -25,6 +25,7 @@ export default {
 <style scoped>
 .default-button {
   height: min-content;
+  width: auto;
   padding: calc(var(--spacing-size-1) / 2) var(--spacing-size-1);
   border: 2px solid transparent;
   border-radius: var(--border-radius-2);
