@@ -2,7 +2,10 @@ import firebase from "firebase/compat/app";
 import "firebase/compat/firestore";
 import "firebase/compat/auth";
 
-console.log(process.env.VITE_FIREBASE_API_KEY);
+console.log(
+  "🚀 ~ process.env.VITE_FIREBASE_API_KEY",
+  process.env.VITE_FIREBASE_API_KEY
+);
 
 const config = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
