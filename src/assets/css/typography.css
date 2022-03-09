@@ -10,8 +10,8 @@ textarea,
 a,
 button,
 select {
-  font-size: var(--font-size-root);
-  line-height: var(--line-height-root);
+  font-size: var(--font-size-1);
+  line-height: var(--line-height-1);
   color: black;
   text-decoration: none;
 }
@@ -40,8 +40,10 @@ h3 {
 h4 {
   margin: var(--spacing-size-1) 0;
   font-size: var(--font-size-2);
+  line-height: var(--line-height-2);
 }
 
 h5 {
   font-size: var(--font-size-1);
+  line-height: var(--line-height-1);
 }

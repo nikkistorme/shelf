@@ -15,11 +15,6 @@ import SiteHeader from "./components/SiteHeader/SiteHeader.vue";
 import SiteBottomNavigation from "./components/SiteBottomNavigation.vue";
 import PageModal from "./components/PageModal.vue";
 
-console.log("eureka");
-console.log(import.meta.env);
-console.log(import.meta);
-console.log(process.env);
-
 export default {
   name: "App",
   components: {

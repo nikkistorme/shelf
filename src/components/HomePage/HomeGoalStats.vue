@@ -39,8 +39,8 @@
           <p v-else>
             On track to finish
             <strong>{{ book.title }}</strong> by
-            <strong>{{ book.author }}</strong> by your goal date
-            {{ formattedDate(book.goal.goalDate) }}
+            <strong>{{ book.author }}</strong> by
+            <span> {{ formattedDate(book.goal.goalDate) }}</span>
           </p>
         </li>
       </div>
