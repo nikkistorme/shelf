@@ -4,7 +4,6 @@ import "firebase/compat/auth";
 
 console.log(import.meta);
 console.log(import.meta.env);
-console.log(process);
 console.log(process.env);
 
 const config = {
