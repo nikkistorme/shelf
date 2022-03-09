@@ -13,6 +13,9 @@ const config = {
   measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
 };
 console.log("🚀 ~ config", config);
+console.log(import.meta.env);
+console.log(import.meta);
+console.log(process.env);
 
 firebase.initializeApp(config);
 
