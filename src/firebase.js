@@ -2,9 +2,6 @@ import firebase from "firebase/compat/app";
 import "firebase/compat/firestore";
 import "firebase/compat/auth";
 
-// console.log("🚀 ~ process.env", process.env);
-// console.log("🚀 ~ import.meta.env", import.meta.env);
-
 const config = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
   authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
@@ -16,6 +13,7 @@ const config = {
   measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
 };
 console.log("🚀 ~ config", config);
+
 firebase.initializeApp(config);
 
 const db = firebase.firestore();
