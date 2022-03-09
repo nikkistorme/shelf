@@ -4,6 +4,8 @@ import "firebase/compat/auth";
 
 console.log(import.meta);
 console.log(import.meta.env);
+console.log(process);
+console.log(process.env);
 
 const config = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
