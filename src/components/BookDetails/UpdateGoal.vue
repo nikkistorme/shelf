@@ -65,7 +65,6 @@ import InlineButton from "../buttons/InlineButton.vue";
 const setDate = (timestamp = null) => {
   if (timestamp) {
     const day = new Date(timestamp);
-    console.log("🚀 ~ day", day);
     const year = day.getFullYear();
     const month = `${day.getMonth() + 1 <= 9 ? "0" : ""}${day.getMonth() + 1}`;
     const dayString = `${day.getDate() <= 9 ? "0" : ""}${day.getDate()}`;
@@ -137,7 +136,6 @@ export default {
         this.form,
         this.oldGoal
       );
-      console.log("🚀 ~ newChange", newChange);
       await this.setGoal({
         book: this.detailedBook,
         change: newChange,

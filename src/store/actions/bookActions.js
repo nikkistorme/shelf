@@ -56,7 +56,6 @@ const finishReading = async ({ commit }, bookAndChange) => {
       bookAndChange.book,
       bookAndChange.change
     );
-    console.log("🚀 ~ bookAndChange.book", bookAndChange.book);
     await bookService.finishReading(bookAndChange.book);
   } catch (error) {
     console.log("🚀 ~ error", error);

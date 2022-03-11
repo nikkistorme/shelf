@@ -23,6 +23,7 @@ export default {
 <style scoped>
 .inline-button {
   display: inline;
+  height: min-content;
   padding: 0;
   border: none;
   background: none;

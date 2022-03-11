@@ -44,7 +44,6 @@ export default {
         const month = new Intl.DateTimeFormat("en-US", {
           month: "short",
         }).format(this.goalDate);
-        console.log("🚀 ~ month", month);
         return month;
       } else {
         return "";

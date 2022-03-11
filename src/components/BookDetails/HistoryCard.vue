@@ -112,9 +112,9 @@ export default {
           ? dateAndTime.getHours() - 12
           : dateAndTime.getHours()
       }`;
-      const minutes = `${dateAndTime.getMinutes()}${
+      const minutes = `${
         dateAndTime.getMinutes() < 10 ? "0" : ""
-      }`;
+      }${dateAndTime.getMinutes()}`;
       const period = `${dateAndTime.getHours() >= 12 ? "pm" : "am"}`;
       return `${hours}:${minutes}${period}`;
     },

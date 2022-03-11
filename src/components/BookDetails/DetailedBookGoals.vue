@@ -67,7 +67,14 @@ export default {
     },
   },
   methods: {
-    ...mapMutations(["toggleUpdateGoal"]),
+    ...mapMutations(["setUpdateGoalVisible"]),
+    toggleUpdateGoal() {
+      if (!this.updateGoalOpen) {
+        this.setUpdateGoalVisible(true);
+      } else {
+        this.setUpdateGoalVisible(false);
+      }
+    },
     selectDate() {
       this.goalDate = Date.now();
       this.toggleUpdateGoal();

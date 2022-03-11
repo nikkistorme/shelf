@@ -2,9 +2,6 @@ import firebase from "firebase/compat/app";
 import "firebase/compat/firestore";
 import "firebase/compat/auth";
 
-console.log("plz, ", import.meta.env);
-console.log("plz, ", process.env);
-
 const config = {
   apiKey: import.meta.env.VITE_VERCEL_FIREBASE_API_KEY,
   authDomain: import.meta.env.VITE_VERCEL_FIREBASE_AUTH_DOMAIN,

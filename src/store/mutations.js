@@ -53,8 +53,16 @@ const toggleUpdateProgress = (state) => {
   state.open.updateProgress = !state.open.updateProgress;
 };
 
+const setUpdateProgressVisible = (state, boolean) => {
+  state.open.updateProgress = boolean;
+};
+
 const toggleUpdateGoal = (state) => {
   state.open.updateGoal = !state.open.updateGoal;
+};
+
+const setUpdateGoalVisible = (state, boolean) => {
+  state.open.updateGoal = boolean;
 };
 
 export default {
@@ -71,5 +79,7 @@ export default {
   setModal,
   toggleProfileDropdown,
   toggleUpdateProgress,
+  setUpdateProgressVisible,
   toggleUpdateGoal,
+  setUpdateGoalVisible,
 };

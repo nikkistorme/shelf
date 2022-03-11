@@ -1,12 +1,12 @@
 <template>
   <div
-    class="detailed-book__stats w-100"
+    class="book-details__stats w-100"
     :class="{ 'split-1': updateProgressOpen, 'split-2': updateGoalOpen }"
   >
     <div class="split-card-top w-100 d-flex flex-column">
       <DetailedBookProgress />
       <hr
-        class="detailed-book__stats-divide"
+        class="book-details__stats-divide"
         :class="{ hidden: updateProgressOpen }"
       />
     </div>
@@ -14,12 +14,12 @@
     <div class="split-card-middle w-100 d-flex flex-column">
       <DetailedBookGoals />
       <hr
-        class="detailed-book__stats-divide"
+        class="book-details__stats-divide"
         :class="{ hidden: updateGoalOpen }"
       />
     </div>
     <UpdateGoal />
-    <div class="split-card-bottom w-100 d-flex mb-2">
+    <div class="split-card-bottom w-100 d-flex">
       <DetailedBookPredictions />
     </div>
   </div>
@@ -49,14 +49,14 @@ export default {
 </script>
 
 <style>
-.detailed-book__stats-text {
+.book-details__stats-text {
   margin-bottom: calc(var(--spacing-size-1) / 4);
 }
-.detailed-book__stats-divide {
+.book-details__stats-divide {
   margin: 0;
   transition: all 0.2s 0.3s ease-in-out;
 }
-.detailed-book__stats-divide.hidden {
+.book-details__stats-divide.hidden {
   opacity: 0;
   transition: all 0.2s ease-in-out;
 }

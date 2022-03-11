@@ -97,7 +97,7 @@ export default {
   padding: calc(var(--spacing-size-1) / 4) var(--spacing-size-1);
   border-bottom-left-radius: 5px;
   border-bottom-right-radius: 5px;
-  box-shadow: 2px -2px 10px rgba(0, 0, 0, 0.16);
+  box-shadow: 2px -2px 10px rgba(0, 0, 0, 0.3);
 }
 .home-shelf__sort-method {
   margin-right: 5px;

@@ -162,11 +162,12 @@ const overallPace = (book) => {
 };
 
 const goalPace = (book) => {
-  const pagesRemaining = getPagesRemaining(book);
+  const pagesRemaining = book.goal.targetPage - book.readPages;
   const today = new Date();
+  const todayDay = today.getDate();
   const goalDate = new Date(book.goal.goalDate);
-  const diffTime = Math.abs(goalDate - today);
-  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  const goalDateDay = goalDate.getDate();
+  const diffDays = Math.abs(goalDateDay - todayDay + 1);
   const pace = Math.ceil(pagesRemaining / diffDays);
   const minPerPage = minutesPerPage(book.changes);
   const minsPerDay = Math.ceil(minPerPage * pace);

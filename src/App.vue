@@ -3,7 +3,7 @@
     <PageModal />
     <SiteHeader />
     <router-view />
-    <SiteBottomNavigation />
+    <!-- <SiteBottomNavigation /> -->
     <SiteFooter />
   </div>
 </template>
@@ -12,14 +12,14 @@
 import { mapGetters } from "vuex";
 
 import SiteHeader from "./components/SiteHeader/SiteHeader.vue";
-import SiteBottomNavigation from "./components/SiteBottomNavigation.vue";
+// import SiteBottomNavigation from "./components/SiteBottomNavigation.vue";
 import PageModal from "./components/PageModal.vue";
 
 export default {
   name: "App",
   components: {
     SiteHeader,
-    SiteBottomNavigation,
+    // SiteBottomNavigation,
     PageModal,
   },
   computed: {

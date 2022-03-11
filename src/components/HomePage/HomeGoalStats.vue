@@ -65,7 +65,6 @@ export default {
       return statsService.pagesReadThisWeek(this.books);
     },
     booksWithGoals() {
-      console.log(statsService.getBooksWithGoals(this.books));
       return statsService
         .getBooksWithGoals(this.books)
         .sort(() => 0.5 - Math.random())
@@ -77,7 +76,6 @@ export default {
       console.log("🚀 ~ booksWithGoals", this.booksWithGoals);
     },
     pagesRemainingToday(book) {
-      console.log("🚀 ~ book", book);
       const pagesReadToday = statsService.pagesReadToday([book]);
       const goalPace = statsService.goalPace(book);
       return goalPace.pagesPerDay - pagesReadToday;

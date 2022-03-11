@@ -21,14 +21,14 @@
   border-top-left-radius: var(--border-radius-1);
   border-top-right-radius: var(--border-radius-1);
   box-shadow: var(--box-shadow-1);
-  clip-path: inset(-10px -10px 0px -10px);
+  clip-path: inset(-15px -15px 0px -15px);
   transition: clip-path 0.5s ease;
 }
 
 .split-card-middle {
   padding: 0 var(--spacing-size-2);
   box-shadow: var(--box-shadow-1);
-  clip-path: inset(0px -10px 0px -10px);
+  clip-path: inset(0px -15px 0px -15px);
   transition: clip-path 0.5s ease;
 }
 
@@ -37,27 +37,27 @@
   border-bottom-left-radius: var(--border-radius-1);
   border-bottom-right-radius: var(--border-radius-1);
   box-shadow: var(--box-shadow-1);
-  clip-path: inset(0px -10px -10px -10px);
+  clip-path: inset(0px -15px -15px -15px);
   transition: clip-path 0.5s ease;
 }
 
 .split .split-card-top,
 .split .split-card-bottom {
-  clip-path: inset(-10px -10px -10px -10px);
+  clip-path: inset(-15px -15px -15px -15px);
 }
 
 .split-1 .split-card-top {
-  clip-path: inset(-10px -10px -10px -10px);
+  clip-path: inset(-15px -15px -15px -15px);
 }
 
 .split-1 .split-card-middle {
-  clip-path: inset(-10px -10px 0px -10px);
+  clip-path: inset(-15px -15px 0px -15px);
 }
 
 .split-2 .split-card-middle {
-  clip-path: inset(0px -10px -10px -10px);
+  clip-path: inset(0px -15px -15px -15px);
 }
 
 .split-2 .split-card-bottom {
-  clip-path: inset(-10px -10px -10px -10px);
+  clip-path: inset(-15px -15px -15px -15px);
 }

@@ -22,7 +22,6 @@ export default {
     viewBookDetails() {
       this.toggleModal();
       this.$store.dispatch("getDetailedBook", this.book.id);
-      console.log(this.detailedBook);
     },
   },
 };
@@ -33,13 +32,13 @@ export default {
   margin-left: var(--spacing-size-1);
 }
 .shelved-book__cover {
-  height: 200px;
+  height: 250px;
 }
-@media (min-width: 1350px) {
+/* @media (min-width: 1350px) {
   .shelved-book__cover {
     height: 245px;
   }
-}
+} */
 .shelved-book__cover img {
   height: 100%;
   object-fit: contain;

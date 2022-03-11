@@ -27,6 +27,11 @@
   -webkit-align-items: center;
 }
 
+.ai-start {
+  align-items: flex-start;
+  -webkit-align-items: flex-start;
+}
+
 .ai-end {
   align-items: flex-end;
   -webkit-align-items: flex-end;
@@ -172,4 +177,8 @@
 
 .w-100 {
   width: 100%;
+}
+
+.h-100 {
+  height: 100%;
 }
