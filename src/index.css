@@ -4,6 +4,10 @@
 @import "./assets/css/ui.css";
 @import "./assets/css/datepickerOverrides.css";
 
+:root {
+  --color-primary: #2a4a68;
+}
+
 * {
   box-sizing: border-box;
 }

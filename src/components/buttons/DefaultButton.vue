@@ -42,7 +42,7 @@ export default {
   filter: brightness(115%);
 }
 .default-button.blue {
-  background: var(--color-blue);
+  background: var(--color-primary);
   color: white;
 }
 .default-button.red {

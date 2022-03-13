@@ -31,7 +31,7 @@ export default {
   padding: 0;
   border: 2px solid transparent;
   border-radius: 50%;
-  background: var(--color-blue);
+  background: var(--color-primary);
   line-height: var(--font-size-root);
   outline: none;
   cursor: pointer;

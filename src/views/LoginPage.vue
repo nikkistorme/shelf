@@ -153,11 +153,11 @@ export default {
   box-shadow: var(--box-shadow-1);
 }
 .login-page .inline-button {
-  color: var(--color-blue);
+  color: var(--color-primary);
 }
 .login-page__sign-in {
   font-style: italic;
-  color: var(--color-blue);
+  color: var(--color-primary);
 }
 .login-page__form {
   margin-top: var(--spacing-size-1);

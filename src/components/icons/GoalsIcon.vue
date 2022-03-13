@@ -5,6 +5,7 @@
     viewBox="0 0 52 52"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
+    class="goals-icon"
   >
     <g clip-path="url(#clip0_25_852)">
       <path
@@ -69,3 +70,9 @@
     </defs>
   </svg>
 </template>
+
+<style scoped>
+.goals-icon path {
+  stroke: var(--color-primary);
+}
+</style>

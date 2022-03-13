@@ -40,7 +40,7 @@ export default {
   color: var(--color-green);
 }
 .inline-button.blue {
-  color: var(--color-blue-light);
+  color: var(--color-primary);
 }
 .inline-button.red {
   color: var(--color-red);

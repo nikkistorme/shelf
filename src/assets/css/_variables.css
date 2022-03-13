@@ -19,10 +19,11 @@
   --spacing-size-3: calc(var(--spacing-size-2) * 1.618);
   --spacing-size-4: calc(var(--spacing-size-3) * 1.618);
 
-  --color-blue: #327fb7;
-  --color-blue-light: #5c9cec;
+  /* --color-primary: #327fb7; */
+  /* --color-primary: #7d3b8d; */
+  --color-primary: #2a4a68;
   --color-green: #71c591;
-  --color-red: #e25f55;
+  --color-red: #ab241b;
   --color-grey: #ded9e2;
 
   --box-shadow-1: 0 0 15px rgba(0, 0, 0, 0.3);

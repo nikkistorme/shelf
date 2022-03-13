@@ -133,7 +133,7 @@ export default {
 .c100.p99 .fill,
 .c100.p100 .fill {
   position: absolute;
-  border: 0.08em solid #307bbb;
+  border: 0.08em solid var(--color-primary);
   width: 0.84em;
   height: 0.84em;
   clip: rect(0em, 0.5em, 1em, 0em);
@@ -1055,7 +1055,7 @@ export default {
   width: 3.33em;
   line-height: 3.33em;
   font-size: 0.3em;
-  color: #307bbb;
+  color: var(--color-primary);
 }
 .c100:hover:after {
   top: 0.04em;

@@ -72,6 +72,9 @@ export default {
 .target-icon {
   position: relative;
 }
+.target-icon circle {
+  stroke: var(--color-primary);
+}
 .target-icon__date {
   position: absolute;
   top: 3px;

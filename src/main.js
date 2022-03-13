@@ -5,6 +5,9 @@ import fb from "./firebase";
 import App from "./App.vue";
 import "./index.css";
 
+import smoothscroll from "smoothscroll-polyfill";
+smoothscroll.polyfill();
+
 let app;
 fb.auth.onAuthStateChanged((user) => {
   if (user) {

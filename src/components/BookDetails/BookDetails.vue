@@ -176,7 +176,7 @@ export default {
   fill-opacity: 1;
 }
 .book-details__cover {
-  height: 225px;
+  height: 250px;
 }
 .book-details__cover img {
   height: 100%;

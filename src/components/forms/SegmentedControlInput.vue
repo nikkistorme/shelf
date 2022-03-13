@@ -89,7 +89,7 @@ export default {
   line-height: var(--font-size-1);
 }
 .segmented-control__background {
-  background-color: var(--color-blue);
+  background-color: var(--color-primary);
   position: absolute;
   left: 0;
   top: 0;

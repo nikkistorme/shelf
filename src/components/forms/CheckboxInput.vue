@@ -63,7 +63,7 @@ export default {
 }
 /* When the checkbox is checked, add a blue background */
 .checkbox-input input:checked ~ .checkbox-input__custom {
-  background-color: var(--color-blue);
+  background-color: var(--color-primary);
 }
 
 /* Create the checkbox-input__custom/indicator (hidden when not checked) */

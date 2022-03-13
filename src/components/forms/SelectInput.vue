@@ -65,14 +65,16 @@ export default {
   background-color: white;
   text-align: center;
   transition: all 0.2s ease-in-out;
+  appearance: none;
+  -webkit-appearance: none;
 }
 .select-input__input:focus {
-  border-color: var(--color-blue);
+  border-color: var(--color-primary);
 }
 .select-input__option {
   border: none;
 }
-@supports (pointer-events: none) and (appearance: none) {
+@supports (pointer-events: none) {
   .select-input {
     position: relative;
     display: inline-block;
@@ -82,7 +84,6 @@ export default {
     padding-right: calc(var(--spacing-size-2));
     border: var(--default-input-border);
     border-radius: var(--default-input-border-radius);
-    appearance: none;
   }
   .select-input::before,
   .select-input__arrow {
@@ -113,6 +114,7 @@ export default {
   padding: 0;
   border: none;
   text-align: right;
+  direction: rtl;
 }
 .no-carrot .select-input__arrow {
   display: none;

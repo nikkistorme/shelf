@@ -5,6 +5,7 @@
     viewBox="0 0 52 52"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
+    class="social-icon"
   >
     <path
       d="M40.2684 31.9886C36.4454 31.9886 36.9637 31.9886 32.8871 31.9886C28.8106 31.9886 28.9171 31.9886 25.5059 31.9886C25.5059 26.8928 28.8106 22.7617 32.8871 22.7617C36.9637 22.7617 40.2684 26.8928 40.2684 31.9886Z"
@@ -33,3 +34,9 @@
     />
   </svg>
 </template>
+
+<style scoped>
+.social-icon path {
+  stroke: var(--color-primary);
+}
+</style>

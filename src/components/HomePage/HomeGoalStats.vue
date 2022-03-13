@@ -94,6 +94,6 @@ export default {
   width: 17px;
   margin-top: 5px;
   border-radius: 50%;
-  border: 4px solid var(--color-blue);
+  border: 4px solid var(--color-primary);
 }
 </style>

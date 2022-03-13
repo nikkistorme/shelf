@@ -84,7 +84,7 @@ export default {
   margin-right: var(--spacing-size-1);
 }
 .default-input__input:focus {
-  border-color: var(--color-blue);
+  border-color: var(--color-primary);
 }
 .default-input__input:disabled {
   opacity: 0.6;
