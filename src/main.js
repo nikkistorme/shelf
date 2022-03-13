@@ -14,7 +14,9 @@ fb.auth.onAuthStateChanged((user) => {
     store.commit("setUser", user);
     store.dispatch("getUserProfile", user.uid);
     store.dispatch("getBooks");
-    store.dispatch("getShelves");
+    store.dispatch("getShelves").then(() => {
+      store.commit("setActiveShelf", store.getters.getAllBooksShelf);
+    });
     router.push("/home");
   }
   if (!app) {

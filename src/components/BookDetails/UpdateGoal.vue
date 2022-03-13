@@ -6,7 +6,7 @@
         v-model="targetPage"
         label="Target Page"
         type="number"
-        class="update-goal__input-page"
+        class="update-goal__input-page mb-1"
         :max="detailedBook.totalPages"
       />
       <DefaultInput

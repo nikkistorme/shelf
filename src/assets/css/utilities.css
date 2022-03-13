@@ -71,8 +71,14 @@
   padding: var(--spacing-size-1);
 }
 
+.px-1 {
+  padding-left: var(--spacing-size-1);
+  padding-right: var(--spacing-size-1);
+}
+
 .py-1 {
-  padding: var(--spacing-size-1) 0;
+  padding-top: var(--spacing-size-1);
+  padding-bottom: var(--spacing-size-1);
 }
 
 .pr-1 {
@@ -115,12 +121,19 @@
   padding-left: var(--spacing-size-3);
 }
 
-.my-1 {
-  margin: var(--spacing-size-1) 0;
+.mx-1 {
+  margin-left: var(--spacing-size-1);
+  margin-right: var(--spacing-size-1);
 }
 
-.mx-1 {
-  margin: 0 var(--spacing-size-1);
+.my-1 {
+  margin-top: var(--spacing-size-1);
+  margin-bottom: var(--spacing-size-1);
+}
+
+.my-2 {
+  margin-top: var(--spacing-size-2);
+  margin-bottom: var(--spacing-size-2);
 }
 
 .mt-1 {

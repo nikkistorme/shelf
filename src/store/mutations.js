@@ -31,6 +31,10 @@ const setShelf = (state, shelf) => {
   state.shelves.push(shelf);
 };
 
+const setActiveShelf = (state, shelf) => {
+  state.activeShelf = shelf;
+};
+
 const toggleModal = (state) => {
   state.open.modal = !state.open.modal;
 };
@@ -65,6 +69,14 @@ const setUpdateGoalVisible = (state, boolean) => {
   state.open.updateGoal = boolean;
 };
 
+const setLibraryShelfSelectOpen = (state, boolean) => {
+  state.open.libraryShelfSelect = boolean;
+};
+
+const toggleLibraryShelfSelectOpen = (state) => {
+  state.open.libraryShelfSelect = !state.open.libraryShelfSelect;
+};
+
 export default {
   setUser,
   setUserLoading,
@@ -74,6 +86,7 @@ export default {
   addShelf,
   setShelves,
   setShelf,
+  setActiveShelf,
   toggleModal,
   closeAllModals,
   setModal,
@@ -82,4 +95,6 @@ export default {
   setUpdateProgressVisible,
   toggleUpdateGoal,
   setUpdateGoalVisible,
+  setLibraryShelfSelectOpen,
+  toggleLibraryShelfSelectOpen,
 };

@@ -30,6 +30,14 @@ const getInProgressShelf = (state) => {
   return state.shelves.find((shelf) => shelf.inProgressShelf);
 };
 
+const getAllBooksShelf = (state) => {
+  return state.shelves.find((shelf) => shelf.allBooksShelf);
+};
+
+const activeShelf = (state) => {
+  return state.activeShelf;
+};
+
 const getShelfById = (state) => (id) => {
   return state.shelves.find((shelf) => shelf.id === id);
 };
@@ -50,6 +58,10 @@ const updateGoalOpen = (state) => {
   return state.open.updateGoal;
 };
 
+const libraryShelfSelectOpen = (state) => {
+  return state.open.libraryShelfSelect;
+};
+
 export default {
   user,
   userProfile,
@@ -59,9 +71,12 @@ export default {
   detailedBook,
   shelves,
   getInProgressShelf,
+  getAllBooksShelf,
+  activeShelf,
   getShelfById,
   modalOpen,
   profileDropdownOpen,
   updateProgressOpen,
   updateGoalOpen,
+  libraryShelfSelectOpen,
 };

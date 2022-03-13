@@ -66,9 +66,6 @@ export default {
 </script>
 
 <style>
-.default-input {
-  margin-bottom: var(--spacing-size-1);
-}
 .default-input__label {
   font-size: var(--font-size-root);
   margin-bottom: calc(var(--spacing-size-1) / 2);

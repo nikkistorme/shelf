@@ -1,3 +1,25 @@
+export const getShelfSortOptions = (shelf) => {
+  const inProgressShelf = shelf.inProgressShelf;
+  return [
+    {
+      value: "date-added-to-library",
+      label: "Date added",
+    },
+    {
+      value: "percent-complete",
+      label: "Progress",
+    },
+    {
+      value: "last-updated-progress",
+      label: "Last updated progress",
+    },
+    {
+      value: "date-added-to-shelf",
+      label: inProgressShelf ? "Date started" : "Date added to shelf",
+    },
+  ];
+};
+
 export const sortShelfByMethod = (a, b, shelf) => {
   const method = shelf.sort?.method;
   const descending = shelf.sort?.descending;
@@ -56,16 +78,26 @@ const sortByDateStarted = (a, b, descending) => {
 };
 
 const sortByDateAddedToShelf = (a, b, shelf) => {
-  let aDateAddedToShelf = a.changes?.find((c) => {
-    c.payload.newValue?.length &&
-      c.payload.newValue.includes(shelf.id) &&
-      !c.payload.oldValue.includes(shelf.id);
-  })?.payload.timestamp;
-  let bDateAddedToShelf = b.changes?.find((c) => {
-    c.payload.newValue?.length &&
-      c.payload.newValue.includes(shelf.id) &&
-      !c.payload.oldValue.includes(shelf.id);
-  })?.payload.timestamp;
+  let aDateAddedToShelf = null;
+  let bDateAddedToShelf = null;
+
+  if (shelf.inProgressShelf) {
+    aDateAddedToShelf = a.changes?.find((c) => c.action === "startReading")
+      ?.payload.timestamp;
+    bDateAddedToShelf = b.changes?.find((c) => c.action === "startReading")
+      ?.payload.timestamp;
+  } else {
+    aDateAddedToShelf = a.changes?.find((c) => {
+      c.payload.newValue?.length &&
+        c.payload.newValue.includes(shelf.id) &&
+        !c.payload.oldValue.includes(shelf.id);
+    })?.payload.timestamp;
+    bDateAddedToShelf = b.changes?.find((c) => {
+      c.payload.newValue?.length &&
+        c.payload.newValue.includes(shelf.id) &&
+        !c.payload.oldValue.includes(shelf.id);
+    })?.payload.timestamp;
+  }
 
   if (!aDateAddedToShelf) {
     aDateAddedToShelf = 0;

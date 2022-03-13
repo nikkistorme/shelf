@@ -5,6 +5,7 @@
         v-for="(book, i) in booksOnThisShelf"
         :key="i"
         :book="book"
+        class="home-shelf__book"
       />
     </div>
     <div class="home-shelf__floor d-flex jc-space-between w-100">
@@ -48,17 +49,12 @@ export default {
     shelfId: { type: String, default: "" },
     inProgress: { type: Boolean, default: false },
   },
-  emits: ["update:shelf"],
   data() {
     return {
       sortOptions: [
         {
           value: "date-added-to-library",
-          label: "Date Added",
-        },
-        {
-          value: "date-started",
-          label: "Date Started",
+          label: "Date added",
         },
         {
           value: "percent-complete",
@@ -66,11 +62,11 @@ export default {
         },
         {
           value: "last-updated-progress",
-          label: "Last Updated Progress",
+          label: "Last updated progress",
         },
         {
           value: "date-added-to-shelf",
-          label: "Date Added to Shelf",
+          label: this.inProgress ? "Date started" : "Date added to shelf",
         },
       ],
     };
@@ -116,6 +112,9 @@ export default {
   padding: calc(var(--spacing-size-1) / 4);
   overflow-x: auto;
   overflow-y: hidden;
+}
+.home-shelf__book {
+  margin-left: var(--spacing-size-1);
 }
 .home-shelf__floor {
   position: relative;

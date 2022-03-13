@@ -11,6 +11,7 @@ export default createStore({
     books: [],
     shelves: [],
     detailedBook: "",
+    activeShelf: {},
     loading: {
       user: false,
       books: false,
@@ -22,6 +23,7 @@ export default createStore({
       bookDetails: false,
       updateProgress: false,
       updateGoal: false,
+      libraryShelfSelect: false,
     },
   },
   getters,

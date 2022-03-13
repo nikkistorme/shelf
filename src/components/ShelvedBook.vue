@@ -1,6 +1,6 @@
 <template>
   <div class="shelved-book">
-    <div class="shelved-book__cover" @click="viewBookDetails">
+    <div class="shelved-book__cover" :class="location" @click="viewBookDetails">
       <img :src="book.image" :alt="book.title" />
     </div>
   </div>
@@ -13,6 +13,7 @@ import { mapMutations } from "vuex";
 export default {
   props: {
     book: { type: Object, default: () => ({}) },
+    location: { type: String, default: "home" },
   },
   computed: {
     ...mapGetters(["modalOpen", "detailedBook"]),
@@ -28,18 +29,19 @@ export default {
 </script>
 
 <style>
-.shelved-book {
-  margin-left: var(--spacing-size-1);
-}
-.shelved-book__cover {
+.home.shelved-book__cover {
   height: 250px;
 }
-/* @media (min-width: 1350px) {
-  .shelved-book__cover {
-    height: 245px;
-  }
-} */
-.shelved-book__cover img {
+.home.shelved-book__cover img {
+  height: 100%;
+  object-fit: contain;
+  object-position: bottom;
+}
+.library.shelved-book__cover {
+  height: 100%;
+}
+.library.shelved-book__cover img {
+  width: 100%;
   height: 100%;
   object-fit: contain;
   object-position: bottom;
