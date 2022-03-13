@@ -128,10 +128,10 @@
 
 <script>
 import { mapGetters } from "vuex";
-import { mapMutations } from "vuex";
 import { mapActions } from "vuex";
 
 import changeService from "../../services/changeService.js";
+import { HhMmDifferenceInMinutes } from "../../services/dateTimeService.js";
 
 import DefaultInput from "../forms/DefaultInput.vue";
 import CheckboxInput from "../forms/CheckboxInput.vue";
@@ -254,17 +254,19 @@ export default {
     },
   },
   methods: {
-    ...mapMutations(["toggleUpdateProgress"]),
     ...mapActions(["updatePage", "finishReading"]),
     test() {
       console.log(this.$store.getters.detailedBook.readPages);
     },
     setDurationStartOrEnd(type) {
       const now = new Date();
+      const hours = now.getHours();
+      const minutes = now.getMinutes();
+      const nowTime = `${hours}:${minutes < 10 ? "0" : ""}${minutes}`;
       if (type === "start") {
-        this.durationStart = `${now.getHours()}:${now.getMinutes()}`;
+        this.durationStart = nowTime;
       } else if (type === "end") {
-        this.durationEnd = `${now.getHours()}:${now.getMinutes()}`;
+        this.durationEnd = nowTime;
       }
     },
     formatTime(timestamp) {
@@ -296,34 +298,33 @@ export default {
       if (this.updateProgressOpen) {
         this.convertPercentsToPages();
         if (this.durationType === "start-end") {
-          this.duration = Math.round(
-            (this.durationEnd - this.durationStart) / 60000
+          this.duration = HhMmDifferenceInMinutes(
+            this.durationStart,
+            this.durationEnd
           );
         }
-        let newChange = changeService.makeChangeFromForm(
-          "updatePage",
-          this.form
-        );
+        // let newChange = changeService.makeChangeFromForm(
+        //   "updatePage",
+        //   this.form
+        // );
         await this.updatePage({
           book: this.detailedBook,
-          change: newChange,
+          change: changeService.makeChangeFromForm("updatePage", this.form),
         });
-        this.toggleUpdateProgress();
         this.resetForm();
       }
     },
     async finish() {
-      this.toggleUpdateProgress();
       this.endAt = this.detailedBook.totalPages;
-      let newChange = changeService.makeChangeFromForm(
-        "finishReading",
-        this.form,
-        this.oldFinishedDate
-      );
       await this.finishReading({
         book: this.detailedBook,
-        change: newChange,
+        change: changeService.makeChangeFromForm(
+          "finishReading",
+          this.form,
+          this.oldFinishedDate
+        ),
       });
+      this.resetForm();
     },
     resetForm() {
       this.startAt = this.detailedBook.readPages;

@@ -29,6 +29,7 @@ const updatePage = async ({ commit }, bookAndChange) => {
     throw error;
   }
   commit("setDetailedBook", bookAndChange.book);
+  commit("setUpdateProgressVisible", false);
 };
 
 const setGoal = async ({ commit }, bookAndChange) => {
@@ -62,6 +63,7 @@ const finishReading = async ({ commit }, bookAndChange) => {
     throw error;
   }
   commit("setDetailedBook", bookAndChange.book);
+  commit("setUpdateProgressVisible", false);
 };
 
 export default {

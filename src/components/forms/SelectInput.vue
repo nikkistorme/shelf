@@ -1,5 +1,8 @@
 <template>
-  <span class="select-input">
+  <span
+    class="select-input d-flex ai-center"
+    :class="{ inline: inline, 'no-carrot': noCarrot }"
+  >
     <select
       :id="id"
       :name="inputName"
@@ -18,17 +21,27 @@
         {{ option.label }}
       </option>
     </select>
+    <div class="select-input__arrow">
+      <ArrowDown />
+    </div>
   </span>
 </template>
 
 <script>
+import ArrowDown from "../icons/ArrowDown.vue";
+
 export default {
+  components: { ArrowDown },
   props: {
     id: { type: String, default: "" },
     inputName: { type: String, default: "" },
     options: { type: Array, default: () => [] },
     modelValue: { type: String, default: "" },
     inline: {
+      type: Boolean,
+      default: false,
+    },
+    noCarrot: {
       type: Boolean,
       default: false,
     },
@@ -72,20 +85,15 @@ export default {
     appearance: none;
   }
   .select-input::before,
-  .select-input::after {
-    content: "";
+  .select-input__arrow {
     position: absolute;
     pointer-events: none;
   }
-  .select-input::after {
-    content: "\25BC";
-    right: 0;
-    top: calc(50% - 6px);
-    right: 10px;
-    height: 6px;
-    width: 11px;
+  .select-input__arrow {
+    right: 16px;
   }
   .select-input::before {
+    content: "";
     width: 30px;
     right: 0;
     top: 0;
@@ -100,5 +108,13 @@ export default {
     cursor: not-allowed;
     opacity: 0.5;
   }
+}
+.inline .select-input__input {
+  padding: 0;
+  border: none;
+  text-align: right;
+}
+.no-carrot .select-input__arrow {
+  display: none;
 }
 </style>
