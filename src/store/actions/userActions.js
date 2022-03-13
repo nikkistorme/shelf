@@ -15,7 +15,7 @@ const signUp = async ({ commit }, credentials) => {
       image: "",
     });
     commit("setUserProfile", user);
-    const newShelf = await shelfService.createShelf({
+    const newShelf = await shelfService.addShelf({
       books: [],
       changes: [],
       inProgressShelf: true,

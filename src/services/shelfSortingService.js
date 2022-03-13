@@ -1,5 +1,5 @@
 export const getShelfSortOptions = (shelf) => {
-  const inProgressShelf = shelf.inProgressShelf;
+  const inProgressShelf = shelf?.inProgressShelf;
   return [
     {
       value: "date-added-to-library",
@@ -124,16 +124,23 @@ const sortByPercentComplete = (a, b, descending) => {
 };
 
 const sortByLastUpdatedProgress = (a, b, descending) => {
-  let aLastUpdated = a.changes
-    .sort((a, b) => {
-      return a.payload.timestamp > b.payload.timestamp ? -1 : 1;
-    })
-    .find((c) => c.action === "updatePage")?.payload.timestamp;
-  let bLastUpdated = b.changes
-    .sort((a, b) => {
-      return a.payload.timestamp > b.payload.timestamp ? -1 : 1;
-    })
-    .find((c) => c.action === "updatePage")?.payload.timestamp;
+  let aLastUpdated = null;
+  let bLastUpdated = null;
+
+  if (a.changes?.length) {
+    aLastUpdated = a.changes
+      .sort((a, b) => {
+        return a.payload.timestamp > b.payload.timestamp ? -1 : 1;
+      })
+      .find((c) => c.action === "updatePage")?.payload.timestamp;
+  }
+  if (b.changes?.length) {
+    bLastUpdated = b.changes
+      .sort((a, b) => {
+        return a.payload.timestamp > b.payload.timestamp ? -1 : 1;
+      })
+      .find((c) => c.action === "updatePage")?.payload.timestamp;
+  }
 
   if (!aLastUpdated) {
     aLastUpdated = 0;
@@ -146,4 +153,19 @@ const sortByLastUpdatedProgress = (a, b, descending) => {
   } else {
     return aLastUpdated < bLastUpdated ? -1 : 1;
   }
+};
+
+export const filterBooksBySearchTerm = (books, searchTerm) => {
+  if (searchTerm) {
+    books = books.filter((book) => {
+      const searchMatchTitle = book.title
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase());
+      const searchMatchAuthor = book.author
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase());
+      return searchMatchTitle || searchMatchAuthor;
+    });
+  }
+  return books;
 };

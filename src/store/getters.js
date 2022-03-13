@@ -62,6 +62,18 @@ const libraryShelfSelectOpen = (state) => {
   return state.open.libraryShelfSelect;
 };
 
+const getBooksOnShelf = (state) => (shelf) => {
+  if (shelf.allBooksShelf) {
+    return state.books;
+  } else if (shelf.finishedShelf) {
+    return state.books.filter((book) => book.finished);
+  } else if (shelf.inProgressShelf) {
+    return state.books.filter((book) => book.inProgress);
+  } else {
+    return state.books.filter((book) => book.shelves.includes(shelf.id));
+  }
+};
+
 export default {
   user,
   userProfile,
@@ -79,4 +91,5 @@ export default {
   updateProgressOpen,
   updateGoalOpen,
   libraryShelfSelectOpen,
+  getBooksOnShelf,
 };

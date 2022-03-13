@@ -37,13 +37,14 @@ const makeChangeFromForm = (action, form, oldValue = null) => {
   newChange.action = action;
   newChange.timestamp = Date.now();
   newChange.payload.timestamp = Date.now();
+  console.log("🚀 ~ form.duration", form.duration);
   switch (action) {
     case "updatePage":
       newChange.payload = {
         timestamp: Date.now(),
         oldValue: form.startAt,
         newValue: form.endAt,
-        duration: form.duration ? form.duration : 0,
+        duration: form.duration > 0 ? form.duration : 0,
       };
       newChange.fields.readPages = form.endAt;
       newChange.fields.progressUpdateStartType = form.startType;

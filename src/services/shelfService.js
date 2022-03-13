@@ -11,10 +11,9 @@ const formatError = (error) => {
   }
 };
 
-const createShelf = async (shelf) => {
+const addShelf = async (shelf) => {
   try {
-    const response = fb.shelvesCollection.add(shelf);
-    return response.data();
+    await fb.shelvesCollection.doc(shelf.id).set(shelf);
   } catch (error) {
     console.log("🚀 ~ error", error);
   }
@@ -50,7 +49,7 @@ const updateShelfSort = async (shelf) => {
 };
 
 export default {
-  createShelf,
+  addShelf,
   getShelves,
   updateShelfSort,
 };

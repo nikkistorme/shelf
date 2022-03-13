@@ -1,6 +1,6 @@
 <template>
   <form class="header-search" action="">
-    <DefaultInput class="w-100" type="text" />
+    <!-- <DefaultInput class="w-100" type="text" /> -->
     <!-- <input class="header-search-input input" type="text" /> -->
   </form>
 </template>

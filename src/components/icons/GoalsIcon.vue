@@ -57,6 +57,7 @@
       d="M49.6241 26C49.6241 39.2685 38.9494 50 25.812 50C12.6747 50 2 39.2685 2 26C2 12.7315 12.6747 2 25.812 2C38.9494 2 49.6241 12.7315 49.6241 26Z"
       stroke="#327fb7"
       stroke-width="4"
+      class="circle"
     />
     <defs>
       <clipPath id="clip0_25_852">
@@ -72,7 +73,7 @@
 </template>
 
 <style scoped>
-.goals-icon path {
+.goals-icon .circle {
   stroke: var(--color-primary);
 }
 </style>

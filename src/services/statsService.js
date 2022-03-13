@@ -28,20 +28,22 @@ const changesWithDuration = (changes) => {
 
 const groupUpdatesByDate = (updates) => {
   let groupedUpdates = {};
-  updates.forEach((update) => {
-    const date = new Date(update.payload.timestamp);
-    const dateString = getFormattedDate(date);
-    if (groupedUpdates[dateString]) {
-      groupedUpdates[dateString].push(update);
-    } else {
-      groupedUpdates[dateString] = [update];
-    }
-  });
-  Object.keys(groupedUpdates).forEach((date) => {
-    groupedUpdates[date].sort(
-      (a, b) => b.payload.timestamp - a.payload.timestamp
-    );
-  });
+  if (updates?.length > 0) {
+    updates.forEach((update) => {
+      const date = new Date(update.payload.timestamp);
+      const dateString = getFormattedDate(date);
+      if (groupedUpdates[dateString]) {
+        groupedUpdates[dateString].push(update);
+      } else {
+        groupedUpdates[dateString] = [update];
+      }
+    });
+    Object.keys(groupedUpdates).forEach((date) => {
+      groupedUpdates[date].sort(
+        (a, b) => b.payload.timestamp - a.payload.timestamp
+      );
+    });
+  }
   return groupedUpdates;
 };
 

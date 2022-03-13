@@ -14,6 +14,7 @@ import { mapGetters } from "vuex";
 import SiteHeader from "./components/SiteHeader/SiteHeader.vue";
 // import SiteBottomNavigation from "./components/SiteBottomNavigation.vue";
 import PageModal from "./components/PageModal.vue";
+import SiteFooter from "./components/SiteFooter/SiteFooter.vue";
 
 export default {
   name: "App",
@@ -21,6 +22,7 @@ export default {
     SiteHeader,
     // SiteBottomNavigation,
     PageModal,
+    SiteFooter,
   },
   computed: {
     ...mapGetters(["modalOpen"]),

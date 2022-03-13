@@ -1,12 +1,14 @@
 <template>
-  <button
-    :class="[{ 'default-button': true }, color, flavor]"
-    :disabled="disabled"
-    :type="type"
-    @click="clickAction"
-  >
-    {{ text }}
-  </button>
+  <div class="default-button__wrapper">
+    <button
+      :class="[{ 'default-button': true }, color, flavor]"
+      :disabled="disabled"
+      :type="type"
+      @click="clickAction"
+    >
+      {{ text }}
+    </button>
+  </div>
 </template>
 
 <script>
@@ -25,7 +27,7 @@ export default {
 <style scoped>
 .default-button {
   height: min-content;
-  width: auto;
+  width: fit-content;
   padding: calc(var(--spacing-size-1) / 2) var(--spacing-size-1);
   border: 2px solid transparent;
   border-radius: var(--border-radius-2);

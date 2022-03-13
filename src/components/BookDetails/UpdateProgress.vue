@@ -303,10 +303,8 @@ export default {
             this.durationEnd
           );
         }
-        // let newChange = changeService.makeChangeFromForm(
-        //   "updatePage",
-        //   this.form
-        // );
+        console.log("🚀 ~ this.duration", this.duration);
+        console.log("🚀 ~ this.form.duration", this.form.duration);
         await this.updatePage({
           book: this.detailedBook,
           change: changeService.makeChangeFromForm("updatePage", this.form),

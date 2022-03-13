@@ -37,6 +37,7 @@ export default {
     inputName: { type: String, default: "" },
     options: { type: Array, default: () => [] },
     modelValue: { type: String, default: "" },
+    flavor: { type: String, default: "default" },
     inline: {
       type: Boolean,
       default: false,
