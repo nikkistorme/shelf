@@ -13,12 +13,35 @@
         <img :src="detailedBook.image" :alt="detailedBook.title" />
       </div>
     </div>
-    <div class="book-details__top-info d-flex flex-column jc-center">
+    <div class="book-details__top-info d-flex flex-column jc-center mb-1">
       <h2 class="book-details__title mb-1">{{ detailedBook.title }}</h2>
       <h3 class="book-details__author">by {{ detailedBook.author }}</h3>
-      <p class="book-details__pages mb-2">
-        {{ detailedBook.totalPages }} pages
-      </p>
+      <p class="book-details__pages">{{ detailedBook.totalPages }} pages</p>
+    </div>
+    <div class="book-details__shelves d-flex jc-center mb-2">
+      <div
+        v-for="(shelf, i) in detailedBook.shelves"
+        :key="i"
+        class="book-details__shelf d-flex ai-center"
+      >
+        <p>
+          {{ getShelfById(shelf).name }}
+        </p>
+        <div
+          class="book-details__remove-from-shelf d-flex cursor-pointer"
+          @click="removeFromShelf(shelf)"
+        >
+          <CloseIcon class="w-100 h-100" color="red" />
+        </div>
+      </div>
+      <AddOptionButton
+        v-if="shelfOptions.length > 0"
+        :id="'add-book-to-shelf'"
+        v-model="selectedShelf"
+        input-name="add-book-to-shelf"
+        :options="shelfOptions"
+        :text="!detailedBook.shelves.length ? 'Add to a shelf' : ''"
+      />
     </div>
     <div class="book-details__cards">
       <BookDetailsStats v-if="detailedBook.inProgress" />
@@ -55,11 +78,13 @@
 import { mapGetters } from "vuex";
 import { mapMutations } from "vuex";
 import { mapActions } from "vuex";
+import { makeChange } from "../../services/changeService.js";
 
 import BookDetailsStats from "./BookDetailsStats.vue";
 import HistoryCard from "./HistoryCard.vue";
 import InlineButton from "../buttons/InlineButton.vue";
 import CloseIcon from "../icons/CloseIcon.vue";
+import AddOptionButton from "../buttons/AddOptionButton.vue";
 
 export default {
   components: {
@@ -67,6 +92,7 @@ export default {
     HistoryCard,
     InlineButton,
     CloseIcon,
+    AddOptionButton,
   },
   props: {
     bookId: {
@@ -77,10 +103,31 @@ export default {
   data() {
     return {
       expandDescription: false,
+      selectedShelf: "",
     };
   },
   computed: {
-    ...mapGetters(["detailedBook", "updateProgressOpen", "updateGoalOpen"]),
+    ...mapGetters([
+      "detailedBook",
+      "updateProgressOpen",
+      "updateGoalOpen",
+      "getShelfById",
+      "shelves",
+    ]),
+    shelfOptions() {
+      let validShelves = this.shelves.filter((shelf) => {
+        return (
+          !shelf.inProgressShelf && !shelf.allBooksShelf && !shelf.finishedShelf
+        );
+      });
+      validShelves = validShelves.filter((shelf) => {
+        return !this.detailedBook.shelves.includes(shelf.id);
+      });
+      return validShelves.map((shelf) => ({
+        value: shelf.id,
+        label: shelf.name,
+      }));
+    },
   },
   watch: {
     updateProgressOpen(newVal) {
@@ -121,6 +168,12 @@ export default {
         document.querySelector(".book-details").scrollTop = 0;
       }
     },
+    selectedShelf(newVal) {
+      if (newVal) {
+        this.addToShelf(newVal);
+        this.selectedShelf = "";
+      }
+    },
   },
   methods: {
     ...mapMutations([
@@ -129,9 +182,34 @@ export default {
       "closeAllModals",
       "setDetailedBook",
     ]),
-    ...mapActions(["removeBook"]),
+    ...mapActions(["removeBook", "addBookToShelf", "removeBookFromShelf"]),
     toggleDescription() {
       this.expandDescription = !this.expandDescription;
+    },
+    async addToShelf(shelfId) {
+      await this.addBookToShelf({
+        book: this.detailedBook,
+        change: makeChange("addToShelf", {
+          oldValue: null,
+          newValue: shelfId,
+          fields: {
+            shelfName: this.getShelfById(shelfId).name,
+          },
+        }),
+      });
+    },
+    async removeFromShelf(shelfId) {
+      console.log("🚀 ~ shelfId", shelfId);
+      await this.removeBookFromShelf({
+        book: this.detailedBook,
+        change: makeChange("removeFromShelf", {
+          oldValue: shelfId,
+          newValue: null,
+          fields: {
+            shelfName: this.getShelfById(shelfId).name,
+          },
+        }),
+      });
     },
     closeBookDetails() {
       this.closeAllModals();
@@ -152,7 +230,6 @@ export default {
   left: 50%;
   display: grid;
   height: calc(100vh - (var(--spacing-size-1) * 2));
-  /* max-width: 1000px; */
   width: calc(100vw - (var(--spacing-size-1) * 2));
   padding: var(--spacing-size-3) var(--spacing-size-1);
   margin-top: calc(-1 * (100vh - (var(--spacing-size-1) * 2)) / 2);
@@ -166,14 +243,11 @@ export default {
 }
 .book-details__close {
   position: absolute;
-  top: calc(var(--spacing-size-1) / 2);
-  right: calc(var(--spacing-size-1) / 2);
+  top: var(--spacing-size-half);
+  right: var(--spacing-size-half);
   height: 40px;
   width: 40px;
   cursor: pointer;
-}
-.book-details__close * {
-  fill-opacity: 1;
 }
 .book-details__cover {
   height: 250px;
@@ -193,6 +267,19 @@ export default {
 .book-details__author {
   font-size: var(--font-size-1);
 }
+.book-details__shelves {
+  gap: var(--spacing-size-half);
+}
+.book-details__shelf {
+  gap: var(--spacing-size-half);
+  padding: 0 calc((var(--spacing-size-half)));
+  border-radius: var(--border-radius-2);
+  border: 2px solid var(--color-primary);
+}
+.book-details__remove-from-shelf {
+  height: 13px;
+  width: 13px;
+}
 .book-details__description {
   position: relative;
 }
@@ -203,8 +290,8 @@ export default {
 .book-details__description-expand {
   position: absolute;
   right: var(--spacing-size-2);
-  bottom: var(--spacing-size-2);
-  height: var(--line-height-1);
+  bottom: 4px;
+  height: fit-content;
   padding-left: var(--spacing-size-1) !important;
   background: white !important;
 }

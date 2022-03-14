@@ -66,10 +66,45 @@ const finishReading = async ({ commit }, bookAndChange) => {
   commit("setUpdateProgressVisible", false);
 };
 
+const addBookToShelf = async ({ commit }, bookAndChange) => {
+  try {
+    bookAndChange.book.shelves.push(bookAndChange.change.payload.newValue);
+    bookAndChange.book = changeService.addChangeToBook(
+      bookAndChange.book,
+      bookAndChange.change
+    );
+    await bookService.updateBookShelves(bookAndChange.book);
+  } catch (error) {
+    console.log("🚀 ~ error", error);
+    throw error;
+  }
+  commit("setDetailedBook", bookAndChange.book);
+};
+
+const removeBookFromShelf = async ({ commit }, bookAndChange) => {
+  try {
+    const newShelves = bookAndChange.book.shelves.filter((shelf) => {
+      return shelf !== bookAndChange.change.payload.oldValue;
+    });
+    bookAndChange.book.shelves = newShelves;
+    bookAndChange.book = changeService.addChangeToBook(
+      bookAndChange.book,
+      bookAndChange.change
+    );
+    await bookService.updateBookShelves(bookAndChange.book);
+  } catch (error) {
+    console.log("🚀 ~ error", error);
+    throw error;
+  }
+  commit("setDetailedBook", bookAndChange.book);
+};
+
 export default {
   getBooks,
   updatePage,
   getDetailedBook,
   setGoal,
   finishReading,
+  addBookToShelf,
+  removeBookFromShelf,
 };

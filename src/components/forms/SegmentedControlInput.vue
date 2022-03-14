@@ -79,7 +79,7 @@ export default {
 .segmented-control__label {
   text-align: center;
   display: inline-block;
-  padding: calc(var(--spacing-size-1) / 2) 0;
+  padding: var(--spacing-size-half) 0;
   margin-right: -3px;
   z-index: 2;
   cursor: pointer;

@@ -28,7 +28,7 @@ export default {
 .default-button {
   height: min-content;
   width: fit-content;
-  padding: calc(var(--spacing-size-1) / 2) var(--spacing-size-1);
+  padding: var(--spacing-size-half) var(--spacing-size-1);
   border: 2px solid transparent;
   border-radius: var(--border-radius-2);
   line-height: var(--font-size-root);
@@ -52,7 +52,7 @@ export default {
   color: white;
 }
 .default-button.tiny {
-  padding: calc(var(--spacing-size-1) / 2);
+  padding: var(--spacing-size-half);
   border-radius: var(--border-radius-3);
 }
 </style>

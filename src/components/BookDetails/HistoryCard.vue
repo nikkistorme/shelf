@@ -18,7 +18,7 @@
               <p class="history-card__date" @click="expandDate(change)">
                 <span>{{ change.label }}</span>
                 <span v-if="pagesReadInGroupedUpdate(change)">
-                  ({{ pagesReadInGroupedUpdate(change) }}p)</span
+                  ({{ pagesReadInGroupedUpdate(change) }} pages)</span
                 >
               </p>
               <ul
@@ -138,6 +138,10 @@ export default {
           } by ${statsService.getFormattedDate(update.fields.goal.goalDate)}`;
         case "finishReading":
           return `Finished reading`;
+        case "addToShelf":
+          return `Added to '${update.fields.shelfName}'`;
+        case "removeFromShelf":
+          return `Removed from '${update.fields.shelfName}'`;
         default:
           console.log("🚀 ~ update.action", update.action);
           return "Updated";
@@ -165,7 +169,7 @@ export default {
 
 <style>
 .history-card__date-item {
-  margin-bottom: calc(var(--spacing-size-1) / 2);
+  margin-bottom: var(--spacing-size-half);
 }
 .history-card__collapsed-icon {
   margin-top: 4px;

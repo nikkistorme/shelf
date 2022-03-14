@@ -14,6 +14,7 @@
   --line-height-5: calc(var(--font-size-5) * 1.618);
 
   --spacing-root: 16px;
+  --spacing-size-half: calc(var(--spacing-root) / 2);
   --spacing-size-1: var(--spacing-root);
   --spacing-size-2: calc(var(--spacing-size-1) * 1.618);
   --spacing-size-3: calc(var(--spacing-size-2) * 1.618);
@@ -22,7 +23,7 @@
   /* --color-primary: #327fb7; */
   /* --color-primary: #7d3b8d; */
   --color-primary: #2a4a68;
-  --color-green: #71c591;
+  --color-green: #103900;
   --color-red: #ab241b;
   --color-grey: #ded9e2;
 
@@ -33,7 +34,7 @@
   --border-radius-2: 15px;
   --border-radius-3: 20px;
 
-  --default-input-padding: calc(var(--spacing-size-1) / 2) var(--spacing-root);
+  --default-input-padding: var(--spacing-size-half) var(--spacing-root);
   --default-input-border: 2px solid var(--color-grey);
   --default-input-border-radius: var(--border-radius-1);
 }

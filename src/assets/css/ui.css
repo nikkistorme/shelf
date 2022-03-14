@@ -61,3 +61,23 @@
 .split-2 .split-card-bottom {
   clip-path: inset(-15px -15px -15px -15px);
 }
+
+.dropdown-modal-menu {
+  position: absolute;
+  display: flex;
+  border-radius: var(--border-radius-2);
+  background-color: white;
+  box-shadow: var(--box-shadow-1);
+  visibility: hidden;
+  overflow: hidden;
+  transition: all 0.25s ease-in-out;
+  z-index: 2;
+}
+
+.dropdown-modal-menu:not(.open) {
+  height: 0px !important;
+}
+
+.dropdown-modal-menu.open {
+  visibility: visible;
+}

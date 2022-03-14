@@ -68,9 +68,22 @@ const finishReading = async (book) => {
   }
 };
 
+const updateBookShelves = async (book) => {
+  try {
+    await fb.booksCollection.doc(book.id).update({
+      shelves: book.shelves,
+      changes: book.changes,
+    });
+  } catch (error) {
+    console.log("🚀 ~ error", error);
+    throw formatError(error);
+  }
+};
+
 export default {
   getBooks,
   updatePage,
   setGoal,
   finishReading,
+  updateBookShelves,
 };

@@ -13,7 +13,7 @@
       <h2 class="shelf-title__name">{{ activeShelf.name }}</h2>
     </div>
     <div
-      class="shelf-title__shelf-dropdown flex-column"
+      class="shelf-title__shelf-dropdown dropdown-modal-menu flex-column"
       :class="{ open: libraryShelfSelectOpen }"
     >
       <div
@@ -152,9 +152,6 @@ export default {
         outerDropdown.style.height = outerDropdown.scrollHeight - 132 + "px";
       }
     },
-    // sortedShelves() {
-    //   addHeightForNewShelf();
-    // },
   },
   methods: {
     ...mapMutations([
@@ -204,25 +201,9 @@ export default {
   transform: rotate(180deg);
 }
 .shelf-title__shelf-dropdown {
-  position: absolute;
   left: var(--spacing-size-1);
   top: 40px;
-  display: flex;
   width: calc(240px + (var(--spacing-size-1) * 2));
-  border-radius: var(--border-radius-2);
-  background-color: white;
-  box-shadow: var(--box-shadow-1);
-  visibility: hidden;
-  overflow: hidden;
-  transition: all 0.25s ease-in-out;
-  z-index: 2;
-}
-.shelf-title__shelf-dropdown:not(.open) {
-  height: 0px !important;
-}
-.shelf-title__shelf-dropdown.open {
-  display: flex;
-  visibility: visible;
 }
 .shelf-title__dropdown-list {
   max-height: 450px;

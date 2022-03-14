@@ -17,25 +17,36 @@ const changeSchema = {
     },
     finishedDate: null,
     inProgress: null,
+    shelf: null,
   },
 };
 
-const makeChange = (action, change) => {
+export const makeChange = (action, change) => {
+  const now = new Date();
   let newChange = Object.assign({}, changeSchema);
   newChange.action = action;
+  newChange.created = now.toISOString();
   newChange.payload = {
     timestamp: Date.now(),
     oldValue: change.oldValue,
     newValue: change.newValue,
     duration: change.duration ? change.duration : 0,
   };
+  switch (action) {
+    case "addToShelf":
+    case "removeFromShelf":
+      newChange.fields.shelfName = change.fields.shelfName;
+      break;
+    default:
+      break;
+  }
   return newChange;
 };
 
 const makeChangeFromForm = (action, form, oldValue = null) => {
   let newChange = Object.assign({}, changeSchema);
   newChange.action = action;
-  newChange.timestamp = Date.now();
+  newChange.created = new Date.toISOString();
   newChange.payload.timestamp = Date.now();
   console.log("🚀 ~ form.duration", form.duration);
   switch (action) {
@@ -92,7 +103,6 @@ const addChangeToBook = (book, change) => {
 };
 
 export default {
-  makeChange,
   makeChangeFromForm,
   addChangeToBook,
 };

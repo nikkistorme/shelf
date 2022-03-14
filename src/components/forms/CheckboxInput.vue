@@ -35,7 +35,7 @@ export default {
 .checkbox-input {
   display: block;
   position: relative;
-  padding-left: calc(25px + (var(--spacing-size-1) / 2));
+  padding-left: calc(25px + (var(--spacing-size-half)));
   cursor: pointer;
   -webkit-user-select: none;
   -moz-user-select: none;
