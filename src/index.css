@@ -22,10 +22,10 @@ body {
   margin: 0;
 }
 
-#app {
+/* #app {
   margin-bottom: calc(var(--spacing-size-3) + 60px);
 }
-
+ */
 ul {
   padding: 0;
   margin: 0;
@@ -37,7 +37,6 @@ li {
 
 hr {
   width: 100%;
-  margin: var(--spacing-size-1) 0;
   border: none;
   border-top: 2px solid var(--color-grey);
 }

@@ -16,7 +16,7 @@ export default {};
 @media (min-width: 768px) {
   .header-logo {
     height: 44px;
-    margin-right: var(--spacing-size-4);
+    margin-right: var(--spacing-size-3);
   }
 }
 .header-logo img {

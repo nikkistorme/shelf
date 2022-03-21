@@ -1,35 +1,26 @@
+/* eslint-disable max-lines */
 import router from "../../router";
 
 import userService from "../../services/userService.js";
-import shelfService from "../../services/shelfService.js";
 
-const signUp = async ({ commit }, credentials) => {
+const signUp = async ({ commit, dispatch }, credentials) => {
   commit("setUserLoading", true);
   try {
     const userAccount = await userService.signUp(credentials);
     commit("setUser", userAccount);
-    const user = await userService.createUser({
+    const user = {
       id: userAccount.uid,
       name: credentials.name,
-      activeShelf: "",
       image: "",
-    });
+    };
+    await userService.createUser(user);
     commit("setUserProfile", user);
-    const newShelf = await shelfService.addShelf({
-      books: [],
-      changes: [],
-      inProgressShelf: true,
-      name: "In Progress",
-      sort: {
-        descending: true,
-        method: "dateAdded",
-      },
-    });
-    commit("addShelf", newShelf);
+    await dispatch("normalizeShelves");
     commit("setUserLoading", false);
   } catch (error) {
     console.log(error);
     commit("setUserLoading", false);
+    throw error;
   }
 };
 
@@ -43,7 +34,7 @@ const signIn = async ({ commit }, credentials) => {
     commit("setUserLoading", false);
     router.push("./home");
   } catch (error) {
-    console.log(error);
+    console.log("🚀 ~ error", error);
     commit("setUserLoading", false);
     throw error;
   }
@@ -65,6 +56,7 @@ const resetPassword = async ({ commit }, email) => {
     await userService.resetPassword(email);
   } catch (error) {
     console.log("🚀 ~ error", error);
+    throw error;
   }
 };
 

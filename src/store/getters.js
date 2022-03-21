@@ -46,8 +46,8 @@ const modalOpen = (state) => {
   return state.open.modal;
 };
 
-const profileDropdownOpen = (state) => {
-  return state.open.profileDropdown;
+const headerDropdownOpen = (state) => {
+  return state.open.headerDropdown;
 };
 
 const updateProgressOpen = (state) => {
@@ -74,6 +74,26 @@ const getBooksOnShelf = (state) => (shelf) => {
   }
 };
 
+const shelvesLoading = (state) => {
+  return state.loading.shelves;
+};
+
+const detailedBookLoading = (state) => {
+  return state.loading.detailedBook;
+};
+
+const searchResultsOpen = (state) => {
+  return state.open.searchResults;
+};
+
+const userLoading = (state) => {
+  return state.loading.user;
+};
+
+const confirmAction = (state) => {
+  return state.confirmAction;
+};
+
 export default {
   user,
   userProfile,
@@ -87,9 +107,14 @@ export default {
   activeShelf,
   getShelfById,
   modalOpen,
-  profileDropdownOpen,
+  headerDropdownOpen,
   updateProgressOpen,
   updateGoalOpen,
   libraryShelfSelectOpen,
   getBooksOnShelf,
+  shelvesLoading,
+  detailedBookLoading,
+  searchResultsOpen,
+  userLoading,
+  confirmAction,
 };

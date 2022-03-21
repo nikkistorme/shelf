@@ -1,11 +1,10 @@
 <template>
   <div class="update-goal" :class="{ open: updateGoalOpen }">
     <form class="update-goal__form" @submit.prevent="updateGoal">
-      <DefaultInput
+      <NumberInput
         id="goal-target-page"
         v-model="targetPage"
         label="Target Page"
-        type="number"
         class="update-goal__input-page mb-1"
         :max="detailedBook.totalPages"
       />
@@ -61,6 +60,7 @@ import changeService from "../../services/changeService";
 import DefaultInput from "../forms/DefaultInput.vue";
 import DefaultButton from "../buttons/DefaultButton.vue";
 import InlineButton from "../buttons/InlineButton.vue";
+import NumberInput from "../forms/NumberInput.vue";
 
 const setDate = (timestamp = null) => {
   if (timestamp) {
@@ -85,6 +85,7 @@ export default {
     DefaultInput,
     DefaultButton,
     InlineButton,
+    NumberInput,
   },
   data() {
     return {

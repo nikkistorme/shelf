@@ -22,6 +22,7 @@ const currentUser = auth.currentUser;
 const usersCollection = db.collection("users");
 const shelvesCollection = db.collection("shelves");
 const booksCollection = db.collection("books");
+const coreBooksCollection = db.collection("coreBooks");
 
 const fb = {
   db,
@@ -30,6 +31,7 @@ const fb = {
   usersCollection,
   shelvesCollection,
   booksCollection,
+  coreBooksCollection,
 };
 
 export default fb;

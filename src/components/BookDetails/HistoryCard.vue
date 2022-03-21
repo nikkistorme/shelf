@@ -53,6 +53,8 @@
 <script>
 import { mapGetters } from "vuex";
 import statsService from "../../services/statsService";
+import historyService from "../../services/historyService";
+
 import HistoryCollapsedIcon from "./HistoryCollapsedIcon.vue";
 
 const getGroupedUpdates = (changes) => {
@@ -84,9 +86,6 @@ export default {
   },
   computed: {
     ...mapGetters(["detailedBook"]),
-    detailedBookWatcher() {
-      return this.detailedBook;
-    },
     groupedUpdates() {
       const groupedUpdates = getGroupedUpdates(this.detailedBook.changes);
       return groupedUpdates;
@@ -119,33 +118,7 @@ export default {
       return `${hours}:${minutes}${period}`;
     },
     historyMessage(update) {
-      let duration = "";
-      switch (update.action) {
-        case "addBook":
-          return "Added to library";
-        case "startReading":
-          return `Started reading`;
-        case "updatePage":
-          if (update.payload.duration > 0) {
-            duration = ` in ${update.payload.duration}m`;
-          }
-          return `Page ${update.payload.oldValue}-${update.payload.newValue}${duration}`;
-        case "setGoal":
-          return `Set goal to ${
-            update.fields.goal.targetPage === this.detailedBook.totalPages
-              ? "finish"
-              : `page ${update.fields.goal.targetPage}`
-          } by ${statsService.getFormattedDate(update.fields.goal.goalDate)}`;
-        case "finishReading":
-          return `Finished reading`;
-        case "addToShelf":
-          return `Added to '${update.fields.shelfName}'`;
-        case "removeFromShelf":
-          return `Removed from '${update.fields.shelfName}'`;
-        default:
-          console.log("🚀 ~ update.action", update.action);
-          return "Updated";
-      }
+      return historyService.historyMessageFromUpdate(this.detailedBook, update);
     },
     updateTimesScrollHeight(label) {
       return (
@@ -154,14 +127,10 @@ export default {
       );
     },
     pagesReadInGroupedUpdate(change) {
-      let targetDayUpdates = this.groupedUpdates[change.label];
-      targetDayUpdates = statsService.getProgressUpdates(targetDayUpdates);
-      if (targetDayUpdates?.length > 0) {
-        const lastPage = targetDayUpdates[0].payload.newValue;
-        const earliestPage =
-          targetDayUpdates[targetDayUpdates.length - 1].payload.oldValue;
-        return lastPage - earliestPage;
-      } else return 0;
+      return historyService.pagesReadInGroupedUpdate(
+        this.groupedUpdates,
+        change
+      );
     },
   },
 };

@@ -7,3 +7,13 @@ export const HhMmDifferenceInMinutes = (time1, time2) => {
   );
   return diffMinutes;
 };
+
+export const getTimeString = (date) => {
+  const hours = date.getHours();
+  const minutes = date.getMinutes();
+  const nowTime = `${hours < 10 ? "0" : ""}${hours}:${
+    minutes < 10 ? "0" : ""
+  }${minutes}`;
+  console.log("🚀 ~ nowTime", nowTime);
+  return nowTime;
+};

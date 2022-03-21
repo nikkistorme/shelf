@@ -15,6 +15,7 @@ const setBooks = (state, books) => {
 };
 
 const setDetailedBook = (state, book) => {
+  console.log("🚀 ~ state", state);
   state.detailedBook = book;
 };
 
@@ -49,8 +50,8 @@ const closeAllModals = (state) => {
   });
 };
 
-const toggleProfileDropdown = (state) => {
-  state.open.profileDropdown = !state.open.profileDropdown;
+const toggleheaderDropdown = (state) => {
+  state.open.headerDropdown = !state.open.headerDropdown;
 };
 
 const toggleUpdateProgress = (state) => {
@@ -77,9 +78,38 @@ const toggleLibraryShelfSelectOpen = (state) => {
   state.open.libraryShelfSelect = !state.open.libraryShelfSelect;
 };
 
+const setShelvesLoading = (state, loading) => {
+  state.loading.shelves = loading;
+};
+
+const setDetailedBookLoading = (state, loading) => {
+  state.loading.detailedBook = loading;
+};
+
+const addBook = (state, book) => {
+  state.books.push(book);
+};
+
+const setSearchResultsOpen = (state, boolean) => {
+  state.open.searchResults = boolean;
+};
+
+const deleteBook = (state, book) => {
+  state.books = state.books.filter((b) => b.id !== book.id);
+};
+
+const setConfirmAction = (state, confirmAction) => {
+  state.confirmAction = confirmAction;
+};
+
+const deleteShelf = (state, shelf) => {
+  state.shelves = state.shelves.filter((s) => s.id !== shelf.id);
+};
+
 export default {
   setUser,
   setUserLoading,
+  setShelvesLoading,
   setUserProfile,
   setBooks,
   setDetailedBook,
@@ -90,11 +120,17 @@ export default {
   toggleModal,
   closeAllModals,
   setModal,
-  toggleProfileDropdown,
+  toggleheaderDropdown,
   toggleUpdateProgress,
   setUpdateProgressVisible,
   toggleUpdateGoal,
   setUpdateGoalVisible,
   setLibraryShelfSelectOpen,
   toggleLibraryShelfSelectOpen,
+  setDetailedBookLoading,
+  addBook,
+  setSearchResultsOpen,
+  deleteBook,
+  setConfirmAction,
+  deleteShelf,
 };

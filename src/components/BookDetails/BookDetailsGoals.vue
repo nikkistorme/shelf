@@ -1,5 +1,8 @@
 <template>
-  <div class="detailed-book__goals d-flex ai-center w-100 my-1">
+  <div
+    v-if="detailedBook.id"
+    class="detailed-book__goals d-flex ai-center w-100 my-1"
+  >
     <GoalsIcon
       v-if="!detailedBook.goal?.goalDate"
       class="detailed-book__goals-icon mr-1"

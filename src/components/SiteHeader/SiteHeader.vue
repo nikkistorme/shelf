@@ -5,11 +5,12 @@
   >
     <div class="left d-flex ai-center">
       <HeaderLogo />
-      <HeaderNavigation />
-      <HeaderSearch />
+      <HeaderNavigation class="desktop-only" />
     </div>
-    <div class="right">
-      <HeaderProfile />
+    <div class="d-flex jc-end ai-center gap-1 right">
+      <HeaderSearch />
+      <HeaderProfile class="desktop-only" />
+      <MobileNavigation class="mobile-only" />
     </div>
   </header>
 </template>
@@ -21,6 +22,7 @@ import HeaderLogo from "./HeaderLogo.vue";
 import HeaderNavigation from "./HeaderNavigation.vue";
 import HeaderSearch from "./HeaderSearch.vue";
 import HeaderProfile from "./HeaderProfile.vue";
+import MobileNavigation from "./MobileNavigation.vue";
 
 export default {
   components: {
@@ -28,6 +30,7 @@ export default {
     HeaderNavigation,
     HeaderSearch,
     HeaderProfile,
+    MobileNavigation,
   },
   data() {
     return {
@@ -49,6 +52,9 @@ export default {
   height: 70px;
   padding: 0 var(--spacing-root);
   box-shadow: var(--box-shadow-2);
+}
+.site-header .right {
+  flex: 1;
 }
 
 @media (min-width: 768px) {

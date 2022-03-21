@@ -1,5 +1,8 @@
 <template>
-  <div class="home-predictions card d-flex flex-column ai-center w-100">
+  <div
+    v-if="predictions.length > 0"
+    class="home-predictions card d-flex flex-column ai-center w-100"
+  >
     <PredictionsIcon />
     <ul class="home-predictions__list w-100 mt-2">
       <HomePredictionItem

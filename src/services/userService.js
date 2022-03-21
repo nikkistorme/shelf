@@ -1,6 +1,8 @@
 import fb from "../firebase";
 
 const formatError = (error) => {
+  console.log("🚀 ~ error", error);
+  console.log("🚀 ~ error.code", error.code);
   switch (error.code) {
     case "auth/requires-recent-login":
       return new Error(
@@ -10,6 +12,16 @@ const formatError = (error) => {
       return new Error(
         "That password is incorrect. Please try again or reset your password."
       );
+    case "auth/email-already-in-use":
+      return new Error(
+        "There is already a user with this email. Sign in or try a different email address."
+      );
+    case "auth/user-not-found":
+      return new Error(
+        "There is no existing user with that email. Sign up or try a different email address."
+      );
+    case "auth/weak-password":
+      return new Error("Password must be at least 6 characters long.");
     default:
       return error;
   }
@@ -23,7 +35,7 @@ const signUp = async (credentials) => {
     );
     return response.user;
   } catch (error) {
-    console.log("🚀 ~ error", error);
+    throw formatError(error);
   }
 };
 
@@ -36,7 +48,6 @@ const signIn = async (credentials) => {
     );
     user = response.user;
   } catch (error) {
-    console.log("🚀 ~ error", error);
     throw formatError(error);
   }
   return user;
@@ -52,10 +63,9 @@ const signOut = async () => {
 
 const resetPassword = async (email) => {
   try {
-    fb.auth.sendPasswordResetEmail(email);
+    await fb.auth.sendPasswordResetEmail(email);
   } catch (error) {
-    console.log("🚀 ~ error", error);
-    return error;
+    throw formatError(error);
   }
 };
 
@@ -70,8 +80,7 @@ const updatePassword = async (password) => {
 
 const createUser = async (user) => {
   try {
-    const response = await fb.usersCollection.doc(user.uid).set(user);
-    return response.data();
+    await fb.usersCollection.doc(user.id).set(user);
   } catch (error) {
     console.log("🚀 ~ error", error);
   }

@@ -2,7 +2,7 @@
   <main class="account-page">
     <div
       class="account-page__image d-flex jc-center"
-      @click="toggleProfileDropdown"
+      @click="toggleheaderDropdown"
     >
       <img :src="userProfile.image" alt="" />
     </div>

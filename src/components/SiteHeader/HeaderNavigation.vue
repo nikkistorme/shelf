@@ -1,12 +1,12 @@
 <template>
-  <nav class="header-nav d-flex ai-center mr-4">
-    <ul class="nav-list d-flex">
+  <nav class="header-nav d-flex ai-center mr-2">
+    <ul class="nav-list d-flex gap-1">
       <li class="nav-list-item"><router-link to="/home">Home</router-link></li>
       <li class="nav-list-item">
         <router-link to="/library">Library</router-link>
       </li>
       <li class="nav-list-item">
-        <router-link to="social">Social</router-link>
+        <!-- <router-link to="social">Social</router-link> -->
       </li>
     </ul>
   </nav>
@@ -23,17 +23,7 @@ export default {};
     visibility: none;
   }
 }
-.nav-list-item {
-  margin: 0 var(--spacing-root);
-}
-
 .nav-list-item a {
   text-decoration: none;
-}
-.nav-list-item:first-child {
-  margin-left: 0;
-}
-.nav-list-item:last-child {
-  margin-right: 0;
 }
 </style>

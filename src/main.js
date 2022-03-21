@@ -9,14 +9,16 @@ import smoothscroll from "smoothscroll-polyfill";
 smoothscroll.polyfill();
 
 let app;
-fb.auth.onAuthStateChanged((user) => {
+fb.auth.onAuthStateChanged(async (user) => {
   if (user) {
     store.commit("setUser", user);
-    store.dispatch("getUserProfile", user.uid);
-    store.dispatch("getBooks");
-    store.dispatch("getShelves").then(() => {
-      store.commit("setActiveShelf", store.getters.getAllBooksShelf);
-    });
+    await store.dispatch("getUserProfile", user.uid);
+    await Promise.all([
+      store.dispatch("getBooks"),
+      store.dispatch("getShelves"),
+    ]);
+    await store.dispatch("normalizeShelves");
+    store.commit("setActiveShelf", store.getters.getAllBooksShelf);
     router.push("/home");
   }
   if (!app) {

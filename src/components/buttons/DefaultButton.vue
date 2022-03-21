@@ -28,9 +28,9 @@ export default {
 .default-button {
   height: min-content;
   width: fit-content;
-  padding: var(--spacing-size-half) var(--spacing-size-1);
+  padding: var(--spacing-size-half);
   border: 2px solid transparent;
-  border-radius: var(--border-radius-2);
+  border-radius: var(--border-radius-3);
   line-height: var(--font-size-root);
   outline: none;
   cursor: pointer;

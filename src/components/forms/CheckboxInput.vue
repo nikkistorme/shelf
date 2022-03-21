@@ -18,7 +18,7 @@ export default {
   props: {
     id: { type: String, default: "" },
     label: { type: String, default: "" },
-    modelValue: { type: String, default: "" },
+    modelValue: { type: Boolean, default: false },
     type: { type: String, default: "checkbox" },
     disabled: { type: Boolean, default: false },
   },

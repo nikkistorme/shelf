@@ -1,38 +1,41 @@
 <template>
-  <div class="update-progress" :class="{ open: updateProgressOpen }">
-    <form class="update-progress__form" @submit.prevent="updateProgress">
-      <div class="update-progress__page d-grid mb-1">
-        <DefaultInput
+  <div class="update-progress h-0" :class="{ open: updateProgressOpen }">
+    <form class="update-progress__form p-1" @submit.prevent="updateProgress">
+      <!-- START PAGE -->
+      <div class="update-progress__page d-grid gap-1 mb-1">
+        <NumberInput
           id="update-progress-start-at"
           v-model="startAt"
           label="Start page"
-          type="number"
           :max="detailedBook.totalPages"
           class="update-progress__number mb-0"
         />
         <SelectInput
           id="update-progress-start-type"
           v-model="startType"
-          class="update-progress__type"
+          class="update-progress__type as-end"
           :options="progressTypeOptions"
         />
       </div>
-      <div class="update-progress__page d-grid mb-2">
-        <DefaultInput
+      <!-- START PAGE -->
+      <!-- END PAGE -->
+      <div class="update-progress__page d-grid gap-1 mb-2">
+        <NumberInput
           id="update-progress-end-at"
           v-model="endAt"
           label="End page"
-          type="number"
           :max="detailedBook.totalPages"
           class="update-progress__number mb-0"
         />
         <SelectInput
           id="update-progress-end-type"
           v-model="endType"
-          class="update-progress__type"
+          class="update-progress__type as-end"
           :options="progressTypeOptions"
         />
       </div>
+      <!-- END PAGE -->
+      <!-- DURATION -->
       <CheckboxInput
         id="update-progress-duration-toggle"
         v-model="logDuration"
@@ -42,7 +45,7 @@
       />
       <div
         :class="{ 'open mb-1': logDuration }"
-        class="update-progress__duration-container"
+        class="update-progress__duration-container h-0"
       >
         <SegmentedControlInput
           v-model="durationType"
@@ -53,25 +56,14 @@
           class="update-progress__time"
           :class="{ open: durationType === 'length' }"
         >
-          <!-- <div class="update-progress__time-input d-grid mb-1">
-            <DefaultInput
-              id="update-progress-duration"
-              v-model="duration"
-              type="number"
-              label="Read for"
-              class="update-progress__number mb-0"
-            />
-            <p class="update-progress__text">hours</p>
-          </div> -->
           <div class="update-progress__time-input d-grid">
-            <DefaultInput
+            <NumberInput
               id="update-progress-duration"
               v-model="duration"
               label="Read for"
-              type="number"
               class="update-progress__number mb-0"
             />
-            <p class="update-progress__text">minutes</p>
+            <p class="update-progress__text as-end">minutes</p>
           </div>
         </div>
         <div
@@ -89,7 +81,7 @@
             <IconButton
               class="mr-1"
               :color="blue"
-              @click="setDurationStartOrEnd('start')"
+              @click="setDurationStartOrEnd('durationStart')"
             />
           </div>
           <div class="d-flex ai-end">
@@ -103,7 +95,7 @@
             <IconButton
               class="mr-1"
               :color="blue"
-              @click="setDurationStartOrEnd('end')"
+              @click="setDurationStartOrEnd('durationEnd')"
             />
           </div>
         </div>
@@ -122,6 +114,7 @@
           :disabled="updateProgressDisabled"
         />
       </div>
+      <!-- DURATION -->
     </form>
   </div>
 </template>
@@ -131,7 +124,11 @@ import { mapGetters } from "vuex";
 import { mapActions } from "vuex";
 
 import changeService from "../../services/changeService.js";
-import { HhMmDifferenceInMinutes } from "../../services/dateTimeService.js";
+import progressService from "../../services/progressService.js";
+import {
+  HhMmDifferenceInMinutes,
+  getTimeString,
+} from "../../services/dateTimeService.js";
 
 import DefaultInput from "../forms/DefaultInput.vue";
 import CheckboxInput from "../forms/CheckboxInput.vue";
@@ -140,6 +137,7 @@ import SelectInput from "../forms/SelectInput.vue";
 import DefaultButton from "../buttons/DefaultButton.vue";
 import SegmentedControlInput from "../forms/SegmentedControlInput.vue";
 import IconButton from "../buttons/IconButton.vue";
+import NumberInput from "../forms/NumberInput.vue";
 
 export default {
   components: {
@@ -150,39 +148,17 @@ export default {
     DefaultButton,
     SegmentedControlInput,
     IconButton,
+    NumberInput,
   },
   data() {
     return {
-      progressTypeOptions: [
-        {
-          label: "pages",
-          value: "pages",
-        },
-        {
-          label: "%",
-          value: "percent",
-        },
-      ],
+      progressTypeOptions: progressService.progressTypeOptions,
       startAt: this.$store.getters.detailedBook.readPages,
-      startType: "pages",
       endAt: this.$store.getters.detailedBook.readPages,
-      endType: "pages",
-      duration: 0,
-      logDuration: false,
-      durationType: "start-end",
-      durationStart: 0,
-      durationEnd: 0,
       oldFinishedDate: this.$store.getters.detailedBook.finishedDate,
-      durationOptions: [
-        {
-          label: "Start-End",
-          value: "start-end",
-        },
-        {
-          label: "Length",
-          value: "length",
-        },
-      ],
+      startType: "pages",
+      endType: "pages",
+      ...progressService.durationForm,
     };
   },
   computed: {
@@ -206,28 +182,18 @@ export default {
   },
   watch: {
     startType(newValue) {
-      if (newValue === "percent") {
-        const percent = Math.round(
-          (this.startAt / this.detailedBook.totalPages) * 100
-        );
-        this.startAt = percent;
-      } else if (newValue === "pages") {
-        this.startAt = Math.round(
-          (this.startAt / 100) * this.detailedBook.totalPages
-        );
-      }
+      this.startAt = progressService.setProgressAfterTypeSwap(
+        newValue,
+        this.startAt,
+        this.detailedBook.totalPages
+      );
     },
     endType(newValue) {
-      if (newValue === "percent") {
-        const percent = Math.round(
-          (this.endAt / this.detailedBook.totalPages) * 100
-        );
-        this.endAt = percent;
-      } else if (newValue === "pages") {
-        this.endAt = Math.round(
-          (this.endAt / 100) * this.detailedBook.totalPages
-        );
-      }
+      this.endAt = progressService.setProgressAfterTypeSwap(
+        newValue,
+        this.endAt,
+        this.detailedBook.totalPages
+      );
     },
     updateProgressOpen(newValue) {
       if (newValue) {
@@ -255,32 +221,9 @@ export default {
   },
   methods: {
     ...mapActions(["updatePage", "finishReading"]),
-    test() {
-      console.log(this.$store.getters.detailedBook.readPages);
-    },
     setDurationStartOrEnd(type) {
-      const now = new Date();
-      const hours = now.getHours();
-      const minutes = now.getMinutes();
-      const nowTime = `${hours}:${minutes < 10 ? "0" : ""}${minutes}`;
-      if (type === "start") {
-        this.durationStart = nowTime;
-      } else if (type === "end") {
-        this.durationEnd = nowTime;
-      }
-    },
-    formatTime(timestamp) {
-      const dateAndTime = new Date(timestamp);
-      const hours = `${
-        dateAndTime.getHours() > 12
-          ? dateAndTime.getHours() - 12
-          : dateAndTime.getHours()
-      }`;
-      const minutes = `${
-        dateAndTime.getMinutes() < 10 ? "0" : ""
-      }${dateAndTime.getMinutes()}`;
-      const period = `${dateAndTime.getHours() >= 12 ? "pm" : "am"}`;
-      return `${hours}:${minutes}${period}`;
+      const nowTime = getTimeString(new Date());
+      this[type] = nowTime;
     },
     convertPercentsToPages() {
       if (this.startType === "percent") {
@@ -295,22 +238,20 @@ export default {
       }
     },
     async updateProgress() {
-      if (this.updateProgressOpen) {
-        this.convertPercentsToPages();
-        if (this.durationType === "start-end") {
-          this.duration = HhMmDifferenceInMinutes(
-            this.durationStart,
-            this.durationEnd
-          );
-        }
-        console.log("🚀 ~ this.duration", this.duration);
-        console.log("🚀 ~ this.form.duration", this.form.duration);
-        await this.updatePage({
-          book: this.detailedBook,
-          change: changeService.makeChangeFromForm("updatePage", this.form),
-        });
-        this.resetForm();
+      this.convertPercentsToPages();
+      if (this.durationType === "start-end") {
+        this.duration = HhMmDifferenceInMinutes(
+          this.durationStart,
+          this.durationEnd
+        );
       }
+      console.log("🚀 ~ this.duration", this.duration);
+      console.log("🚀 ~ this.form.duration", this.form.duration);
+      await this.updatePage({
+        book: this.detailedBook,
+        change: changeService.makeChangeFromForm("updatePage", this.form),
+      });
+      this.resetForm();
     },
     async finish() {
       this.endAt = this.detailedBook.totalPages;
@@ -322,7 +263,6 @@ export default {
           this.oldFinishedDate
         ),
       });
-      this.resetForm();
     },
     resetForm() {
       this.startAt = this.detailedBook.readPages;
@@ -337,20 +277,11 @@ export default {
 
 <style>
 .update-progress {
-  height: 0;
   overflow: hidden;
   transition: height 0.4s ease;
 }
-.update-progress__form {
-  padding: var(--spacing-size-1) var(--spacing-size-2);
-}
 .update-progress__page {
-  grid-template-columns: 1fr 1fr;
-  grid-gap: var(--spacing-size-1);
-  max-width: 325px;
-}
-.update-progress__type {
-  align-self: end;
+  grid-template-columns: repeat(2, min-content);
 }
 .update-progress__time,
 .update-progress__duration-start-end {
@@ -372,13 +303,11 @@ export default {
   grid-gap: var(--spacing-size-1);
 }
 .update-progress__text {
-  align-self: end;
   height: min-content;
   margin-bottom: calc(var(--spacing-size-1) - 5px);
 }
 .update-progress__duration-container {
   position: relative;
-  height: 0;
   overflow: hidden;
 }
 .update-progress__duration-container.open {

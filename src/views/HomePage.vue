@@ -1,5 +1,8 @@
 <template>
-  <main class="home-page d-grid ji-center">
+  <main
+    v-if="!userLoading"
+    class="home-page page-wrapper d-grid ji-center as-center"
+  >
     <HomeShelf
       v-if="inProgressShelf"
       :shelf-id="inProgressShelf"
@@ -7,7 +10,6 @@
     />
     <HomeGoalStats />
     <HomePredictionStats />
-    <HomeSocialStats />
   </main>
 </template>
 
@@ -17,17 +19,15 @@ import { mapGetters } from "vuex";
 import HomeShelf from "../components/HomePage/HomeShelf.vue";
 import HomeGoalStats from "../components/HomePage/HomeGoalStats.vue";
 import HomePredictionStats from "../components/HomePage/HomePredictionStats.vue";
-import HomeSocialStats from "../components/HomePage/HomeSocialStats.vue";
 
 export default {
   components: {
     HomeShelf,
     HomeGoalStats,
     HomePredictionStats,
-    HomeSocialStats,
   },
   computed: {
-    ...mapGetters(["getInProgressShelf"]),
+    ...mapGetters(["userLoading", "getInProgressShelf"]),
     inProgressShelf() {
       return this.getInProgressShelf ? this.getInProgressShelf.id : "";
     },
@@ -38,23 +38,21 @@ export default {
 <style>
 .home-page {
   grid-gap: var(--spacing-size-2);
-  padding: var(--spacing-size-2) var(--spacing-size-1);
+}
+.home-page__list-item {
+  position: relative;
 }
 @media (min-width: 768px) {
   .home-page {
     grid-template-columns: repeat(2, 1fr);
-    padding: var(--spacing-size-4);
   }
-}
-.home-page__list-item {
-  position: relative;
 }
 @media (min-width: 1350px) {
   .home-page {
     grid-template-columns: repeat(4, 1fr);
     grid-template-areas:
-      "shelf shelf goals social"
-      ". . prediction social";
+      "shelf shelf goals goals"
+      ". . prediction prediction";
   }
   .home-shelf {
     grid-area: shelf;

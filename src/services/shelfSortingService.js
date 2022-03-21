@@ -86,16 +86,30 @@ const sortByDateAddedToShelf = (a, b, shelf) => {
       ?.payload.timestamp;
     bDateAddedToShelf = b.changes?.find((c) => c.action === "startReading")
       ?.payload.timestamp;
+  } else if (shelf.finishedShelf) {
+    aDateAddedToShelf = a.changes
+      ?.reverse()
+      .find((c) => c.action === "finishReading")?.payload.timestamp;
+    bDateAddedToShelf = b.changes
+      ?.reverse()
+      .find((c) => c.action === "finishReading")?.payload.timestamp;
+  } else if (shelf.allBooksShelf) {
+    aDateAddedToShelf = a.changes?.find((c) => c.action === "addBook")?.payload
+      .timestamp;
+    bDateAddedToShelf = b.changes?.find((c) => c.action === "addBook")?.payload
+      .timestamp;
   } else {
     aDateAddedToShelf = a.changes?.find((c) => {
       c.payload.newValue?.length &&
-        c.payload.newValue.includes(shelf.id) &&
-        !c.payload.oldValue.includes(shelf.id);
+        c.payload.oldValue?.length &&
+        c.payload.newValue?.includes(shelf.id) &&
+        !c.payload.oldValue?.includes(shelf.id);
     })?.payload.timestamp;
     bDateAddedToShelf = b.changes?.find((c) => {
       c.payload.newValue?.length &&
-        c.payload.newValue.includes(shelf.id) &&
-        !c.payload.oldValue.includes(shelf.id);
+        c.payload.oldValue?.length &&
+        c.payload.newValue?.includes(shelf.id) &&
+        !c.payload.oldValue?.includes(shelf.id);
     })?.payload.timestamp;
   }
 
@@ -113,8 +127,15 @@ const sortByDateAddedToShelf = (a, b, shelf) => {
 };
 
 const sortByPercentComplete = (a, b, descending) => {
-  const aPercentComplete = a.readPages / a.totalPages;
-  const bPercentComplete = b.readPages / b.totalPages;
+  let aPercentComplete = 0;
+  let bPercentComplete = 0;
+
+  if (!a.finished && !a.finishedDate) {
+    aPercentComplete = a.readPages / a.totalPages;
+  }
+  if (!b.finished && !b.finishedDate) {
+    bPercentComplete = b.readPages / b.totalPages;
+  }
 
   if (descending) {
     return aPercentComplete > bPercentComplete ? -1 : 1;

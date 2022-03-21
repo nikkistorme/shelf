@@ -21,13 +21,20 @@
           type="email"
           label="Email"
         />
-        <DefaultInput
+        <PasswordInput
           v-if="activeForm !== 'password-reset'"
           id="password"
           v-model="credentials.password"
-          type="password"
+          class="w-100"
           label="Password"
         />
+        <div v-if="errors.length" class="login-page__errors">
+          <ul>
+            <li v-for="(error, i) in errors" :key="i">
+              {{ error }}
+            </li>
+          </ul>
+        </div>
         <div class="d-flex jc-space-between w-100 my-1">
           <DefaultButton
             :text="submitButtonText"
@@ -60,16 +67,20 @@
         </p>
       </div>
     </div>
+    <!-- <p v-if="userLoading">Loading...</p> -->
   </main>
 </template>
 
 <script>
+import { mapGetters } from "vuex";
+
 import InlineButton from "../components/buttons/InlineButton.vue";
 import DefaultInput from "../components/forms/DefaultInput.vue";
 import DefaultButton from "../components/buttons/DefaultButton.vue";
+import PasswordInput from "../components/forms/PasswordInput.vue";
 
 export default {
-  components: { InlineButton, DefaultInput, DefaultButton },
+  components: { InlineButton, DefaultInput, DefaultButton, PasswordInput },
   data() {
     return {
       activeForm: "sign-up",
@@ -80,9 +91,11 @@ export default {
       },
       status: "",
       message: "",
+      errors: [],
     };
   },
   computed: {
+    ...mapGetters(["userLoading"]),
     disableForm() {
       switch (this.activeForm) {
         case "sign-up":
@@ -117,20 +130,47 @@ export default {
       console.log(this.activeForm);
     },
     showForm(form) {
+      this.errors = [];
       this.activeForm = form;
     },
+    checkForm() {
+      this.errors = [];
+      if (this.activeForm === "sign-up" && !this.credentials.name) {
+        this.errors.push("Name required to sign up.");
+      }
+      if (!this.credentials.email) {
+        this.errors.push("Email required.");
+      }
+      if (this.activeForm !== "password-reset" && !this.credentials.password) {
+        this.errors.push("Password required.");
+      }
+      if (
+        this.activeForm !== "password-reset" &&
+        this.credentials.password.length < 8
+      ) {
+        console.log(
+          "🚀 ~ this.credentials.password.length",
+          this.credentials.password.length
+        );
+        this.errors.push("Password must be at least 8 characters.");
+      }
+      console.log("🚀 ~ this.errors", this.errors);
+    },
     async submitForm() {
-      try {
-        if (this.activeForm === "login") {
-          await this.$store.dispatch("signIn", this.credentials);
-        } else if (this.activeForm === "sign-up") {
-          await this.$store.dispatch("signUp", this.credentials);
-        } else if (this.activeForm === "password-reset") {
-          await this.$store.dispatch("resetPassword", this.credentials.email);
+      this.checkForm();
+      if (this.errors.length === 0) {
+        try {
+          if (this.activeForm === "login") {
+            await this.$store.dispatch("signIn", this.credentials);
+          } else if (this.activeForm === "sign-up") {
+            await this.$store.dispatch("signUp", this.credentials);
+          } else if (this.activeForm === "password-reset") {
+            await this.$store.dispatch("resetPassword", this.credentials.email);
+          }
+        } catch (error) {
+          this.errors.push(error);
+          this.status = "failure";
         }
-      } catch (error) {
-        this.message = error;
-        this.status = "failure";
       }
     },
     async resetPassword() {
@@ -160,6 +200,7 @@ export default {
   color: var(--color-primary);
 }
 .login-page__form {
+  gap: var(--spacing-size-1);
   margin-top: var(--spacing-size-1);
 }
 .login-page__form .default-input {
@@ -167,6 +208,9 @@ export default {
 }
 .login-page__form .input {
   width: 100%;
+}
+.login-page__errors li {
+  color: var(--color-red);
 }
 .login-page__account-prompts {
   text-align: right;

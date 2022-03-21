@@ -37,4 +37,6 @@
   --default-input-padding: var(--spacing-size-half) var(--spacing-root);
   --default-input-border: 2px solid var(--color-grey);
   --default-input-border-radius: var(--border-radius-1);
+
+  --content-max-width: 1420px;
 }

@@ -22,10 +22,9 @@ const changeSchema = {
 };
 
 export const makeChange = (action, change) => {
-  const now = new Date();
   let newChange = Object.assign({}, changeSchema);
   newChange.action = action;
-  newChange.created = now.toISOString();
+  newChange.created = new Date().toISOString();
   newChange.payload = {
     timestamp: Date.now(),
     oldValue: change.oldValue,
@@ -37,16 +36,24 @@ export const makeChange = (action, change) => {
     case "removeFromShelf":
       newChange.fields.shelfName = change.fields.shelfName;
       break;
+    case "updateField":
+      newChange.fields[change.field] = change.newValue;
+      newChange.fields.fieldName = change.field;
+      break;
+    case "startReading":
+      newChange.fields.inProgress = true;
+      newChange.fields.readPages = 0;
+      break;
     default:
       break;
   }
   return newChange;
 };
 
-const makeChangeFromForm = (action, form, oldValue = null) => {
+export const makeChangeFromForm = (action, form, oldValue = null) => {
   let newChange = Object.assign({}, changeSchema);
   newChange.action = action;
-  newChange.created = new Date.toISOString();
+  newChange.created = new Date().toISOString();
   newChange.payload.timestamp = Date.now();
   console.log("🚀 ~ form.duration", form.duration);
   switch (action) {
@@ -75,9 +82,9 @@ const makeChangeFromForm = (action, form, oldValue = null) => {
       newChange.payload = {
         timestamp: Date.now(),
         oldValue: oldValue,
-        newValue: Date.now(),
+        newValue: new Date().toISOString(),
       };
-      newChange.fields.finishedDate = Date.now();
+      newChange.fields.finished = true;
       newChange.fields.readPages = form.endAt;
       newChange.fields.inProgress = false;
       newChange.fields.goal.startDate = 0;

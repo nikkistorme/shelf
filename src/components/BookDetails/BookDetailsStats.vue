@@ -6,15 +6,15 @@
     <div class="split-card-top w-100 d-flex flex-column">
       <DetailedBookProgress />
       <hr
-        class="book-details__stats-divide"
+        class="book-details__stats-divide my-1"
         :class="{ hidden: updateProgressOpen }"
       />
     </div>
     <UpdateProgress />
     <div class="split-card-middle w-100 d-flex flex-column">
-      <DetailedBookGoals />
+      <BookDetailsGoals />
       <hr
-        class="book-details__stats-divide"
+        class="book-details__stats-divide my-1"
         :class="{ hidden: updateGoalOpen }"
       />
     </div>
@@ -30,7 +30,7 @@ import { mapGetters } from "vuex";
 
 import DetailedBookProgress from "./DetailedBookProgress.vue";
 import UpdateProgress from "./UpdateProgress.vue";
-import DetailedBookGoals from "./DetailedBookGoals.vue";
+import BookDetailsGoals from "./BookDetailsGoals.vue";
 import DetailedBookPredictions from "./DetailedBookPredictions.vue";
 import UpdateGoal from "./UpdateGoal.vue";
 
@@ -38,7 +38,7 @@ export default {
   components: {
     UpdateProgress,
     DetailedBookProgress,
-    DetailedBookGoals,
+    BookDetailsGoals,
     DetailedBookPredictions,
     UpdateGoal,
   },

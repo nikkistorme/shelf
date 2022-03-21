@@ -31,12 +31,13 @@
       d="M49.6241 26C49.6241 39.2685 38.9494 50 25.812 50C12.6747 50 2 39.2685 2 26C2 12.7315 12.6747 2 25.812 2C38.9494 2 49.6241 12.7315 49.6241 26Z"
       stroke="#327FB7"
       stroke-width="4"
+      class="social-icon__circle"
     />
   </svg>
 </template>
 
 <style scoped>
-.social-icon path {
+.social-icon__circle {
   stroke: var(--color-primary);
 }
 </style>

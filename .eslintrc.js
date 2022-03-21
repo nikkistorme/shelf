@@ -6,6 +6,6 @@ module.exports = {
   rules: {
     // override/add rules settings here, such as:
     // 'vue/no-unused-vars': 'error'
-    "max-lines": ["error", { max: 150 }],
+    "max-lines": ["error", { max: 300 }],
   },
 };

@@ -12,7 +12,7 @@ const getPagesRemaining = (book) => {
   return book.totalPages - book.readPages;
 };
 
-const getProgressUpdates = (changes) => {
+export const getProgressUpdates = (changes) => {
   return changes.filter((change) => change.action === "updatePage");
 };
 
@@ -187,7 +187,7 @@ const getBooksWithGoals = (books) => {
   return books.filter((book) => book.goal && book.goal?.goalDate > Date.now());
 };
 
-const getFormattedDate = (timestamp) => {
+export const getFormattedDate = (timestamp) => {
   const date = new Date(timestamp);
   return date.toLocaleDateString();
 };

@@ -12,6 +12,7 @@
       </div>
       <h2 class="shelf-title__name">{{ activeShelf.name }}</h2>
     </div>
+    <!-- <EditPencil /> -->
     <div
       class="shelf-title__shelf-dropdown dropdown-modal-menu flex-column"
       :class="{ open: libraryShelfSelectOpen }"
@@ -19,30 +20,7 @@
       <div
         class="shelf-title__shelf-dropdown-wrapper d-flex flex-column ai-end p-1 pt-2"
       >
-        <ul class="shelf-title__dropdown-list w-100 px-1">
-          <li
-            v-for="(shelf, i) in sortedShelves"
-            :key="i"
-            class="d-flex jc-space-between"
-            :class="{ 'mb-1': i !== sortedShelves.length - 1 }"
-          >
-            <p
-              v-if="shelf.id === activeShelf.id"
-              class="shelf-title__active-shelf-name"
-            >
-              {{ shelf.name }}
-            </p>
-            <InlineButton
-              v-else
-              :text="shelf.name"
-              color="blue"
-              @click="changeActiveShelf(shelf)"
-            />
-            <div>
-              <p>({{ getBooksOnShelf(shelf).length }})</p>
-            </div>
-          </li>
-        </ul>
+        <ShelvesList />
         <hr class="my-2" />
         <DefaultButton
           :text="createShelfFormOpen ? 'Cancel' : 'New shelf'"
@@ -80,9 +58,10 @@ import { mapMutations } from "vuex";
 import { mapActions } from "vuex";
 
 import ArrowDown from "../icons/ArrowDown.vue";
-import InlineButton from "../buttons/InlineButton.vue";
 import DefaultButton from "../buttons/DefaultButton.vue";
 import DefaultInput from "../forms/DefaultInput.vue";
+import ShelvesList from "./ShelvesList.vue";
+import EditPencil from "../icons/EditPencil.vue";
 
 // const addHeightForNewShelf = () => {
 //   const outerDropdown = document.querySelector(".shelf-title__shelf-dropdown");
@@ -94,7 +73,13 @@ import DefaultInput from "../forms/DefaultInput.vue";
 // };
 
 export default {
-  components: { ArrowDown, InlineButton, DefaultButton, DefaultInput },
+  components: {
+    ArrowDown,
+    DefaultButton,
+    DefaultInput,
+    ShelvesList,
+    EditPencil,
+  },
   data() {
     return {
       createShelfFormOpen: false,
@@ -102,29 +87,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters([
-      "books",
-      "shelves",
-      "libraryShelfSelectOpen",
-      "activeShelf",
-      "getBooksOnShelf",
-    ]),
-    sortedShelves() {
-      const allBooksShelf = this.shelves.find((shelf) => shelf.allBooksShelf);
-      const finishedShelf = this.shelves.find((shelf) => shelf.finishedShelf);
-      const inProgressShelf = this.shelves.find(
-        (shelf) => shelf.inProgressShelf
-      );
-      const shelves = this.shelves.filter(
-        (shelf) =>
-          !shelf.allBooksShelf && !shelf.finishedShelf && !shelf.inProgressShelf
-      );
-      shelves.sort((a, b) => (a.name > b.name ? 1 : -1));
-      if (inProgressShelf) shelves.unshift(inProgressShelf);
-      if (finishedShelf) shelves.unshift(finishedShelf);
-      if (allBooksShelf) shelves.unshift(allBooksShelf);
-      return shelves;
-    },
+    ...mapGetters(["libraryShelfSelectOpen", "activeShelf"]),
   },
   watch: {
     libraryShelfSelectOpen(newValue) {
@@ -140,6 +103,11 @@ export default {
       } else {
         document.querySelector(".shelf-title__shelf-dropdown").style.height =
           "0px";
+      }
+    },
+    activeShelf(newValue) {
+      if (newValue && this.libraryShelfSelectOpen) {
+        this.toggleShelfSelect();
       }
     },
     createShelfFormOpen(newValue) {
@@ -167,16 +135,12 @@ export default {
         this.createShelfFormOpen = false;
       }
     },
-    changeActiveShelf(shelf) {
-      this.setActiveShelf(shelf);
-      this.toggleShelfSelect();
-    },
     toggleCreateShelfForm() {
       this.createShelfFormOpen = !this.createShelfFormOpen;
     },
     async createShelf() {
       const newShelf = await this.addShelf(this.newShelfName);
-      this.changeActiveShelf(newShelf);
+      this.setActiveShelf(newShelf);
       this.newShelfName = "";
     },
   },
@@ -189,7 +153,6 @@ export default {
 }
 .shelf-title__select-wrapper {
   width: fit-content;
-  margin-bottom: var(--spacing-size-2);
   cursor: pointer;
 }
 .shelf-title__select-icon .up,
@@ -208,10 +171,6 @@ export default {
 .shelf-title__dropdown-list {
   max-height: 450px;
   overflow-y: auto;
-}
-.shelf-title__active-shelf-name {
-  font-weight: bold;
-  text-decoration: underline;
 }
 .create-shelf {
   height: 0;

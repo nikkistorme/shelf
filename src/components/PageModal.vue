@@ -1,7 +1,8 @@
 <template>
-  <div class="page-modal" :class="{ open: modalOpen }">
+  <div class="page-modal" :class="{ open: showOverlay }">
     <div class="page-modal__overlay" @click="shutItDown"></div>
-    <BookDetails />
+    <BookDetails v-if="detailedBook.title" />
+    <ConfirmModal v-if="confirmAction.message" />
   </div>
 </template>
 
@@ -9,17 +10,32 @@
 import { mapGetters } from "vuex";
 import { mapMutations } from "vuex";
 import BookDetails from "./BookDetails/BookDetails.vue";
+import ConfirmModal from "./ConfirmModal.vue";
 
 export default {
-  components: { BookDetails },
+  components: { BookDetails, ConfirmModal },
   computed: {
-    ...mapGetters(["modalOpen"]),
+    ...mapGetters([
+      "modalOpen",
+      "detailedBook",
+      "searchResultsOpen",
+      "confirmAction",
+    ]),
+    showOverlay() {
+      return (
+        this.modalOpen ||
+        this.detailedBook.title ||
+        this.searchResultsOpen ||
+        this.confirmAction.message
+      );
+    },
   },
   methods: {
-    ...mapMutations(["closeAllModals", "setDetailedBook"]),
+    ...mapMutations(["closeAllModals", "setDetailedBook", "setConfirmAction"]),
     shutItDown() {
       this.closeAllModals();
       this.setDetailedBook({});
+      this.setConfirmAction({});
     },
   },
 };
