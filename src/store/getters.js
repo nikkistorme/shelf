@@ -69,6 +69,8 @@ const getBooksOnShelf = (state) => (shelf) => {
     return state.books.filter((book) => book.finished);
   } else if (shelf.inProgressShelf) {
     return state.books.filter((book) => book.inProgress);
+  } else if (shelf.unreadShelf) {
+    return state.books.filter((book) => !book.finished && !book.inProgress);
   } else {
     return state.books.filter((book) => book.shelves.includes(shelf.id));
   }
@@ -76,6 +78,10 @@ const getBooksOnShelf = (state) => (shelf) => {
 
 const shelvesLoading = (state) => {
   return state.loading.shelves;
+};
+
+const activeShelfLoading = (state) => {
+  return state.loading.activeShelf;
 };
 
 const detailedBookLoading = (state) => {
@@ -92,6 +98,14 @@ const userLoading = (state) => {
 
 const confirmAction = (state) => {
   return state.confirmAction;
+};
+
+const bookToAdd = (state) => {
+  return state.bookToAdd;
+};
+
+const booksLoading = (state) => {
+  return state.loading.books;
 };
 
 export default {
@@ -117,4 +131,7 @@ export default {
   searchResultsOpen,
   userLoading,
   confirmAction,
+  bookToAdd,
+  activeShelfLoading,
+  booksLoading,
 };

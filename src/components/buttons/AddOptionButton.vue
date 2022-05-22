@@ -1,7 +1,7 @@
 <template>
   <div class="add-option-button__wrapper d-flex">
-    <InlineButton v-if="text" :text="text" color="blue" underline />
     <AddButtonIcon class="add-option-button h-100" />
+    <InlineButton v-if="text" :text="text" color="blue" underline />
     <select
       :id="id"
       :name="inputName"

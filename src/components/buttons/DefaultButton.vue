@@ -51,6 +51,9 @@ export default {
   background: var(--color-red);
   color: white;
 }
+.default-button.yellow {
+  background: var(--color-yellow);
+}
 .default-button.tiny {
   padding: var(--spacing-size-half);
   border-radius: var(--border-radius-3);

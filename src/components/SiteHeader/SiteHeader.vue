@@ -8,7 +8,7 @@
       <HeaderNavigation class="desktop-only" />
     </div>
     <div class="d-flex jc-end ai-center gap-1 right">
-      <HeaderSearch />
+      <!-- <HeaderSearch /> -->
       <HeaderProfile class="desktop-only" />
       <MobileNavigation class="mobile-only" />
     </div>
@@ -20,7 +20,7 @@ import { mapGetters } from "vuex";
 
 import HeaderLogo from "./HeaderLogo.vue";
 import HeaderNavigation from "./HeaderNavigation.vue";
-import HeaderSearch from "./HeaderSearch.vue";
+// import HeaderSearch from "./HeaderSearch.vue";
 import HeaderProfile from "./HeaderProfile.vue";
 import MobileNavigation from "./MobileNavigation.vue";
 
@@ -28,7 +28,7 @@ export default {
   components: {
     HeaderLogo,
     HeaderNavigation,
-    HeaderSearch,
+    // HeaderSearch,
     HeaderProfile,
     MobileNavigation,
   },
@@ -49,9 +49,10 @@ export default {
 <style>
 .site-header {
   position: relative;
-  height: 70px;
+  height: var(--header-height);
   padding: 0 var(--spacing-root);
-  box-shadow: var(--box-shadow-2);
+  /* box-shadow: var(--box-shadow-2); */
+  border-bottom: 2px solid var(--color-grey);
 }
 .site-header .right {
   flex: 1;
@@ -59,7 +60,7 @@ export default {
 
 @media (min-width: 768px) {
   .site-header {
-    height: 75px;
+    /* height: 75px; */
     padding: 0 var(--spacing-size-4);
   }
 }

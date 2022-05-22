@@ -6,6 +6,8 @@ import HomePage from "../views/HomePage.vue";
 import LibraryPage from "../views/LibraryPage.vue";
 import SocialPage from "../views/SocialPage.vue";
 import AccountPage from "../views/AccountPage.vue";
+import AddBookPage from "../views/AddBookPage.vue";
+import SearchPage from "../views/SearchPage.vue";
 
 const routes = [
   { path: "/", component: LoginPage },
@@ -13,6 +15,8 @@ const routes = [
   { path: "/library", component: LibraryPage, meta: { requiresAuth: true } },
   { path: "/social", component: SocialPage, meta: { requiresAuth: true } },
   { path: "/account", component: AccountPage, meta: { requiresAuth: true } },
+  { path: "/add-book", component: AddBookPage, meta: { requiresAuth: true } },
+  { path: "/search", component: SearchPage, meta: { requiresAuth: true } },
   { path: "/*", redirect: "/home" },
 ];
 

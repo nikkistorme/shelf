@@ -29,6 +29,7 @@
       <DefaultButton
         v-if="detailedBook.id && !detailedBook.inProgress"
         text="Start reading"
+        color="yellow"
         @click="startReading"
       />
       <BookDetailsDescription />
@@ -155,22 +156,13 @@ export default {
       "closeAllModals",
       "setDetailedBook",
     ]),
-    ...mapActions([
-      "deleteBook",
-      "addBookToLibrary",
-      "updateBookField",
-      "startReadingBook",
-    ]),
+    ...mapActions(["deleteBook", "startReadingBook"]),
     logBook() {
       console.log(`${this.detailedBook.title}:`, this.detailedBook);
     },
     closeBookDetails() {
       this.closeAllModals();
       this.setDetailedBook({});
-    },
-    async addBook() {
-      const addedBook = await this.addBookToLibrary(this.detailedBook);
-      this.setDetailedBook(addedBook);
     },
     async startReading() {
       await this.startReadingBook({
@@ -225,13 +217,14 @@ export default {
 }
 .book-details__cover img {
   height: 100%;
+  border-radius: 5px;
   object-fit: contain;
   object-position: bottom;
 }
 .book-details__cover-placeholder {
   height: 250px;
   width: 175px;
-  border-radius: 0 5px 5px 0;
+  border-radius: 5px;
   background-color: var(--color-grey);
   text-align: center;
 }

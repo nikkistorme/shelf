@@ -39,6 +39,7 @@ export default {
           author: book.author,
           timeRemaining: statsService.timeRemaining(book),
           overallPace: statsService.overallPace(book),
+          id: book.id,
         };
         predictions.push(p);
       });

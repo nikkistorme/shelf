@@ -15,7 +15,6 @@ const setBooks = (state, books) => {
 };
 
 const setDetailedBook = (state, book) => {
-  console.log("🚀 ~ state", state);
   state.detailedBook = book;
 };
 
@@ -106,6 +105,23 @@ const deleteShelf = (state, shelf) => {
   state.shelves = state.shelves.filter((s) => s.id !== shelf.id);
 };
 
+const setBookToAdd = (state, book) => {
+  state.bookToAdd = book;
+};
+
+const updateBookInBooks = (state, book) => {
+  state.books = state.books.filter((b) => b.id !== book.id);
+  state.books.push(book);
+};
+
+const setActiveShelfLoading = (state, loading) => {
+  state.loading.activeShelf = loading;
+};
+
+const setBooksLoading = (state, loading) => {
+  state.loading.books = loading;
+};
+
 export default {
   setUser,
   setUserLoading,
@@ -133,4 +149,8 @@ export default {
   deleteBook,
   setConfirmAction,
   deleteShelf,
+  setBookToAdd,
+  updateBookInBooks,
+  setActiveShelfLoading,
+  setBooksLoading,
 };

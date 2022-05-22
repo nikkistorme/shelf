@@ -99,18 +99,14 @@ const sortByDateAddedToShelf = (a, b, shelf) => {
     bDateAddedToShelf = b.changes?.find((c) => c.action === "addBook")?.payload
       .timestamp;
   } else {
-    aDateAddedToShelf = a.changes?.find((c) => {
-      c.payload.newValue?.length &&
-        c.payload.oldValue?.length &&
-        c.payload.newValue?.includes(shelf.id) &&
-        !c.payload.oldValue?.includes(shelf.id);
-    })?.payload.timestamp;
-    bDateAddedToShelf = b.changes?.find((c) => {
-      c.payload.newValue?.length &&
-        c.payload.oldValue?.length &&
-        c.payload.newValue?.includes(shelf.id) &&
-        !c.payload.oldValue?.includes(shelf.id);
-    })?.payload.timestamp;
+    const aRelevantChanges = a.changes?.filter(
+      (c) => c.payload?.newValue === shelf.id
+    );
+    aDateAddedToShelf = aRelevantChanges[0]?.payload.timestamp;
+    const bRelevantChanges = b.changes?.filter(
+      (c) => c.payload?.newValue === shelf.id
+    );
+    bDateAddedToShelf = bRelevantChanges[0]?.payload.timestamp;
   }
 
   if (!aDateAddedToShelf) {
@@ -119,6 +115,10 @@ const sortByDateAddedToShelf = (a, b, shelf) => {
   if (!bDateAddedToShelf) {
     bDateAddedToShelf = 0;
   }
+  // if (a.title === "The Red Threads of Fortune") {
+  //   console.log("🚀 ~ aDateAddedToShelf", aDateAddedToShelf);
+  //   console.log("🚀 ~ bDateAddedToShelf", bDateAddedToShelf);
+  // }
   if (shelf.sort?.descending) {
     return aDateAddedToShelf > bDateAddedToShelf ? -1 : 1;
   } else {
@@ -179,12 +179,20 @@ const sortByLastUpdatedProgress = (a, b, descending) => {
 export const filterBooksBySearchTerm = (books, searchTerm) => {
   if (searchTerm) {
     books = books.filter((book) => {
-      const searchMatchTitle = book.title
-        .toLowerCase()
-        .includes(searchTerm.toLowerCase());
-      const searchMatchAuthor = book.author
-        .toLowerCase()
-        .includes(searchTerm.toLowerCase());
+      let searchMatchTitle = false;
+      let searchMatchAuthor = false;
+      if (book.title) {
+        searchMatchTitle = book.title
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase());
+      } else {
+        console.log(book);
+      }
+      if (book.author) {
+        searchMatchAuthor = book.author
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase());
+      }
       return searchMatchTitle || searchMatchAuthor;
     });
   }

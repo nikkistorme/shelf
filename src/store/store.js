@@ -11,6 +11,7 @@ export default createStore({
     books: [],
     shelves: [],
     detailedBook: {},
+    bookToAdd: {},
     activeShelf: {},
     confirmAction: {},
     loading: {
@@ -18,6 +19,7 @@ export default createStore({
       books: false,
       shelves: false,
       detailedBook: false,
+      activeShelf: false,
     },
     open: {
       modal: false,

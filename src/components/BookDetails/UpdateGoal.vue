@@ -43,6 +43,7 @@
           :disabled="disableUpdateGoal()"
           type="submit"
           text="Set Goal"
+          color="yellow"
           flavor="tiny"
         />
       </div>
@@ -137,6 +138,7 @@ export default {
         this.form,
         this.oldGoal
       );
+      console.log("🚀 ~ newChange", newChange);
       await this.setGoal({
         book: this.detailedBook,
         change: newChange,

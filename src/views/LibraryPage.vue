@@ -1,6 +1,6 @@
 <template>
   <main class="library__page page-wrapper as-center">
-    <div v-if="!shelvesLoading" class="library__wrapper d-flex gap-3 w-100">
+    <div class="library__wrapper d-flex gap-3 w-100">
       <LibrarySidebar class="library__sidebar" />
       <section class="d-flex flex-column gap-2 w-100">
         <div class="library__shelf-top d-flex gap-2">
@@ -27,6 +27,15 @@
             </div>
           </div>
         </div>
+        <p style="display: none">
+          {{ pagesOnActiveShelf }} total pages on this shelf
+        </p>
+        <p style="display: none">
+          {{ pagesReadTodayOnActiveShelf }} pages read today
+        </p>
+        <p style="display: none">
+          {{ pagesReadThisWeekOnActiveShelf }} pages read this week
+        </p>
         <div class="libary__books">
           <ShelvedBook
             v-for="(book, i) in booksOnActiveShelf"
@@ -37,9 +46,6 @@
           />
         </div>
       </section>
-    </div>
-    <div v-else class="d-flex jc-center ai-center" @click="test">
-      <h2>Loading library...</h2>
     </div>
   </main>
 </template>
@@ -53,6 +59,7 @@ import {
   sortShelfByMethod,
   filterBooksBySearchTerm,
 } from "../services/shelfSortingService.js";
+import { pagesReadToday, pagesReadThisWeek } from "../services/statsService.js";
 
 import DefaultInput from "../components/forms/DefaultInput.vue";
 import LibrarySidebar from "../components/Library/LibrarySidebar.vue";
@@ -85,13 +92,23 @@ export default {
     sortedBooks() {
       let books = this.getBooksOnShelf(this.activeShelf);
       books.sort((a, b) => sortShelfByMethod(a, b, this.activeShelf));
-      // books = books.filter((b) =>
-      //   b.changes?.find((c) => c.action === "addBook")
-      // );
       return books;
     },
     booksOnActiveShelf() {
       return filterBooksBySearchTerm(this.sortedBooks, this.searchTerm);
+    },
+    pagesOnActiveShelf() {
+      let pages = 0;
+      this.sortedBooks.forEach((book) => {
+        pages += book.totalPages;
+      });
+      return pages;
+    },
+    pagesReadTodayOnActiveShelf() {
+      return pagesReadToday(this.sortedBooks);
+    },
+    pagesReadThisWeekOnActiveShelf() {
+      return pagesReadThisWeek(this.sortedBooks);
     },
   },
   watch: {
@@ -113,10 +130,6 @@ export default {
 </script>
 
 <style>
-/* .library__page {
-  max-width: 1420px;
-  padding: var(--spacing-size-2) var(--spacing-size-1);
-} */
 .library__shelf-top {
   flex-direction: column;
 }

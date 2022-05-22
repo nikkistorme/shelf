@@ -11,7 +11,7 @@
       :text="updateProgressOpen ? 'Cancel' : 'Update'"
       flavor="tiny"
       class="ml-auto"
-      :color="updateProgressOpen ? 'red' : 'blue'"
+      :color="updateProgressOpen ? 'red' : 'yellow'"
       @click="toggleUpdateProgress"
     />
   </div>

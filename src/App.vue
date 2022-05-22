@@ -2,8 +2,9 @@
   <div class="app-container d-flex flex-column">
     <PageModal />
     <SiteHeader v-if="!userLoading" />
-    <router-view />
-    <SiteFooter />
+    <router-view class="app-content" />
+    <AddBookButton />
+    <!-- <SiteFooter /> -->
   </div>
 </template>
 
@@ -12,14 +13,16 @@ import { mapGetters } from "vuex";
 
 import SiteHeader from "./components/SiteHeader/SiteHeader.vue";
 import PageModal from "./components/PageModal.vue";
-import SiteFooter from "./components/SiteFooter/SiteFooter.vue";
+// import SiteFooter from "./components/SiteFooter/SiteFooter.vue";
+import AddBookButton from "./components/AddBookButton.vue";
 
 export default {
   name: "App",
   components: {
     SiteHeader,
     PageModal,
-    SiteFooter,
+    // SiteFooter,
+    AddBookButton,
   },
   computed: {
     ...mapGetters(["modalOpen", "userLoading"]),
@@ -35,3 +38,9 @@ export default {
   },
 };
 </script>
+
+<style>
+.app-content {
+  min-height: calc(100vh - var(--header-height));
+}
+</style>

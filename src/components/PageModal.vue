@@ -3,6 +3,13 @@
     <div class="page-modal__overlay" @click="shutItDown"></div>
     <BookDetails v-if="detailedBook.title" />
     <ConfirmModal v-if="confirmAction.message" />
+    <div
+      v-show="showLoader"
+      class="page-modal__loading d-flex jc-center ai-center"
+    >
+      <div class="page-modal__loading-backdrop"></div>
+      <BookLoader class="page-modal__loading-icon" />
+    </div>
   </div>
 </template>
 
@@ -11,15 +18,19 @@ import { mapGetters } from "vuex";
 import { mapMutations } from "vuex";
 import BookDetails from "./BookDetails/BookDetails.vue";
 import ConfirmModal from "./ConfirmModal.vue";
+import BookLoader from "./icons/BookLoader.vue";
 
 export default {
-  components: { BookDetails, ConfirmModal },
+  components: { BookDetails, ConfirmModal, BookLoader },
   computed: {
     ...mapGetters([
       "modalOpen",
       "detailedBook",
       "searchResultsOpen",
       "confirmAction",
+      "shelvesLoading",
+      "userLoading",
+      "booksLoading",
     ]),
     showOverlay() {
       return (
@@ -28,6 +39,9 @@ export default {
         this.searchResultsOpen ||
         this.confirmAction.message
       );
+    },
+    showLoader() {
+      return this.shelvesLoading || this.userLoading || this.booksLoading;
     },
   },
   methods: {
@@ -61,5 +75,21 @@ export default {
 .page-modal__modal {
   width: 100%;
   height: 100%;
+}
+.page-modal__loading {
+  position: fixed;
+  height: 100vh;
+  width: 100vw;
+  z-index: 10;
+}
+.page-modal__loading-backdrop {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  background-color: black;
+  opacity: 0.2;
+}
+.page-modal__loading-icon {
+  z-index: 11;
 }
 </style>

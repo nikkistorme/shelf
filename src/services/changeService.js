@@ -1,28 +1,31 @@
-const changeSchema = {
-  action: "",
-  timestamp: 0, // Always store UTC
-  payload: {
-    timestamp: "", // Always store UTC
-    oldValue: null,
-    newValue: null,
-  },
-  fields: {
-    readPages: null,
-    progressUpdateStartType: null,
-    progressUpdateEndType: null,
-    goal: {
-      startDate: null,
-      goalDate: null,
-      targetPage: null,
+export const changeSchema = () => {
+  let change = {
+    action: "",
+    created: null,
+    payload: {
+      timestamp: "", // Always store UTC
+      oldValue: null,
+      newValue: null,
     },
-    finishedDate: null,
-    inProgress: null,
-    shelf: null,
-  },
+    fields: {
+      readPages: null,
+      progressUpdateStartType: null,
+      progressUpdateEndType: null,
+      goal: {
+        startDate: null,
+        goalDate: null,
+        targetPage: null,
+      },
+      finishedDate: null,
+      inProgress: null,
+      shelf: null,
+    },
+  };
+  return change;
 };
 
 export const makeChange = (action, change) => {
-  let newChange = Object.assign({}, changeSchema);
+  let newChange = changeSchema();
   newChange.action = action;
   newChange.created = new Date().toISOString();
   newChange.payload = {
@@ -51,7 +54,7 @@ export const makeChange = (action, change) => {
 };
 
 export const makeChangeFromForm = (action, form, oldValue = null) => {
-  let newChange = Object.assign({}, changeSchema);
+  let newChange = changeSchema();
   newChange.action = action;
   newChange.created = new Date().toISOString();
   newChange.payload.timestamp = Date.now();

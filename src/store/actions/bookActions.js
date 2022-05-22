@@ -5,7 +5,6 @@ const addBookToLibrary = async ({ commit, state }, book) => {
   commit("setDetailedBookLoading", true);
   try {
     let newBook = bookService.newBookObject(book, state.user.uid);
-    console.log("🚀 ~ newBook", newBook);
     await bookService.addBook(newBook);
     commit("addBook", newBook);
     commit("setDetailedBookLoading", false);
@@ -26,10 +25,15 @@ const getBooks = async ({ commit }) => {
   }
 };
 
-const getDetailedBook = async ({ getters, commit }, id) => {
-  const detailedBook = await bookService.getBook(id);
+const getDetailedBook = async ({ commit, state }, id) => {
+  // await fetch("https://icy-flower-8c91.nikkistorme.workers.dev");
+  let detailedBook = {};
   try {
-    const shelves = getters.shelves;
+    detailedBook = await bookService.getBook(id);
+    if (!detailedBook.changes) {
+      detailedBook.changes = [];
+    }
+    const shelves = state.shelves;
     let staleShelfIds = [];
     detailedBook.shelves.forEach((shelfId) => {
       const shelfInStore = shelves.find((s) => s.id === shelfId);
@@ -48,6 +52,8 @@ const getDetailedBook = async ({ getters, commit }, id) => {
     console.log("🚀 ~ error", error);
     throw error;
   }
+  console.log("🚀 ~ detailedBook", detailedBook);
+  commit("updateBookInBooks", detailedBook);
   commit("setDetailedBook", detailedBook);
 };
 
@@ -63,6 +69,7 @@ const updatePage = async ({ commit }, bookAndChange) => {
     console.log(error);
     throw error;
   }
+  commit("updateBookInBooks", bookAndChange.book);
   commit("setDetailedBook", bookAndChange.book);
   commit("setUpdateProgressVisible", false);
 };
@@ -79,6 +86,7 @@ const setGoal = async ({ commit }, bookAndChange) => {
     console.log(error);
     throw error;
   }
+  commit("updateBookInBooks", bookAndChange.book);
   commit("setDetailedBook", bookAndChange.book);
 };
 
@@ -97,6 +105,7 @@ const finishReading = async ({ commit }, bookAndChange) => {
     console.log("🚀 ~ error", error);
     throw error;
   }
+  commit("updateBookInBooks", bookAndChange.book);
   commit("setDetailedBook", bookAndChange.book);
   commit("setUpdateProgressVisible", false);
 };
@@ -113,6 +122,7 @@ const addBookToShelf = async ({ commit }, bookAndChange) => {
     console.log("🚀 ~ error", error);
     throw error;
   }
+  commit("updateBookInBooks", bookAndChange.book);
   commit("setDetailedBook", bookAndChange.book);
 };
 
@@ -131,6 +141,7 @@ const removeBookFromShelf = async ({ commit }, bookAndChange) => {
     console.log("🚀 ~ error", error);
     throw error;
   }
+  commit("updateBookInBooks", bookAndChange.book);
   commit("setDetailedBook", bookAndChange.book);
 };
 

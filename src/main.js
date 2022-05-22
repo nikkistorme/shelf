@@ -17,7 +17,6 @@ fb.auth.onAuthStateChanged(async (user) => {
       store.dispatch("getBooks"),
       store.dispatch("getShelves"),
     ]);
-    await store.dispatch("normalizeShelves");
     store.commit("setActiveShelf", store.getters.getAllBooksShelf);
     router.push("/home");
   }

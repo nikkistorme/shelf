@@ -1,0 +1,16 @@
+curl -X POST \
+  "https://api.cloudflare.com/client/v4/accounts/e0d75c4169f2e03212ea796e47db463b/images/v1" \
+  -H "Authorization: Bearer zEK9uhrnsKKGAKMs-QP7WvFoyLdZgnpJH-PwM0gr" \
+  -F file=@./<YOUR_IMAGE>
+
+
+curl --request POST \
+ --url https://api.cloudflare.com/client/v4/accounts/e0d75c4169f2e03212ea796e47db463b/images/v2/direct_upload \
+ --header 'Authorization: Bearer zEK9uhrnsKKGAKMs-QP7WvFoyLdZgnpJH-PwM0gr' \
+ --form 'requireSignedURLs=true' \
+ --form 'metadata={"key":"value"}'
+
+curl -X POST \
+ "https://upload.imagedelivery.net/3pMGvvVow8SDhlc2YM0--g/6cb294ec-afdb-462c-eea0-1966e0a62a01" \
+ -H "Authorization: Bearer zEK9uhrnsKKGAKMs-QP7WvFoyLdZgnpJH-PwM0gr" \
+ -F file=@./couple-1.jpg

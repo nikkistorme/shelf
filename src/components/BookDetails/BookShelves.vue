@@ -1,5 +1,13 @@
 <template>
   <div class="book-details__shelves d-flex flex-wrap mb-2">
+    <AddOptionButton
+      v-if="shelfOptions.length > 0"
+      :id="'add-book-to-shelf'"
+      v-model="selectedShelf"
+      input-name="add-book-to-shelf"
+      :options="shelfOptions"
+      :text="!detailedBook.shelves.length ? 'Add to a shelf' : ''"
+    />
     <div
       v-for="(shelf, i) in detailedBook.shelves"
       :key="i"
@@ -15,14 +23,6 @@
         <CloseIcon class="w-100 h-100" color="red" />
       </div>
     </div>
-    <AddOptionButton
-      v-if="shelfOptions.length > 0"
-      :id="'add-book-to-shelf'"
-      v-model="selectedShelf"
-      input-name="add-book-to-shelf"
-      :options="shelfOptions"
-      :text="!detailedBook.shelves.length ? 'Add to a shelf' : ''"
-    />
   </div>
 </template>
 
@@ -47,7 +47,10 @@ export default {
     shelfOptions() {
       let validShelves = this.shelves.filter((shelf) => {
         return (
-          !shelf.inProgressShelf && !shelf.allBooksShelf && !shelf.finishedShelf
+          !shelf.inProgressShelf &&
+          !shelf.allBooksShelf &&
+          !shelf.finishedShelf &&
+          !shelf.unreadShelf
         );
       });
       validShelves = validShelves.filter((shelf) => {

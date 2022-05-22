@@ -15,7 +15,9 @@
         <router-link to="/home" @click="toggleDropdown">Home</router-link>
         <router-link to="/library" @click="toggleDropdown">Library</router-link>
         <router-link to="/account" @click="toggleDropdown">Account</router-link>
-        <!-- <router-link to="/social" @click="toggleDropdown">Social</router-link> -->
+        <a href="https://trello.com/b/HG9elwZ0/roadmap" target="_blank">
+          Roadmap
+        </a>
         <hr />
         <InlineButton text="Sign out" :click-action="signOut" />
       </div>
@@ -72,6 +74,10 @@ export default {
   width: 200px;
 }
 .mobile-navigation__dropdown.open {
-  height: 218px;
+  height: 230px;
+}
+.mobile-navigation__dropdown a {
+  text-decoration: none;
+  color: var(--color-black);
 }
 </style>

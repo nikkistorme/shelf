@@ -1,6 +1,7 @@
 <template>
   <div class="shelf-title">
     <div
+      v-show="!editName"
       class="shelf-title__select-wrapper d-flex ai-center"
       @click="toggleShelfSelect"
     >
@@ -12,7 +13,23 @@
       </div>
       <h2 class="shelf-title__name">{{ activeShelf.name }}</h2>
     </div>
-    <!-- <EditPencil /> -->
+    <EditPencil
+      v-show="!editName"
+      class="cursor-pointer"
+      @click="toggleEditName"
+    />
+    <form
+      v-show="editName"
+      class="d-flex ai-center gap-1"
+      @submit.prevent="updateShelfName"
+    >
+      <DefaultInput v-model="newShelfName" placeholder="New shelf name" />
+      <CloseIcon color="red" class="cursor-pointer" @click="toggleEditName" />
+      <CheckmarkIcon
+        class="book-details__pages-edit-confirm cursor-pointer"
+        @click="updateShelfName"
+      />
+    </form>
     <div
       class="shelf-title__shelf-dropdown dropdown-modal-menu flex-column"
       :class="{ open: libraryShelfSelectOpen }"
@@ -62,6 +79,8 @@ import DefaultButton from "../buttons/DefaultButton.vue";
 import DefaultInput from "../forms/DefaultInput.vue";
 import ShelvesList from "./ShelvesList.vue";
 import EditPencil from "../icons/EditPencil.vue";
+import CloseIcon from "../icons/CloseIcon.vue";
+import CheckmarkIcon from "../icons/CheckmarkIcon.vue";
 
 // const addHeightForNewShelf = () => {
 //   const outerDropdown = document.querySelector(".shelf-title__shelf-dropdown");
@@ -79,15 +98,23 @@ export default {
     DefaultInput,
     ShelvesList,
     EditPencil,
+    CloseIcon,
+    CheckmarkIcon,
   },
   data() {
     return {
       createShelfFormOpen: false,
       newShelfName: "",
+      editName: false,
     };
   },
   computed: {
-    ...mapGetters(["libraryShelfSelectOpen", "activeShelf"]),
+    ...mapGetters([
+      "libraryShelfSelectOpen",
+      "activeShelf",
+      "confirmAction",
+      "activeShelfLoading",
+    ]),
   },
   watch: {
     libraryShelfSelectOpen(newValue) {
@@ -127,7 +154,16 @@ export default {
       "toggleLibraryShelfSelectOpen",
       "setActiveShelf",
     ]),
-    ...mapActions(["addShelf"]),
+    ...mapActions(["updateActiveShelfName", "addShelf"]),
+    toggleEditName() {
+      this.editName = !this.editName;
+      this.newShelfName = this.activeShelf.name;
+    },
+    async updateShelfName() {
+      await this.updateActiveShelfName(this.newShelfName);
+      this.newShelfName = this.activeShelf.name;
+      this.editName = false;
+    },
     toggleShelfSelect() {
       this.toggleModal();
       this.toggleLibraryShelfSelectOpen();
@@ -136,6 +172,7 @@ export default {
       }
     },
     toggleCreateShelfForm() {
+      this.newShelfName = "";
       this.createShelfFormOpen = !this.createShelfFormOpen;
     },
     async createShelf() {
@@ -150,6 +187,9 @@ export default {
 <style>
 .shelf-title {
   position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-size-1);
 }
 .shelf-title__select-wrapper {
   width: fit-content;

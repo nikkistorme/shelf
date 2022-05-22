@@ -30,6 +30,7 @@ export default {
     ...mapMutations(["setDetailedBook"]),
     ...mapActions(["getDetailedBook"]),
     async viewBookDetails() {
+      console.log("🚀 ~ this.book", this.book);
       await this.getDetailedBook(this.book.id);
     },
   },
@@ -38,7 +39,7 @@ export default {
 
 <style>
 .shelved-book__cover img {
-  border-radius: 0 5px 5px 0;
+  border-radius: 5px;
   object-fit: contain;
   object-position: bottom;
 }
@@ -59,10 +60,10 @@ export default {
 }
 .library.shelved-book__cover img {
   width: 100%;
-  height: min-content;
 }
 .shelved-book__cover-placeholder {
-  border-radius: 0 5px 5px 0;
+  height: 100%;
+  border-radius: 5px;
   background-color: var(--color-grey);
   text-align: center;
 }

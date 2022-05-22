@@ -105,7 +105,19 @@ const updateShelfSort = async (shelf) => {
   }
 };
 
+const updateShelfName = async (shelf) => {
+  try {
+    await fb.shelvesCollection.doc(shelf.id).update({
+      name: shelf.name,
+    });
+  } catch (error) {
+    console.log("🚀 ~ error", error);
+    throw formatError(error);
+  }
+};
+
 const deleteShelf = async (shelf) => {
+  console.log("🚀 ~ shelf", shelf);
   try {
     await fb.shelvesCollection.doc(shelf.id).delete();
   } catch (error) {
@@ -121,5 +133,6 @@ export default {
   getShelves,
   updateShelves,
   updateShelfSort,
+  updateShelfName,
   deleteShelf,
 };

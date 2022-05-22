@@ -47,7 +47,7 @@ const groupUpdatesByDate = (updates) => {
   return groupedUpdates;
 };
 
-const pagesReadToday = (books) => {
+export const pagesReadToday = (books) => {
   let pages = 0;
   books.forEach((book) => {
     if (book.changes?.length) {
@@ -71,7 +71,7 @@ const isDateInThisWeek = (timestamp) => {
   return timestamp > lastSevenDays.valueOf() && timestamp <= today.valueOf();
 };
 
-const pagesReadThisWeek = (books) => {
+export const pagesReadThisWeek = (books) => {
   let pages = 0;
   books.forEach((book) => {
     if (book.changes?.length) {
@@ -84,10 +84,6 @@ const pagesReadThisWeek = (books) => {
         console.log(`${book.title} updates this week`, weekChanges);
       }
       weekChanges.forEach((change) => {
-        console.log(
-          "🚀 ~ change",
-          change.payload.newValue - change.payload.oldValue
-        );
         pages += change.payload.newValue - change.payload.oldValue;
       });
     }
@@ -166,11 +162,10 @@ const overallPace = (book) => {
 const goalPace = (book) => {
   const pagesRemaining = book.goal.targetPage - book.readPages;
   const today = new Date();
-  const todayDay = today.getDate();
   const goalDate = new Date(book.goal.goalDate);
-  const goalDateDay = goalDate.getDate();
-  const diffDays = Math.abs(goalDateDay - todayDay + 1);
-  const pace = Math.ceil(pagesRemaining / diffDays);
+  const differenceInTime = goalDate.getTime() - today.getTime();
+  const differenceInDays = differenceInTime / (1000 * 3600 * 24);
+  const pace = Math.ceil(pagesRemaining / differenceInDays);
   const minPerPage = minutesPerPage(book.changes);
   const minsPerDay = Math.ceil(minPerPage * pace);
   const hoursPerDay = Math.floor(minsPerDay / 60);

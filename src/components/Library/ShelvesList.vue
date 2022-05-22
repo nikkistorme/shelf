@@ -51,11 +51,16 @@ export default {
       const inProgressShelf = this.shelves.find(
         (shelf) => shelf.inProgressShelf
       );
+      const unreadShelf = this.shelves.find((shelf) => shelf.unreadShelf);
       const shelves = this.shelves.filter(
         (shelf) =>
-          !shelf.allBooksShelf && !shelf.finishedShelf && !shelf.inProgressShelf
+          !shelf.allBooksShelf &&
+          !shelf.finishedShelf &&
+          !shelf.inProgressShelf &&
+          !shelf.unreadShelf
       );
       shelves.sort((a, b) => (a.name > b.name ? 1 : -1));
+      if (unreadShelf) shelves.unshift(unreadShelf);
       if (inProgressShelf) shelves.unshift(inProgressShelf);
       if (finishedShelf) shelves.unshift(finishedShelf);
       if (allBooksShelf) shelves.unshift(allBooksShelf);
@@ -67,7 +72,10 @@ export default {
     ...mapActions(["deleteShelf"]),
     canDeleteShelf(shelf) {
       return (
-        !shelf.allBooksShelf && !shelf.finishedShelf && !shelf.inProgressShelf
+        !shelf.allBooksShelf &&
+        !shelf.finishedShelf &&
+        !shelf.inProgressShelf &&
+        !shelf.unreadShelf
       );
     },
     removeShelf(shelf) {
@@ -95,7 +103,8 @@ export default {
   opacity: 0;
   transition: all 0.1s ease-in-out;
 }
-.shelves-list__shelf:hover .shelves-list__delete {
+/* .shelves-list__shelf:hover .shelves-list__delete { */
+.shelves-list__shelf .shelves-list__delete {
   pointer-events: all;
   cursor: pointer;
   opacity: 1;

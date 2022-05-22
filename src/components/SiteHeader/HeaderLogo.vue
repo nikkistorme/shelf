@@ -1,6 +1,7 @@
 <template>
   <router-link to="/" class="header-logo">
     <img src="../../assets/logo.svg" alt="" />
+    <!-- <h1>Shelf</h1> -->
   </router-link>
 </template>
 

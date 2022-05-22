@@ -45,6 +45,7 @@ export default {
 @media (min-width: 768px) {
   .home-page {
     grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: min-content;
   }
 }
 @media (min-width: 1350px) {

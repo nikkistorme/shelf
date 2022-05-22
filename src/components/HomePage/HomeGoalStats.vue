@@ -21,14 +21,19 @@
         <div class="home-goals__bullet mr-1"></div>
         <p v-if="pagesRemainingToday(book) > 0">
           Read {{ pagesRemainingToday(book) }} more pages of
-          <strong>{{ book.title }}</strong> by
-          <strong>{{ book.author }}</strong> today for your goal date of
+          <span class="home-goals__link" @click="getDetailedBook(book.id)">{{
+            book.title
+          }}</span>
+          by <span>{{ book.author }}</span>
+          today for your goal date of
           {{ formattedDate(book.goal.goalDate) }}
         </p>
         <p v-else>
           On track to finish
-          <strong>{{ book.title }}</strong> by
-          <strong>{{ book.author }}</strong> by
+          <span class="home-goals__link" @click="getDetailedBook(book.id)">{{
+            book.title
+          }}</span>
+          by <span>{{ book.author }}</span> by
           <span> {{ formattedDate(book.goal.goalDate) }}</span>
         </p>
       </li>
@@ -37,7 +42,7 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 
 import statsService from "../../services/statsService.js";
 import GoalsIcon from "../icons/GoalsIcon.vue";
@@ -53,13 +58,17 @@ export default {
       return statsService.pagesReadThisWeek(this.books);
     },
     booksWithGoals() {
-      return statsService
-        .getBooksWithGoals(this.books)
-        .sort(() => 0.5 - Math.random())
-        .slice(0, 2);
+      return (
+        statsService
+          .getBooksWithGoals(this.books)
+          .sort((a, b) => a.title > b.title)
+          // .sort(() => 0.5 - Math.random())
+          .slice(0, 2)
+      );
     },
   },
   methods: {
+    ...mapActions(["getDetailedBook"]),
     test() {
       console.log("🚀 ~ booksWithGoals", this.booksWithGoals);
     },
@@ -83,5 +92,9 @@ export default {
   margin-top: 5px;
   border-radius: 50%;
   border: 4px solid var(--color-primary);
+}
+.home-goals__link {
+  color: var(--color-primary);
+  cursor: pointer;
 }
 </style>

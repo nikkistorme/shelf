@@ -6,30 +6,34 @@ const newID = () => {
   return uuidv4().toLowerCase();
 };
 
-export const bookSchema = {
-  author: "",
-  changes: [],
-  description: "",
-  finished: false,
-  finishedDate: "",
-  goal: {
-    goalDate: "",
-    startDate: "",
-    targetPage: 0,
-  },
-  id: "",
-  image: "",
-  inProgress: false,
-  readPages: 0,
-  shelves: [],
-  title: "",
-  totalPages: "",
-  user: "",
-  created: "",
+export const bookSchema = () => {
+  let book = {
+    author: "",
+    changes: [],
+    description: "",
+    finished: false,
+    finishedDate: "",
+    goal: {
+      goalDate: "",
+      startDate: "",
+      targetPage: 0,
+    },
+    id: "",
+    image: "",
+    inProgress: false,
+    readPages: 0,
+    shelves: [],
+    title: "",
+    totalPages: "",
+    user: "",
+    created: "",
+  };
+  return book;
 };
 
 const formatError = (error) => {
   console.log("🚀 ~ error", error);
+  console.log("🚀 ~ error.code", error.code);
   switch (error.code) {
     case "invalid-argument":
       return new Error(
@@ -41,7 +45,7 @@ const formatError = (error) => {
 };
 
 export const newBookObject = (book, user = "") => {
-  let newBook = Object.assign({}, bookSchema, book);
+  let newBook = Object.assign(bookSchema(), book);
   newBook.user = user;
   newBook.id = newID();
   newBook.changes.push(
@@ -79,7 +83,6 @@ const getBooks = async () => {
       allBooks.push(book);
     });
   } catch (error) {
-    console.log("🚀 ~ error", error);
     throw formatError(error);
   }
   return allBooks;

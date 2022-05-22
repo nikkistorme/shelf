@@ -4,8 +4,10 @@
       <img v-if="userProfile?.image" :src="userProfile.image" alt="" />
       <div
         v-if="!userProfile?.image"
-        class="header-profile__image-placeholder"
-      ></div>
+        class="header-profile__image-placeholder d-flex jc-center ai-center"
+      >
+        {{ userProfile.name[0] }}
+      </div>
     </div>
     <div
       class="header-profile-dropdown dropdown-modal-menu flex-column"
@@ -66,8 +68,10 @@ export default {
 .header-profile__image-placeholder {
   height: 100%;
   width: 100%;
-  background-color: var(--color-grey);
   border-radius: 50%;
+  background-color: var(--color-grey);
+  font-size: var(--font-size-2);
+  color: var(--color-primary);
 }
 .header-profile-dropdown {
   right: var(--spacing-size-1);
@@ -77,6 +81,10 @@ export default {
 }
 .header-profile-dropdown.open {
   height: 117px;
+}
+.header-profile-dropdown a {
+  text-decoration: none;
+  color: var(--color-black);
 }
 
 @media (min-width: 768px) {

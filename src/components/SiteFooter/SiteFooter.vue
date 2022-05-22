@@ -1,12 +1,9 @@
 <template>
   <footer class="site-footer d-flex mb-3">
     <p>
-      <router-link to="/home">Home</router-link>
-      |
-      <router-link to="/library">Library</router-link>
-      |
-      <router-link to="/account">Account</router-link>
-      |
+      <router-link v-if="isAuthenticated" to="/home">Home | </router-link>
+      <router-link v-if="isAuthenticated" to="/library">Library | </router-link>
+      <router-link v-if="isAuthenticated" to="/account">Account | </router-link>
       <a href="https://trello.com/b/HG9elwZ0/roadmap" target="_blank"
         >Roadmap</a
       >
@@ -15,7 +12,16 @@
 </template>
 
 <script>
-export default {};
+import { mapGetters } from "vuex";
+
+export default {
+  computed: {
+    ...mapGetters(["user"]),
+    isAuthenticated() {
+      return this.user.uid;
+    },
+  },
+};
 </script>
 
 <style>

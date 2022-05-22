@@ -20,12 +20,16 @@
   --spacing-size-3: calc(var(--spacing-size-2) * 1.618);
   --spacing-size-4: calc(var(--spacing-size-3) * 1.618);
 
-  /* --color-primary: #327fb7; */
-  /* --color-primary: #7d3b8d; */
-  --color-primary: #2a4a68;
+  --color-primary: #7b68c9;
   --color-green: #103900;
-  --color-red: #ab241b;
+  --color-yellow: #f1d302;
+  --color-red: #ff5964;
   --color-grey: #ded9e2;
+  --color-gray: var(--color-grey);
+  --color-backdrop: #cbcbcb;
+  --color-white: #ffffff;
+  --color-black: #000000;
+  --color-tertiary: var(--color-yellow);
 
   --box-shadow-1: 0 0 15px rgba(0, 0, 0, 0.3);
   --box-shadow-2: 0 0 15px rgba(0, 0, 0, 0.16);
@@ -39,4 +43,12 @@
   --default-input-border-radius: var(--border-radius-1);
 
   --content-max-width: 1420px;
+
+  --header-height: 70px;
+}
+
+@media (min-width: 768px) {
+  :root {
+    --header-height: 75px;
+  }
 }

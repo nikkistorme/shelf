@@ -1,6 +1,6 @@
 <template>
   <div class="home-shelf d-flex flex-column jc-end w-100">
-    <div class="home-shelf__books d-flex jc-start w-100">
+    <div class="home-shelf__books d-flex jc-start gap-1 w-100">
       <ShelvedBook
         v-for="(book, i) in booksOnThisShelf"
         :key="i"
@@ -9,7 +9,9 @@
       />
     </div>
     <div class="home-shelf__floor d-flex jc-space-between w-100">
-      <h5 class="home-shelf__name">{{ shelf.name }}</h5>
+      <h5 class="home-shelf__name" @click="setActiveShelf(shelf)">
+        <router-link to="/library">{{ shelf.name }}</router-link>
+      </h5>
       <div v-if="shelf.sort" class="home-shelf__sort d-flex ai-center">
         <SelectInput
           :id="`shelf-sort__${shelf.id}`"
@@ -34,8 +36,7 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
-import { mapActions } from "vuex";
+import { mapGetters, mapMutations, mapActions } from "vuex";
 
 import ShelvedBook from "../ShelvedBook.vue";
 import ArrowDown from "../icons/ArrowDown.vue";
@@ -90,6 +91,7 @@ export default {
     },
   },
   methods: {
+    ...mapMutations(["setActiveShelf"]),
     ...mapActions(["updateShelfSort"]),
     async changeSortMethod() {
       await this.updateShelfSort(this.shelf);
@@ -113,15 +115,12 @@ export default {
   overflow-x: auto;
   overflow-y: hidden;
 }
-.home-shelf__book {
-  margin-left: var(--spacing-size-1);
-}
 .home-shelf__floor {
   position: relative;
   padding: calc(var(--spacing-size-1) / 4) var(--spacing-size-1);
-  border-bottom-left-radius: 5px;
-  border-bottom-right-radius: 5px;
-  box-shadow: 2px -2px 10px rgba(0, 0, 0, 0.3);
+  border: 2px solid var(--color-gray);
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
 }
 .home-shelf__sort-method {
   margin-right: 20px;

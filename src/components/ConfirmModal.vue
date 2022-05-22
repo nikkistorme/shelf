@@ -1,6 +1,6 @@
 <template>
   <div class="confirm-modal d-flex flex-column gap-2">
-    <p>{{ confirmAction.message }}</p>
+    <p class="w-100">{{ confirmAction.message }}</p>
     <div class="confirm-modal__toolbar d-flex jc-end gap-1 w-100">
       <DefaultButton
         color="red"
@@ -47,6 +47,7 @@ export default {
   left: 50%;
   transform: translate(-50%, -50%);
   height: auto;
+  min-width: 350px;
   width: auto;
   max-width: 450px;
   padding: var(--spacing-size-2) var(--spacing-size-2) var(--spacing-size-2)
@@ -54,7 +55,7 @@ export default {
   background-color: white;
   border-radius: var(--border-radius-2);
   box-shadow: var(--box-shadow-1);
-  z-index: 1;
+  z-index: 3;
   overflow: auto;
   scroll-behavior: smooth;
 }

@@ -62,6 +62,10 @@
   -webkit-justify-content: flex-end;
 }
 
+.gap-half {
+  gap: var(--spacing-size-half);
+}
+
 .gap-1 {
   gap: var(--spacing-size-1);
 }

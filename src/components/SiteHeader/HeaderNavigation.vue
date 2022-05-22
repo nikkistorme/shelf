@@ -6,7 +6,9 @@
         <router-link to="/library">Library</router-link>
       </li>
       <li class="nav-list-item">
-        <!-- <router-link to="social">Social</router-link> -->
+        <a href="https://trello.com/b/HG9elwZ0/roadmap" target="_blank">
+          Roadmap
+        </a>
       </li>
     </ul>
   </nav>
@@ -16,7 +18,7 @@
 export default {};
 </script>
 
-<style scoped>
+<style>
 @media (max-width: 767px) {
   .header-nav {
     display: none;
@@ -25,5 +27,6 @@ export default {};
 }
 .nav-list-item a {
   text-decoration: none;
+  color: var(--color-black);
 }
 </style>

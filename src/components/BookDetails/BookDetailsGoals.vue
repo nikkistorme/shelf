@@ -25,7 +25,7 @@
     </div>
     <DefaultButton
       :text="updateGoalOpen ? 'Cancel' : 'Set goal'"
-      :color="updateGoalOpen ? 'red' : 'blue'"
+      :color="updateGoalOpen ? 'red' : 'yellow'"
       class="ml-auto"
       flavor="tiny"
       @click="toggleUpdateGoal"

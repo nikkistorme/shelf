@@ -247,6 +247,7 @@ export default {
       }
       console.log("🚀 ~ this.duration", this.duration);
       console.log("🚀 ~ this.form.duration", this.form.duration);
+      console.log("🚀 ~ this.form", this.form);
       await this.updatePage({
         book: this.detailedBook,
         change: changeService.makeChangeFromForm("updatePage", this.form),

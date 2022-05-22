@@ -8,7 +8,14 @@
   >
     <path
       d="M9.24377 0.859375L12.1003 5.95925L18.4875 6.77688L13.8656 10.7467L14.9567 16.3519L9.24372 13.7054L3.53075 16.3519L4.62186 10.7467L0 6.77703L6.38729 5.9594L9.24377 0.859375Z"
+      class="psychic-star"
       fill="#7d3b8d"
     />
   </svg>
 </template>
+
+<style>
+.psychic-star {
+  fill: var(--color-primary);
+}
+</style>
