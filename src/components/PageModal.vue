@@ -31,6 +31,7 @@ export default {
       "shelvesLoading",
       "userLoading",
       "booksLoading",
+      "detailedBookLoading",
     ]),
     showOverlay() {
       return (
@@ -41,7 +42,12 @@ export default {
       );
     },
     showLoader() {
-      return this.shelvesLoading || this.userLoading || this.booksLoading;
+      return (
+        this.shelvesLoading ||
+        this.userLoading ||
+        this.booksLoading ||
+        this.detailedBookLoading
+      );
     },
   },
   methods: {

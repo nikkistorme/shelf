@@ -1,37 +1,19 @@
 <template>
   <div class="update-progress h-0" :class="{ open: updateProgressOpen }">
     <form class="update-progress__form p-1" @submit.prevent="updateProgress">
-      <!-- START PAGE -->
-      <div class="update-progress__page d-grid gap-1 mb-1">
-        <NumberInput
-          id="update-progress-start-at"
-          v-model="startAt"
-          label="Start page"
-          :max="detailedBook.totalPages"
-          class="update-progress__number mb-0"
-        />
-        <SelectInput
-          id="update-progress-start-type"
-          v-model="startType"
-          class="update-progress__type as-end"
-          :options="progressTypeOptions"
-        />
-      </div>
-      <!-- START PAGE -->
       <!-- END PAGE -->
-      <div class="update-progress__page d-grid gap-1 mb-2">
+      <p class="mb-1">I have now read</p>
+      <div class="update-progress__page d-flex ai-center gap-1 mb-2">
         <NumberInput
           id="update-progress-end-at"
           v-model="endAt"
-          label="End page"
           :max="detailedBook.totalPages"
           class="update-progress__number mb-0"
         />
-        <SelectInput
-          id="update-progress-end-type"
+        <SegmentedControlInput
           v-model="endType"
-          class="update-progress__type as-end"
           :options="progressTypeOptions"
+          class="w-100"
         />
       </div>
       <!-- END PAGE -->
@@ -133,7 +115,6 @@ import {
 import DefaultInput from "../forms/DefaultInput.vue";
 import CheckboxInput from "../forms/CheckboxInput.vue";
 import InlineButton from "../buttons/InlineButton.vue";
-import SelectInput from "../forms/SelectInput.vue";
 import DefaultButton from "../buttons/DefaultButton.vue";
 import SegmentedControlInput from "../forms/SegmentedControlInput.vue";
 import IconButton from "../buttons/IconButton.vue";
@@ -144,7 +125,6 @@ export default {
     DefaultInput,
     CheckboxInput,
     InlineButton,
-    SelectInput,
     DefaultButton,
     SegmentedControlInput,
     IconButton,
@@ -173,11 +153,7 @@ export default {
       };
     },
     updateProgressDisabled() {
-      return (
-        this.startAt >= this.endAt ||
-        this.startAt > this.detailedBook.totalPages ||
-        this.endAt > this.detailedBook.totalPages
-      );
+      return this.endAt > this.detailedBook.totalPages;
     },
   },
   watch: {

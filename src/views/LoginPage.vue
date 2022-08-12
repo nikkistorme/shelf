@@ -89,8 +89,6 @@ export default {
         email: "",
         password: "",
       },
-      status: "",
-      message: "",
       errors: [],
     };
   },
@@ -126,9 +124,6 @@ export default {
     },
   },
   methods: {
-    test() {
-      console.log(this.activeForm);
-    },
     showForm(form) {
       this.errors = [];
       this.activeForm = form;
@@ -169,7 +164,6 @@ export default {
           }
         } catch (error) {
           this.errors.push(error);
-          this.status = "failure";
         }
       }
     },

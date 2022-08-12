@@ -10,7 +10,7 @@ const config = {
   storageBucket: import.meta.env.VITE_VERCEL_FIREBASE_STORAGE_BUCKET,
   messagingSenderId: import.meta.env.VITE_VERCEL_FIREBASE_MESSAGE_SENDER_ID,
   appId: import.meta.env.VITE_VERCEL_FIREBASE_APP_ID,
-  measurementId: import.meta.env.VITE_VERCEL_FIREBASE_MEASUREMENT_ID,
+  // measurementId: import.meta.env.VITE_VERCEL_FIREBASE_MEASUREMENT_ID,
 };
 
 firebase.initializeApp(config);

@@ -26,7 +26,7 @@ const getBooks = async ({ commit }) => {
 };
 
 const getDetailedBook = async ({ commit, state }, id) => {
-  // await fetch("https://icy-flower-8c91.nikkistorme.workers.dev");
+  commit("setDetailedBookLoading", true);
   let detailedBook = {};
   try {
     detailedBook = await bookService.getBook(id);
@@ -55,9 +55,11 @@ const getDetailedBook = async ({ commit, state }, id) => {
   console.log("🚀 ~ detailedBook", detailedBook);
   commit("updateBookInBooks", detailedBook);
   commit("setDetailedBook", detailedBook);
+  commit("setDetailedBookLoading", false);
 };
 
 const updatePage = async ({ commit }, bookAndChange) => {
+  commit("setDetailedBookLoading", true);
   try {
     bookAndChange.book.readPages = bookAndChange.change.payload.newValue;
     bookAndChange.book = changeService.addChangeToBook(
@@ -72,6 +74,7 @@ const updatePage = async ({ commit }, bookAndChange) => {
   commit("updateBookInBooks", bookAndChange.book);
   commit("setDetailedBook", bookAndChange.book);
   commit("setUpdateProgressVisible", false);
+  commit("setDetailedBookLoading", false);
 };
 
 const setGoal = async ({ commit }, bookAndChange) => {
