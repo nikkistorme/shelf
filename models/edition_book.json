@@ -1,0 +1,32 @@
+{
+  "id": "2",
+  "inserted_at": "2022-09-12 20:04:18.196416+00",
+  "updated_at": "2022-09-12 20:04:18.196416+00",
+  "title": "House of Leaves",
+  "authors": [
+    {
+      "id": "12345",
+      "name": "Mark Z. Danielewski",
+      "role": "Author"
+    }
+  ],
+  "published": {
+    "name": "Pantheon",
+    "date": "2000-03-20",
+    "original_date": "2000-03-20"
+  },
+  "total_pages": 709,
+  "description": "A family relocates to a small house on Ash Tree Lane and discovers that the inside of their new home seems to be without boundaries.",
+  "images": [
+    {
+      "url": "https://imagedelivery.net/3pMGvvVow8SDhlc2YM0--g/4fa3f616-a121-4a1e-b8b6-75a826752700/public",
+      "size": "600"
+    }
+  ],
+  "identifiers": [
+    {
+      "type": "ISBN",
+      "value": "1529069394"
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "id": "1",
+  "inserted_at": "2022-09-12 20:04:18.196416+00",
+  "updated_at": "2022-09-12 20:04:18.196416+00",
+  "title": "House of Leaves",
+  "authors": [
+    {
+      "id": "12345",
+      "name": "Mark Z. Danielewski",
+      "role": "Author"
+    }
+  ],
+  "published": {
+    "name": "Pantheon",
+    "original_date": "2000-03-20"
+  },
+  "average_rating": 4.0
+}

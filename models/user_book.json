@@ -1,0 +1,58 @@
+{
+  "id": "3",
+  "inserted_at": "2022-09-12 20:04:18.196416+00",
+  "updated_at": "2022-09-12 20:04:18.196416+00",
+  "title": "The Final Empire",
+  "authors": [
+    {
+      "id": "1",
+      "name": "Brandon Sanderson",
+      "role": "Author"
+    }
+  ],
+  "readthroughs": [
+    {
+      "start": "",
+      "end": ""
+    },
+    {
+      "start": "",
+      "end": ""
+    }
+  ],
+  "finished": true,
+  "status": "finished",
+  "goal": {
+    "start": "",
+    "end": "",
+    "target_page": 0,
+    "target_is_end": true
+  },
+  "images": [
+    {
+      "url": "https://imagedelivery.net/3pMGvvVow8SDhlc2YM0--g/4fa3f616-a121-4a1e-b8b6-75a826752700/public",
+      "size": "600"
+    }
+  ],
+  "current_page": 0,
+  "total_pages": 0,
+  "user_id": "fd916d71-c238-4494-99de-a8a22e9489c8",
+  "edition_id": "2",
+  "base_id": "1",
+  "shelves": ["6", "3"],
+  "changes": [
+    {
+      "action": "updateCover",
+      "created": "2022-09-12T01:08:08.947Z",
+      "updates": [
+        {
+          "field": "cover",
+          "new_value": "https://imagedelivery.net/3pMGvvVow8SDhlc2YM0--g/02cd2930-471e-4d5b-0671-a459014fda00/public",
+          "old_value": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1617768316l/68428._SY475_.jpg",
+          "new_value_soft": null
+        }
+      ]
+    }
+  ],
+  "minutes_per_page": 0
+}

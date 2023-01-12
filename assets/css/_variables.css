@@ -1,0 +1,68 @@
+:root {
+  --font-size-root: 1.6rem;
+  --font-size-small: 1.4rem;
+  --font-size-1: var(--font-size-root);
+  --font-size-2: calc(var(--font-size-1) * 1.618);
+  --font-size-3: calc(var(--font-size-2) * 1.618);
+  --font-size-4: calc(var(--font-size-3) * 1.618);
+  --font-size-5: calc(var(--font-size-4) * 1.618);
+
+  --line-height-1: calc(var(--font-size-1) * 1.618);
+  --line-height-2: calc(var(--font-size-2) * 1.618);
+  --line-height-3: calc(var(--font-size-3) * 1.618);
+  --line-height-4: calc(var(--font-size-4) * 1.618);
+  --line-height-5: calc(var(--font-size-5) * 1.618);
+
+  --spacing-root: 16px;
+  --spacing-size-half: calc(var(--spacing-root) / 2);
+  --spacing-size-1: var(--spacing-root);
+  --spacing-size-2: calc(var(--spacing-size-1) * 1.618);
+  --spacing-size-3: calc(var(--spacing-size-2) * 1.618);
+  --spacing-size-4: calc(var(--spacing-size-3) * 1.618);
+
+  --color-primary: #7b68c9;
+  --color-green: #103900;
+  --color-yellow: #f1d302;
+  --color-red: #ff5964;
+  --color-grey: #ded9e2;
+  --color-gray: var(--color-grey);
+  --color-backdrop: #cbcbcb;
+  --color-white: #ffffff;
+  --color-black: #000000;
+  --color-tertiary: var(--color-yellow);
+
+  --color-warning: var(--color-red);
+
+  --box-shadow-1: 0 0 15px rgba(0, 0, 0, 0.3);
+  --box-shadow-2: 0 0 15px rgba(0, 0, 0, 0.16);
+
+  --border-radius-1: 10px;
+  --border-radius-2: 15px;
+  --border-radius-3: 20px;
+
+  --default-input-padding: var(--spacing-size-half) var(--spacing-root);
+  --default-input-border: 2px solid var(--color-grey);
+  --default-input-border-radius: var(--border-radius-1);
+
+  --border-1: 2px solid var(--color-primary);
+
+  --content-max-width: 1525px;
+
+  --header-height: 70px;
+
+  --z-index-base: 0;
+  --z-index-1: 1;
+
+  --z-index-progress-circle: var(--z-index-1);
+  --z-index-modal-backdrop: calc(var(--z-index-progress-circle) + 1);
+  --z-index-add-book-button: calc(var(--z-index-modal-backdrop) + 1);
+  --z-index-modal: calc(var(--z-index-add-book-button) + 1);
+  --z-index-full-page-loader: calc(var(--z-index-modal) + 1);
+  --z-index-full-page-loader-icon: calc(var(--z-index-full-page-loader) + 1);
+}
+
+@media (min-width: 768px) {
+  :root {
+    --header-height: 75px;
+  }
+}
