@@ -68,7 +68,8 @@ import { useModalStore } from "~/store/ModalStore";
 export default {
   setup() {
     const shelfStore = useShelfStore();
-    const { activeShelf, shelves, getSortedShelves } = storeToRefs(shelfStore);
+    const { activeShelf, shelves, getSortedShelves, allBooksShelf } =
+      storeToRefs(shelfStore);
 
     const modalStore = useModalStore();
     const changeShelves = () => {
@@ -96,9 +97,16 @@ export default {
       );
     };
 
-    async function deleteShelf(shelf_id) {
-      await shelfStore.deleteShelf(shelf_id);
-    }
+    const router = useRouter();
+    const deleteShelf = async (shelf_id) => {
+      try {
+        await shelfStore.deleteShelf(shelf_id);
+        await router.push(`/shelves/${allBooksShelf.id}`);
+        modalStore.closeModal();
+      } catch (error) {
+        console.log(error);
+      }
+    };
 
     return {
       shelves,
