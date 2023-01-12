@@ -17,7 +17,7 @@
         </div>
       </div>
 
-      <div class="book-page__user-area gap-1" v-if="userAuth">
+      <div class="book-page__user-area gap-1" v-if="userAuth && userBook?.id">
         <BookPageStatus v-if="userBook?.id" />
         <BookPageShelves v-if="userBook && shelves?.length" />
         <div
