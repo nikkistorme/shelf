@@ -58,13 +58,10 @@ export default {
       return statsService.pagesReadThisWeek(this.books);
     },
     booksWithGoals() {
-      return (
-        statsService
-          .getBooksWithGoals(this.books)
-          .sort((a, b) => a.title > b.title)
-          // .sort(() => 0.5 - Math.random())
-          .slice(0, 2)
-      );
+      return statsService
+        .getBooksWithGoals(this.books)
+        .sort((a, b) => a.title > b.title)
+        .slice(0, 2);
     },
   },
   methods: {

@@ -7,7 +7,10 @@
           <ShelfTitleDropdown />
           <div class="library__shelf-filters d-flex gap-1">
             <DefaultInput v-model="searchTerm" placeholder="Search..." />
-            <div v-if="activeShelf?.sort" class="library__shelf-sort">
+            <div
+              v-if="activeShelf?.sort"
+              class="library__shelf-sort d-flex gap-1"
+            >
               <SelectInput
                 :id="`shelf-sort__${activeShelf.id}`"
                 v-model="activeShelf.sort.method"
@@ -17,13 +20,13 @@
                 no-carrot
                 @change="changeSortMethod"
               />
-              <!-- <div
-          class="library__shelf-sort-direction d-flex jc-center ai-center"
-          :class="{ ascending: !activeShelf.sort.descending }"
-          @click="changeSortDirection"
-        >
-          <ArrowDown />
-        </div> -->
+              <div
+                class="library__shelf-sort-direction d-flex jc-center ai-center"
+                :class="{ ascending: !activeShelf.sort.descending }"
+                @click="changeSortDirection"
+              >
+                <ArrowDown />
+              </div>
             </div>
           </div>
         </div>
@@ -66,6 +69,7 @@ import LibrarySidebar from "../components/Library/LibrarySidebar.vue";
 import ShelvedBook from "../components/ShelvedBook.vue";
 import ShelfTitleDropdown from "../components/Library/ShelfTitleDropdown.vue";
 import SelectInput from "../components/forms/SelectInput.vue";
+import ArrowDown from "../components/icons/ArrowDown.vue";
 
 export default {
   components: {
@@ -74,6 +78,7 @@ export default {
     ShelvedBook,
     ShelfTitleDropdown,
     SelectInput,
+    ArrowDown,
   },
   data() {
     return {
@@ -125,6 +130,10 @@ export default {
       console.log("🚀 ~ this.activeShelf", this.activeShelf);
       await this.updateShelfSort(this.activeShelf);
     },
+    async changeSortDirection() {
+      this.activeShelf.sort.descending = !this.activeShelf.sort.descending;
+      await this.updateShelfSort(this.activeShelf);
+    },
   },
 };
 </script>
@@ -155,8 +164,8 @@ export default {
   direction: ltr;
 }
 .library__shelf-sort-direction {
-  position: absolute;
-  right: 0;
+  /* position: absolute; */
+  /* right: 0; */
   height: 100%;
   width: 40px;
   cursor: pointer;

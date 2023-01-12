@@ -42,6 +42,7 @@ export default {
   border-radius: 5px;
   object-fit: contain;
   object-position: bottom;
+  box-shadow: var(--box-shadow-2);
 }
 .home.shelved-book__cover {
   height: 250px;
