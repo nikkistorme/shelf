@@ -100,7 +100,7 @@ import { useModalStore } from "~/store/ModalStore";
 
 import {
   todayWithFormat,
-  dateWithFormatToTimestampz,
+  dateToTimestampz,
   formatDateFromTimestampz,
 } from "~/services/timeService.js";
 
@@ -184,19 +184,9 @@ export default {
     });
 
     const applyFinished = async () => {
-      let readthroughFinal = { ...newReadthrough.value };
+      const readthroughFinal = formatReadthrough(newReadthrough.value);
       if (!userBook.value.readthroughs?.length)
         userBook.value.readthroughs = [];
-      if (readthroughFinal.start)
-        readthroughFinal.start = dateWithFormatToTimestampz(
-          readthroughFinal.start,
-          "YYYY-MM-DD"
-        );
-      if (readthroughFinal.end)
-        readthroughFinal.end = dateWithFormatToTimestampz(
-          readthroughFinal.end,
-          "YYYY-MM-DD"
-        );
       const bookUpdates = {
         readthroughs: [...userBook.value.readthroughs, readthroughFinal],
         status: "finished",

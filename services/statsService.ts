@@ -101,7 +101,6 @@ export const getPagesThisWeek = async () => {
         if (!dateIsThisWeek(c.created)) return;
         const pageUpdate = c.updates.find((update: { field: string }) => update.field === 'current_page') || {};
         if (!pageUpdate) return;
-        console.log("🚀 ~ pageUpdate", pageUpdate);
         pagesThisWeek += pageUpdate.newValue - pageUpdate.oldValue;
         if (dateIsToday(c.created)) pagesToday += pageUpdate.newValue - pageUpdate.oldValue;
       })
