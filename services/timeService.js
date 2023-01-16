@@ -61,7 +61,7 @@ export const todayWithFormat = (format) => {
   return formatted;
 };
 
-export const dateWithFormatToTimestampz = (date, format) => {
+export const dateToTimestampz = (date, format) => {
   let timestampz;
   let dateObject;
   let year;

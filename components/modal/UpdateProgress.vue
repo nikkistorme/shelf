@@ -109,6 +109,7 @@ import {
 import {
   getTimeString,
   HhMmDifferenceInMinutes,
+  todayWithFormat,
 } from "~~/services/timeService.js";
 import { getNewMinutesPerPage } from "~~/services/statsService";
 import { newChange, sortChanges } from "~/services/changeService";
@@ -143,7 +144,7 @@ export default {
       return finalEnd;
     }
 
-    function getFinalDuration() {
+    const getFinalDuration = () => {
       const startEnd =
         durationForm.value.logDuration &&
         durationForm.value.durationType === "start-end";
@@ -160,7 +161,7 @@ export default {
       } else {
         return null;
       }
-    }
+    };
 
     const bookStore = useBookStore();
     const modalStore = useModalStore();
@@ -182,8 +183,14 @@ export default {
       modalStore.closeModal();
     }
 
-    async function finishReadingBook() {
+    const newReadthrough = ref({
+      start: null,
+      end: todayWithFormat("YYYY-MM-DD"),
+    });
+
+    const finishReadingBook = async () => {
       const finalEnd = props.book.total_pages;
+
       const change = newChange("finishReadingBook", props.book, {
         endAt: finalEnd,
         duration: getFinalDuration(),
@@ -191,16 +198,19 @@ export default {
       });
       let newChanges = [...props.book.changes, change];
       newChanges = sortChanges(newChanges);
+
+      const finalReadthrough = formatReadthrough(newReadthrough.value);
       const bookUpdates = {
         changes: newChanges,
         minutes_per_page: getNewMinutesPerPage(newChanges),
         current_page: finalEnd,
         goal: null,
         status: "finished",
+        readthroughs: [...props.book.readthroughs, finalReadthrough],
       };
       await bookStore.finishReadingBook(props.book.id, bookUpdates);
       modalStore.closeModal();
-    }
+    };
 
     return {
       props,
