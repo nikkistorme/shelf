@@ -1,4 +1,5 @@
 export const sortShelves = (shelves) => {
+  if (!shelves?.length) return [];
   const sorted = [...shelves];
   const allBooksShelf = shelves.find((s) => s.all_books_shelf);
   const finishedShelf = shelves.find((s) => s.finished_shelf);
