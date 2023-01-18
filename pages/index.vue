@@ -10,6 +10,7 @@
       >
         <InputDefault
           v-show="activeForm === 'sign-up'"
+          :aria-hidden="activeForm !== 'sign-up'"
           id="name"
           v-model="credentials.name"
           type="text"
@@ -22,7 +23,8 @@
           label="Email"
         />
         <InputPassword
-          v-if="activeForm !== 'password-reset'"
+          v-show="activeForm !== 'password-reset'"
+          :aria-hidden="activeForm === 'password-reset'"
           id="password"
           v-model="credentials.password"
           class="w-100"
