@@ -1,18 +1,17 @@
 <template>
-  <div v-if="props.book.description" class="book-page__description">
-    <p
-      class="book-page__description-text"
-      :class="{ expanded: expandDescription }"
-    >
-      {{ props.book.description }}
+  <div v-if="description" class="book-page__description">
+    <p class="book-page__description-text">
+      {{ description }}
+
+      <ButtonInline
+        v-if="truncateDescription"
+        class="book-page__description-expand"
+        :text="expandDescription ? 'show less' : 'show more'"
+        underline
+        color="blue"
+        @click="toggleDescription"
+      />
     </p>
-    <ButtonInline
-      class="book-page__description-expand"
-      :text="expandDescription ? 'Show less' : 'Show more'"
-      underline
-      color="blue"
-      @click="toggleDescription"
-    />
   </div>
 </template>
 
@@ -22,31 +21,34 @@ export default {
     book: Object,
   },
   setup(props) {
+    const description = ref(props.book.description);
+    const truncateDescription = ref(false);
     const expandDescription = ref(false);
 
-    function toggleDescription() {
+    const checkDescription = (string) => {
+      const newString = string;
+      if (!expandDescription.value && newString?.length > 350) {
+        truncateDescription.value = true;
+        return `${newString.substring(0, 346).trim()}...`;
+      } else return newString;
+    };
+
+    watch(expandDescription, () => {
+      description.value = checkDescription(props.book.description);
+    });
+
+    description.value = checkDescription(props.book.description);
+
+    const toggleDescription = () => {
       expandDescription.value = !expandDescription.value;
-    }
+    };
 
     return {
-      props,
+      description,
+      truncateDescription,
       expandDescription,
       toggleDescription,
     };
   },
 };
 </script>
-
-<style>
-.book-page__description-text {
-  -webkit-box-orient: vertical;
-  display: -webkit-box;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.book-page__description-text:not(.expanded) {
-  -webkit-line-clamp: 5;
-}
-.book-page__description-expand {
-}
-</style>
