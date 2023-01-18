@@ -67,6 +67,10 @@ export default {
 </script>
 
 <style>
+.book-page {
+  max-width: 900px;
+  margin: 0 auto;
+}
 .book-page__content {
   position: relative;
   display: grid;
