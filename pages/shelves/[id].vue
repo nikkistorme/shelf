@@ -52,12 +52,6 @@ export default {
     const booksSortedAndFiltered = computed(() => {
       let books = bookStore.getUserBooksOnShelf(activeShelf.value);
       books.sort((a, b) => sortShelfByMethod(a, b, activeShelf.value));
-      if (books?.length !== activeShelf?.value?.book_count) {
-        activeShelf.value.book_count = books.length;
-        shelfStore.setShelfProperties(activeShelf.value.id, {
-          book_count: books.length,
-        });
-      }
       return filterBooksBySearchTerm(books, searchTerm.value);
     });
 

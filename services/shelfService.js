@@ -106,7 +106,6 @@ export const fetchShelf = async (shelf_id) => {
   const supabase = useSupabaseClient();
   try {
     const { data } = await supabase.from("shelves").select().eq("id", shelf_id);
-    console.log("🚀 ~ data", data);
     return data[0];
   } catch (error) {
     throw error;

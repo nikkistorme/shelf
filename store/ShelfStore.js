@@ -90,7 +90,6 @@ export const useShelfStore = defineStore("ShelfStore", {
       let newShelf;
       try {
         newShelf = await createNewShelf(name);
-        console.log("🚀 ~ newShelf", newShelf);
       } catch (error) {
         throw error;
       }
@@ -118,6 +117,10 @@ export const useShelfStore = defineStore("ShelfStore", {
       let userBooks;
       try {
         userBooks = await fetchBooksForShelf(shelf);
+        // This can be done in the synchronously background
+        this.setShelfProperties(shelf.id, {
+          book_count: userBooks.length,
+        });
       } catch (error) {
         this.loading = false;
         throw error;
