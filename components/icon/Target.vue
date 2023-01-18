@@ -10,7 +10,6 @@
       viewBox="0 0 63 62"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      @click="test"
     >
       <circle cx="26" cy="35.9971" r="24" stroke="#327fb7" stroke-width="4" />
       <path
@@ -40,7 +39,6 @@ export default {
   },
   computed: {
     goalDateMonth() {
-      console.log("🚀 ~ this.goalDate", this.goalDate);
       if (this.goalDate) {
         const date = new Date(this.goalDate);
         const month = new Intl.DateTimeFormat("en-US", {
@@ -61,11 +59,6 @@ export default {
       } else {
         return "";
       }
-    },
-  },
-  methods: {
-    test() {
-      console.log("🚀 ~ goalDateMonth", this.goalDateMonth);
     },
   },
 };
