@@ -11,9 +11,10 @@ export default {
     const bookStore = useBookStore();
     const { book, userBook } = storeToRefs(bookStore);
 
-    let totalPages = ref(book.value.total_pages);
-    if (userBook?.value?.total_pages)
-      totalPages.value = userBook.value.total_pages;
+    const totalPages = computed(() => {
+      if (userBook.value?.total_pages) return userBook.value.total_pages;
+      return book.value.total_pages;
+    });
 
     return {
       totalPages,
