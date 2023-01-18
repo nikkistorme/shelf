@@ -10,7 +10,7 @@
       :placeholder="placeholder"
       :value="modelValue"
       :disabled="disabled"
-      @input="update"
+      @change="update"
       @blur="runBlur"
     />
     <ButtonInline
