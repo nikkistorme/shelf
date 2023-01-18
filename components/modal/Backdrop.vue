@@ -32,7 +32,7 @@ export default {
   background-color: black;
   opacity: 0;
   visibility: hidden;
-  transition: all 0.3s;
+  transition: opacity 0.3s;
   z-index: var(--z-index-modal-backdrop);
 }
 .page-modal__overlay.open {
