@@ -1,6 +1,18 @@
 <template>
   <div class="book-page d-flex jc-center">
     <Title v-if="book?.title">{{ book.title }}</Title>
+    <Meta v-if="book?.title" property="og:title" :content="`${book.title}`" />
+    <Meta
+      v-if="book?.description"
+      property="description"
+      :content="`${book.description}`"
+    />
+    <Meta
+      v-if="book?.description"
+      property="og:description"
+      :content="`${book.description}`"
+    />
+    <Meta v-if="book?.cover" property="og:image" :content="`${book.cover}`" />
 
     <div :class="`book-page__content w-100 ${userAuth ? 'signed-in' : ''}`">
       <div class="book-page__cover-area d-flex flex-column gap-half">
