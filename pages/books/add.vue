@@ -160,11 +160,12 @@ export default {
     });
 
     const router = useRouter();
-    async function submitForm() {
+    const submitForm = async () => {
       if (disableSubmission.value) return;
       await bookStore.addNewBook();
       if (bookStore.book?.id) await router.push(`/books/${bookStore.book.id}`);
-    }
+      bookToAdd.value = null;
+    };
 
     return {
       loading,
