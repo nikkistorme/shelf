@@ -125,8 +125,20 @@ export default {
     const progressTypeOptions = ref(progressServiceTypeOptions);
     const progressType = ref("pages");
 
+    watch(progressType, (newValue) => {
+      if (newValue === "percent") {
+        endAt.value = Math.round(
+          (props.book.current_page / props.book.total_pages) * 100
+        );
+      } else {
+        endAt.value = props.book.current_page;
+      }
+    });
+
     const updateProgressDisabled = computed(() => {
-      return endAt.value <= 0 || endAt.value > props.book.total_pages;
+      if (progressType.value === "percent")
+        return endAt.value <= 0 || endAt.value > 100;
+      else return endAt.value <= 0 || endAt.value > props.book.total_pages;
     });
 
     // Duration
