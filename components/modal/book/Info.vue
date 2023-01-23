@@ -51,13 +51,13 @@ export default {
         total_pages: newTotalPages.value,
       };
       await bookStore.updateUserBook(userBook.value.id, bookUpdates);
-      // modalStore.closeModal();
     }
 
     const userAuth = useSupabaseUser();
 
     const removeBookFromLibrary = async () => {
       await bookStore.removeBookFromLibrary();
+      modalStore.closeModal();
     };
 
     return {

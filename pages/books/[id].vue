@@ -14,7 +14,11 @@
     />
     <Meta v-if="book?.cover" property="og:image" :content="`${book.cover}`" />
 
-    <div :class="`book-page__content w-100 ${userAuth ? 'signed-in' : ''}`">
+    <div
+      :class="`book-page__content w-100 ${
+        userAuth && userBook?.id ? 'user-book' : ''
+      }`"
+    >
       <div class="book-page__cover-area d-flex flex-column gap-half">
         <BookPageCover />
         <BookPageActions />
@@ -112,12 +116,12 @@ export default {
   .book-page__content {
     grid-gap: var(--spacing-size-3);
   }
-  .book-page__content:not(.signed-in) {
+  .book-page__content:not(.user-book) {
     grid-template-areas:
       "cover base"
       "cover additional";
   }
-  .book-page__content.signed-in {
+  .book-page__content.user-book {
     grid-template-areas:
       "cover base"
       "cover user"
