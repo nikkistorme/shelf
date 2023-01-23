@@ -1,5 +1,5 @@
 <template>
-  <div v-if="userBook.id" class="book-page__goals d-flex ai-center gap-3 w-100">
+  <div v-if="userBook.id" class="book-page__goals d-flex ai-center w-100">
     <IconGoals
       v-if="!userBook.goal?.goalDate"
       class="book-page__goals-icon mr-1"
@@ -10,7 +10,11 @@
       :goal-date="userBook.goal?.goalDate"
     />
     <div v-if="goalIsValid" class="d-flex flex-column jc-center">
-      <p>Page {{ userBook.goal.targetPage }} by {{ formattedGoalDate }}</p>
+      <p>
+        Page {{ userBook.goal.targetPage }}
+        <br />
+        <span>by {{ formattedGoalDate }}</span>
+      </p>
       <p>{{ goalPace.pagesPerDay }} pages / day</p>
       <!-- <p>
         <span v-if="goalPace.hoursPerDay > 0"
