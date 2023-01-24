@@ -1,8 +1,5 @@
 <template>
-  <div
-    v-if="profile?.id && getSortedShelves && inProgressShelf"
-    class="home-page d-grid"
-  >
+  <div v-if="profile?.id" class="home-page d-grid">
     <Head>
       <Link
         v-for="(image, i) in inProgressBookImages"
@@ -15,7 +12,7 @@
     </Head>
     <div class="home-page__continue-reading d-flex flex-column gap-1">
       <h2>Continue reading</h2>
-      <HomeShelf v-if="inProgressShelf.book_count > 0" />
+      <HomeShelf v-if="inProgressShelf?.book_count > 0" />
       <div class="" v-else>
         <p>
           You don't have any books in progress. <br />

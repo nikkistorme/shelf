@@ -80,7 +80,8 @@ export const useShelfStore = defineStore("ShelfStore", {
       if (!shelvesToCreate.length) return;
       console.log("🚀 ~ shelvesToCreate", shelvesToCreate);
       try {
-        await createNecessaryShelves(shelvesToCreate);
+        const newShelves = await createNecessaryShelves(shelvesToCreate);
+        this.shelves = sortShelves([...shelves, ...newShelves]);
         return;
       } catch (error) {
         throw error;
