@@ -15,6 +15,16 @@ import { useUserStore } from "~/store/UserStore";
 
 export default {
   setup() {
+    const router = useRouter();
+    console.log("🚀 ~ router", router.currentRoute.value);
+    useHead({
+      link: [
+        {
+          rel: "canonical",
+          href: `https://shelf.is${router.currentRoute.value.path}`,
+        },
+      ],
+    });
     const shelfStore = useShelfStore();
     const userStore = useUserStore();
     const userAuth = useSupabaseUser();
