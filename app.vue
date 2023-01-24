@@ -35,12 +35,17 @@ export default {
       }
     };
 
-    // const { profile } = storeToRefs(userStore);
-    watch(userAuth, () => {
-      // if (userAuth && !profile.value) {
-      //   console.log("fetching profile");
-      //   userStore.fetchProfile();
-      // }
+    const { profile } = storeToRefs(userStore);
+    watch(userAuth, async () => {
+      if (userAuth && !profile.value) {
+        console.log("Fetching profile");
+        try {
+          await userStore.fetchProfile();
+        } catch (error) {
+          console.error("Error fetching user profile", error);
+          await userStore.addUserProfile();
+        }
+      }
       fillStore();
     });
 

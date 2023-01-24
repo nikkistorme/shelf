@@ -5,12 +5,10 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
   const userStore = useUserStore();
 
   if (userAuth.value && !userStore?.profile?.id) {
-    // console.log('Fetching user profile');
     try {
       await userStore.fetchProfile();
-      console.log("🚀 ~ userStore.profile", userStore.profile);
     } catch (error) {
-      console.error("Error fetching user profile", error);
+      console.log("🚫 ~ User Auth Error", error);
       await userStore.addUserProfile();
     }
   }
