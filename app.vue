@@ -37,7 +37,7 @@ export default {
 
     const { profile } = storeToRefs(userStore);
     watch(userAuth, async () => {
-      if (userAuth.value && !profile.value) {
+      if (userAuth?.value?.id && !profile.value) {
         console.log("Fetching profile");
         try {
           await userStore.fetchProfile();
