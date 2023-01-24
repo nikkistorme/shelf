@@ -1,5 +1,5 @@
 <template>
-  <div v-if="profile?.id" class="home-page d-grid">
+  <div class="home-page d-grid">
     <Head>
       <Link
         v-for="(image, i) in inProgressBookImages"
