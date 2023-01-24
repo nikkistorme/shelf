@@ -10,13 +10,13 @@
 </template>
 
 <script>
+import { storeToRefs } from "pinia";
 import { useShelfStore } from "~/store/ShelfStore";
 import { useUserStore } from "~/store/UserStore";
 
 export default {
   setup() {
     const router = useRouter();
-    console.log("🚀 ~ router", router.currentRoute.value);
     useHead({
       link: [
         {
@@ -35,7 +35,12 @@ export default {
       }
     };
 
+    const { profile } = storeToRefs(userStore);
     watch(userAuth, () => {
+      if (userAuth && !profile.value) {
+        console.log("fetching profile");
+        userStore.fetchProfile();
+      }
       fillStore();
     });
 

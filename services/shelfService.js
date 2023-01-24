@@ -209,8 +209,7 @@ export const getFinishedShelfCount = async () => {
     const { count } = await supabase
       .from("books_user")
       .select("*", { count: "exact" })
-      .not("readthroughs", "is", null)
-      .not("readthroughs", "is", "[]")
+      .eq("status", "finished")
       .range(0, 1);
     return count;
   } catch (error) {

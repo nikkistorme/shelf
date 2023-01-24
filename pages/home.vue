@@ -38,8 +38,7 @@
           :key="i"
           class="d-flex gap-half"
         >
-          <span v-if="i > 0">|</span>
-          <NuxtLink :to="`shelves/${shelf.id}`">
+          <NuxtLink :to="`shelves/${shelf.id}`" class="pill p-half">
             {{ `${shelf.name} (${shelf.book_count})` }}
           </NuxtLink>
         </div>

@@ -103,7 +103,7 @@ export const useShelfStore = defineStore("ShelfStore", {
       try {
         shelves = await fetchShelves();
         this.shelves = sortShelves(shelves);
-        if (!userAuth) await this.confirmNecessaryShelves();
+        if (userAuth.value) await this.confirmNecessaryShelves();
       } catch (error) {
         this.loading = false;
         throw error;

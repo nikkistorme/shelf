@@ -2,7 +2,7 @@
   <div class="header-profile">
     <div class="header-profile__image" @click="toggleDropdown">
       <img
-        v-if="userStore?.profile?.image"
+        v-if="userStore?.profile?.image?.length > 0"
         :src="userStore.profile.image"
         loading="lazy"
         :alt="userStore.profile.name"
