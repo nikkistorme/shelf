@@ -4,7 +4,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
   const userAuth = useSupabaseUser();
   const bookStore = useBookStore();
 
-  if (userAuth?.value) {
+  if (userAuth?.value?.id) {
     await bookStore.fetchInProgressBooks();
   }
 })

@@ -73,7 +73,6 @@ export const useUserStore = defineStore("UserStore", {
       this.loading = true;
       try {
         const profile = await getProfile();
-        console.log("🚀 ~ profile", profile);
         this.profile = profile;
       } catch (error) {
         this.loading = false;
