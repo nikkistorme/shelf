@@ -1,5 +1,5 @@
 <template>
-  <p class="book-page__author">by {{ props.book.author }}</p>
+  <p class="book-page__author">{{ props.book.author }}</p>
 </template>
 
 <script>
@@ -8,13 +8,8 @@ export default {
     book: Object,
   },
   setup(props) {
-    async function updateField() {
-      console.log("🚀 ~ props.book", props.book);
-    }
-
     return {
       props,
-      updateField,
     };
   },
 };

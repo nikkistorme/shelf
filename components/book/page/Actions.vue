@@ -1,5 +1,5 @@
 <template>
-  <div class="bp-actions d-flex jc-center">
+  <div class="bp-actions d-flex jc-evenly">
     <ButtonDefault v-if="userAuth && !userBook?.id" @click="addBookToLibrary">
       Add to library
     </ButtonDefault>
@@ -7,6 +7,10 @@
       v-if="userAuth && userBook?.id"
       class="book-page__edit-icon"
     />
+    <div class="tooltip-wrapper">
+      <IconShare @click="copyBookLink" class="cursor-pointer" />
+      <Tooltip>{{ shareTip }}</Tooltip>
+    </div>
   </div>
 </template>
 
@@ -25,10 +29,22 @@ export default {
       await bookStore.addBookToLibrary();
     };
 
+    const shareTip = ref("Copy book URL");
+    const copyBookLink = () => {
+      const url = window.location.href;
+      navigator.clipboard.writeText(url);
+      shareTip.value = "Copied!";
+      setTimeout(() => {
+        shareTip.value = "Copy book URL";
+      }, 2000);
+    };
+
     return {
       userAuth,
       userBook,
       addBookToLibrary,
+      shareTip,
+      copyBookLink,
     };
   },
 };
