@@ -44,6 +44,7 @@ export default {
         } catch (error) {
           console.error(error);
           await userStore.addUserProfile();
+          router.push("/home");
         }
       }
       fillStore();

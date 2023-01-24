@@ -13,7 +13,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     }
   }
 
-  // console.log("🚀 ~ to.path (auth)", to.path);
+  console.log("🚀 ~ to.path", to.path);
   if (userAuth.value && to.path === "/") {
     // console.log('auth: Redirecting to /home');
     return navigateTo("/home");
