@@ -65,6 +65,11 @@
   -webkit-justify-content: space-around;
 }
 
+.jc-evenly {
+  justify-content: space-evenly;
+  -webkit-justify-content: space-evenly;
+}
+
 .jc-start {
   justify-content: flex-start;
   -webkit-justify-content: flex-start;

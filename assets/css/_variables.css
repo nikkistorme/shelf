@@ -54,7 +54,8 @@
   --z-index-1: 1;
 
   --z-index-progress-circle: var(--z-index-1);
-  --z-index-modal-backdrop: calc(var(--z-index-progress-circle) + 1);
+  --z-index-tooltip: calc(var(--z-index-progress-circle) + 1);
+  --z-index-modal-backdrop: calc(var(--z-index-tooltip) + 1);
   --z-index-add-book-button: calc(var(--z-index-modal-backdrop) + 1);
   --z-index-modal: calc(var(--z-index-add-book-button) + 1);
   --z-index-full-page-loader: calc(var(--z-index-modal) + 1);
