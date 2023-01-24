@@ -35,12 +35,12 @@ export default {
       }
     };
 
-    const { profile } = storeToRefs(userStore);
+    // const { profile } = storeToRefs(userStore);
     watch(userAuth, () => {
-      if (userAuth && !profile.value) {
-        console.log("fetching profile");
-        userStore.fetchProfile();
-      }
+      // if (userAuth && !profile.value) {
+      //   console.log("fetching profile");
+      //   userStore.fetchProfile();
+      // }
       fillStore();
     });
 

@@ -66,7 +66,6 @@ export const createNecessaryShelves = async (shelfTypes) => {
       }
     })
   );
-  console.log("🚀 ~ shelves", shelves);
   try {
     const { data } = await supabase.from("shelves").insert(shelves);
     return;

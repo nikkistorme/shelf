@@ -13,6 +13,7 @@ import {
   updateInProgressShelfCount,
 } from "~/services/shelfService";
 import { useBookStore } from "./BookStore";
+import { useUserStore } from "./UserStore";
 
 export const useShelfStore = defineStore("ShelfStore", {
   state: () => ({
@@ -99,11 +100,13 @@ export const useShelfStore = defineStore("ShelfStore", {
     async fetchShelves() {
       this.loading = true;
       const userAuth = useSupabaseUser();
+      const userStore = useUserStore();
       let shelves;
       try {
         shelves = await fetchShelves();
         this.shelves = sortShelves(shelves);
-        if (userAuth.value) await this.confirmNecessaryShelves();
+        if (userAuth.value && userStore.profile)
+          await this.confirmNecessaryShelves();
       } catch (error) {
         this.loading = false;
         throw error;

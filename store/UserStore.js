@@ -57,10 +57,23 @@ export const useUserStore = defineStore("UserStore", {
       await resetPassword(password);
       this.loading = false;
     },
+    async addUserProfile(creds = {}) {
+      this.loading = true;
+      const userAuth = useSupabaseUser();
+      try {
+        const profile = await addUserProfile(userAuth.value.id, creds);
+        this.profile = profile;
+      } catch (error) {
+        this.loading = false;
+        throw error;
+      }
+      this.loading = false;
+    },
     async fetchProfile() {
       this.loading = true;
       try {
         const profile = await getProfile();
+        console.log("🚀 ~ profile", profile);
         this.profile = profile;
       } catch (error) {
         this.loading = false;
