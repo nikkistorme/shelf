@@ -123,3 +123,8 @@
   overflow: auto;
   scroll-behavior: smooth;
 }
+
+.pill {
+  background-color: var(--color-gray);
+  border-radius: var(--border-radius-3);
+}

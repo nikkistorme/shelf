@@ -112,7 +112,7 @@ export default {
       }
     }
 
-    async function submitForm() {
+    const submitForm = async () => {
       checkForm();
       if (errors.value.length === 0) {
         try {
@@ -121,10 +121,16 @@ export default {
               credentials.value.email,
               credentials.value.password
             );
-            // await userStore.fetchProfile();
             router.push("/home");
           } else if (activeForm.value === "sign-up") {
-            // const { newUser, error } = await supabase.auth.signUp();
+            console.log("🚀 ~ activeForm.value", activeForm.value);
+            await userStore.signUpWithEmail(
+              credentials.value.email,
+              credentials.value.password,
+              {
+                name: credentials.value.name,
+              }
+            );
           } else if (activeForm.value === "password-reset") {
             // await supabase.auth.api.resetPasswordForEmail(
             //   credentials.value.email
@@ -134,7 +140,7 @@ export default {
           errors.value.push(error);
         }
       }
-    }
+    };
 
     const submitButtonText = computed(() => {
       switch (activeForm.value) {

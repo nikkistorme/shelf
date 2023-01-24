@@ -1,5 +1,7 @@
 import { defineStore } from "pinia";
 import {
+  signUpWithEmail,
+  addUserProfile,
   signInWithPassword,
   getProfile,
   signOut,
@@ -12,6 +14,24 @@ export const useUserStore = defineStore("UserStore", {
     loading: false,
   }),
   actions: {
+    async signUpWithEmail(email, password, creds) {
+      this.loading = true;
+      try {
+        // Create user
+        const userAuth = await signUpWithEmail(email, password);
+        // Create user profile
+        await addUserProfile(userAuth.id, creds);
+        // Sign in
+        await signInWithPassword(email, password);
+        const profile = await getProfile();
+        this.profile = profile;
+      } catch (error) {
+        this.loading = false;
+        throw error;
+      }
+      this.loading = false;
+      return this.profile;
+    },
     async signInWithPassword(email, password) {
       this.loading = true;
       try {
