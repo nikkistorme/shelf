@@ -81,7 +81,7 @@ export const useShelfStore = defineStore("ShelfStore", {
       console.log("🚀 ~ shelvesToCreate", shelvesToCreate);
       try {
         const newShelves = await createNecessaryShelves(shelvesToCreate);
-        this.shelves = sortShelves([...shelves, ...newShelves]);
+        this.shelves = sortShelves([...this.shelves, ...newShelves]);
         return;
       } catch (error) {
         throw error;
@@ -106,7 +106,7 @@ export const useShelfStore = defineStore("ShelfStore", {
       try {
         shelves = await fetchShelves();
         this.shelves = sortShelves(shelves);
-        if (userAuth.value && userStore.profile)
+        if (userAuth?.value?.id && userStore.profile)
           await this.confirmNecessaryShelves();
       } catch (error) {
         this.loading = false;
