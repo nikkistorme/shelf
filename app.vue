@@ -31,25 +31,21 @@ export default {
 
     const fillStore = async () => {
       if (!shelfStore.shelves?.length > 0) {
-        shelfStore.fetchShelves();
+        await shelfStore.fetchShelves();
       }
     };
 
     const { profile } = storeToRefs(userStore);
     watch(userAuth, async () => {
-      if (userAuth && !profile.value) {
+      if (userAuth.value && !profile.value) {
         console.log("Fetching profile");
         try {
           await userStore.fetchProfile();
         } catch (error) {
-          console.error("Error fetching user profile", error);
+          console.error(error);
           await userStore.addUserProfile();
         }
       }
-      fillStore();
-    });
-
-    watch(userStore, () => {
       fillStore();
     });
 

@@ -19,7 +19,7 @@ export const addUserProfile = async (userId, creds) => {
       .from("profiles")
       .insert([{ user_id: userId, ...creds }]);
     if (data?.length > 0) return data[0];
-    throw new Error("User not found");
+    throw new Error("User profile not created");
   } catch (error) {
     throw error;
   }
