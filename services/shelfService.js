@@ -27,46 +27,46 @@ export const sortShelves = (shelves) => {
 export const createNecessaryShelves = async (shelfTypes) => {
   const supabase = useSupabaseClient();
   const userAuth = useSupabaseUser();
-  const shelves = await Promise.all(
-    shelfTypes.map(async (type) => {
-      let book_count;
-      switch (type) {
-        case "all_books_shelf":
-          book_count = await getAllBooksShelfCount();
-          return {
-            all_books_shelf: true,
-            user_id: userAuth.value.id,
-            name: "All Books",
-            book_count: book_count || 0,
-          };
-        case "in_progress_shelf":
-          book_count = await getInProgressShelfCount();
-          return {
-            in_progress_shelf: true,
-            user_id: userAuth.value.id,
-            name: "In Progress",
-            book_count: book_count || 0,
-          };
-        case "finished_shelf":
-          book_count = await getFinishedShelfCount();
-          return {
-            finished_shelf: true,
-            user_id: userAuth.value.id,
-            name: "Finished",
-            book_count: book_count || 0,
-          };
-        case "unread_shelf":
-          book_count = await getUnreadShelfCount();
-          return {
-            unread_shelf: true,
-            user_id: userAuth.value.id,
-            name: "Unread",
-            book_count: book_count || 0,
-          };
-      }
-    })
-  );
   try {
+    const shelves = await Promise.all(
+      shelfTypes.map(async (type) => {
+        let book_count;
+        switch (type) {
+          case "all_books_shelf":
+            book_count = await getAllBooksShelfCount();
+            return {
+              all_books_shelf: true,
+              user_id: userAuth.value.id,
+              name: "All Books",
+              book_count: book_count || 0,
+            };
+          case "in_progress_shelf":
+            book_count = await getInProgressShelfCount();
+            return {
+              in_progress_shelf: true,
+              user_id: userAuth.value.id,
+              name: "In Progress",
+              book_count: book_count || 0,
+            };
+          case "finished_shelf":
+            book_count = await getFinishedShelfCount();
+            return {
+              finished_shelf: true,
+              user_id: userAuth.value.id,
+              name: "Finished",
+              book_count: book_count || 0,
+            };
+          case "unread_shelf":
+            book_count = await getUnreadShelfCount();
+            return {
+              unread_shelf: true,
+              user_id: userAuth.value.id,
+              name: "Unread",
+              book_count: book_count || 0,
+            };
+        }
+      })
+    );
     const { data } = await supabase.from("shelves").insert(shelves);
     return;
   } catch (error) {
