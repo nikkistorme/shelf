@@ -13,7 +13,7 @@
     <div class="home-page__continue-reading d-flex flex-column gap-1">
       <h2>Continue reading</h2>
       <HomeShelf v-if="inProgressShelf?.book_count > 0" />
-      <div class="" v-else>
+      <div v-if="!inProgressShelf?.book_count > 0 && unreadShelf?.id">
         <p>
           You don't have any books in progress. <br />
           Check out your
