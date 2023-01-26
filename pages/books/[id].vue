@@ -35,7 +35,7 @@
 
       <div class="book-page__user-area gap-1" v-if="userAuth && userBook?.id">
         <BookPageStatus v-if="userBook?.id" />
-        <BookPageShelves v-if="userBook && shelves?.length" />
+        <BookPageShelves />
         <div
           class="book-page__in-progress-info d-flex flex-wrap"
           v-if="userBook?.status === 'in_progress'"
