@@ -3,8 +3,10 @@ import { useUserStore } from "~/store/UserStore";
 export default defineNuxtRouteMiddleware(async (to, from) => {
   const userAuth = useSupabaseUser();
   const userStore = useUserStore();
+  const loggedIn = !!userAuth?.value?.id;
+  const profileLoaded = !!userStore?.profile?.id;
 
-  if (userAuth.value && !userStore?.profile?.id) {
+  if (loggedIn && !profileLoaded) {
     try {
       await userStore.fetchProfile();
     } catch (error) {
@@ -13,18 +15,9 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     }
   }
 
-  console.log("🚀 ~ to.path", to.path);
-  if (userAuth.value && to.path === "/") {
-    // console.log('auth: Redirecting to /home');
+  if (loggedIn && to.path === "/") {
     return navigateTo("/home");
-  } else if (
-    !userAuth.value &&
-    to.path !== "/" &&
-    !to.path.includes("/books")
-  ) {
-    // console.log('auth: Redirecting to /');
+  } else if (!loggedIn && to.path !== "/" && !to.path.includes("/books")) {
     return navigateTo("/");
-  } else {
-    // console.log("auth: No redirect");
   }
 });

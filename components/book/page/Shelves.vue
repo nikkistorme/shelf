@@ -46,13 +46,15 @@ import { useShelfStore } from "~/store/ShelfStore";
 import { useModalStore } from "~/store/ModalStore";
 
 export default {
-  setup() {
+  async setup() {
     const bookStore = useBookStore();
     const shelfStore = useShelfStore();
     const modalStore = useModalStore();
 
     const { userBook } = storeToRefs(bookStore);
     const { shelves } = storeToRefs(shelfStore);
+
+    if (!shelves?.value?.length) await shelfStore.fetchShelves();
 
     const selectedShelves = computed(() => {
       return shelves.value

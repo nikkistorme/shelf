@@ -25,15 +25,8 @@ export default {
         },
       ],
     });
-    const shelfStore = useShelfStore();
     const userStore = useUserStore();
     const userAuth = useSupabaseUser();
-
-    const fillStore = async () => {
-      if (!shelfStore.shelves?.length > 0) {
-        await shelfStore.fetchShelves();
-      }
-    };
 
     const { profile } = storeToRefs(userStore);
     watch(userAuth, async () => {
@@ -47,10 +40,7 @@ export default {
           router.push("/home");
         }
       }
-      fillStore();
     });
-
-    fillStore();
 
     return {
       userAuth,
