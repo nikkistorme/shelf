@@ -1,6 +1,24 @@
 <template>
   <div class="modal-shelf-sort generic-modal d-flex flex-column gap-1">
-    <h2>Sort by</h2>
+    <div class="d-flex gap-1">
+      <h2>Sort Books</h2>
+      <button
+        v-show="!sortDescending"
+        @click="sortDescending = !sortDescending"
+        class="shelf-sort__order descend button-style-reset cursor-pointer"
+      >
+        Sort by descending
+        <IconArrowDown />
+      </button>
+      <button
+        v-show="sortDescending"
+        @click="sortDescending = !sortDescending"
+        class="shelf-sort__order ascend button-style-reset cursor-pointer"
+      >
+        Sort by ascending
+        <IconArrowDown />
+      </button>
+    </div>
     <ul class="d-flex flex-column gap-half">
       <li v-for="(option, i) in sortOptions" :key="i">
         <ButtonInline
@@ -15,23 +33,6 @@
         </span>
       </li>
     </ul>
-    <h2>Direction</h2>
-    <div class="d-flex flex-column gap-half">
-      <ButtonInline
-        v-if="sortDescending"
-        text="Ascending"
-        color="blue"
-        @click="sortDescending = !sortDescending"
-      />
-      <span v-else class="shelf-sort__selected">Ascending</span>
-      <ButtonInline
-        v-if="!sortDescending"
-        text="Descending"
-        color="blue"
-        @click="sortDescending = !sortDescending"
-      />
-      <span v-else class="shelf-sort__selected">Descending</span>
-    </div>
     <hr />
     <div class="d-flex jc-between">
       <ButtonDefault color="red" @click="closeModal">Cancel</ButtonDefault>
@@ -59,9 +60,17 @@ export default {
         value: "title",
         label: "Title",
       },
+      {
+        value: "author",
+        label: "Author",
+      },
+      {
+        value: "page_count",
+        label: "Page count",
+      },
     ]);
-    if (activeShelf.value.in_progress_shelf) {
-      sortOptions.concat([
+    if (activeShelf.value.locked_type === "in_progress") {
+      sortOptions.value = sortOptions.value.concat([
         {
           value: "percent_complete",
           label: "Progress",
@@ -70,12 +79,13 @@ export default {
           value: "last_updated_progress",
           label: "Last updated progress",
         },
-        {
-          value: "date_added_to_shelf",
-          label: "Date started",
-        },
       ]);
     }
+    if (activeShelf.value.locked_type !== "unread")
+      sortOptions.value.push({
+        value: "date_finished",
+        label: "Date finished",
+      });
 
     const sortMethod = ref(activeShelf.value.sort.method);
     const sortDescending = ref(activeShelf.value.sort.descending);
@@ -110,5 +120,22 @@ export default {
   text-decoration: underline;
   font-weight: 700;
   line-height: var(--line-height-1);
+}
+.shelf-sort__order {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: var(--color-gray);
+  font-size: 0;
+}
+.shelf-sort__order.descend {
+  transform: rotate(180deg);
+}
+.shelf-sort__order svg {
+  width: 15px;
+  height: 15px;
 }
 </style>

@@ -53,6 +53,10 @@ export default {
   object-fit: contain;
   object-position: bottom;
   box-shadow: var(--box-shadow-2);
+  transition: transform 400ms cubic-bezier(0.47, 1.64, 0.41, 0.8);
+}
+.shelved-book__cover img:hover {
+  transform: rotate(1deg) scale(1.05);
 }
 .home.shelved-book__cover {
   display: flex;

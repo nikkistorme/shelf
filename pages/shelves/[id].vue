@@ -50,7 +50,7 @@ export default {
 
     const bookStore = useBookStore();
     const booksSortedAndFiltered = computed(() => {
-      let books = bookStore.getUserBooksOnShelf(activeShelf.value);
+      let books = bookStore.booksOnShelf(activeShelf.value);
       books.sort((a, b) => sortShelfByMethod(a, b, activeShelf.value));
       return filterBooksBySearchTerm(books, searchTerm.value);
     });

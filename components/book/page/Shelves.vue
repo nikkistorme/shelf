@@ -70,13 +70,7 @@ export default {
 
     const options = computed(() => {
       return shelves.value
-        .filter(
-          (s) =>
-            !s.all_books_shelf &&
-            !s.finished_shelf &&
-            !s.in_progress_shelf &&
-            !s.unread_shelf
-        )
+        .filter((s) => !s.locked_type)
         .map((shelf) => {
           return {
             value: shelf.id.toString(),

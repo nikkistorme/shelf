@@ -89,12 +89,7 @@ export default {
     };
 
     const canDeleteShelf = (shelf) => {
-      return (
-        !shelf.all_books_shelf &&
-        !shelf.finished_shelf &&
-        !shelf.in_progress_shelf &&
-        !shelf.unread_shelf
-      );
+      return !shelf.locked_type;
     };
 
     const router = useRouter();

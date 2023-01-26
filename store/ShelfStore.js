@@ -23,60 +23,37 @@ export const useShelfStore = defineStore("ShelfStore", {
   }),
   getters: {
     allBooksShelf() {
-      return this.shelves.find((shelf) => shelf?.all_books_shelf);
+      return this.shelves.find((shelf) => shelf?.locked_type === "all_books");
     },
     finishedShelf() {
-      return this.shelves.find((shelf) => shelf?.finished_shelf);
+      return this.shelves.find((shelf) => shelf?.locked_type === "finished");
     },
     inProgressShelf() {
-      return this.shelves.find((shelf) => shelf?.in_progress_shelf);
+      return this.shelves.find((shelf) => shelf?.locked_type === "in_progress");
     },
     unreadShelf() {
-      return this.shelves.find((shelf) => shelf?.unread_shelf);
-    },
-    editableShelves() {
-      return this.shelves.filter(
-        (shelf) =>
-          !shelf.all_books_shelf &&
-          !shelf.finished_shelf &&
-          !shelf.in_progress_shelf &&
-          !shelf.unread_shelf
-      );
+      return this.shelves.find((shelf) => shelf?.locked_type === "unread");
     },
     getShelfById() {
       return (id) => this.shelves.find((shelf) => shelf.id === parseInt(id));
     },
     getSortedShelves() {
-      const allBooks = this.shelves.find((shelf) => shelf.all_books_shelf);
-      const finished = this.shelves.find((shelf) => shelf.finished_shelf);
-      const inProgress = this.shelves.find((shelf) => shelf.in_progress_shelf);
-      const unread = this.shelves.find((shelf) => shelf.unread_shelf);
-      const sorted = this.shelves.filter(
-        (shelf) =>
-          !shelf.all_books_shelf &&
-          !shelf.finished_shelf &&
-          !shelf.in_progress_shelf &&
-          !shelf.unread_shelf
-      );
-      sorted.sort((a, b) => (a.name > b.name ? 1 : -1));
-      if (unread) sorted.unshift(unread);
-      if (inProgress) sorted.unshift(inProgress);
-      if (finished) sorted.unshift(finished);
-      if (allBooks) sorted.unshift(allBooks);
-      return sorted;
+      return sortShelves(this.shelves);
     },
   },
   actions: {
-    async confirmNecessaryShelves() {
+    async confirmLockedShelves() {
+      const lockedShelves = this.shelves.filter((shelf) => shelf.locked_type);
+      if (lockedShelves.length === 4) return;
       const shelvesToCreate = [];
-      if (!this.shelves.find((shelf) => shelf?.all_books_shelf))
-        shelvesToCreate.push("all_books_shelf");
-      if (!this.shelves.find((shelf) => shelf?.finished_shelf))
-        shelvesToCreate.push("finished_shelf");
-      if (!this.shelves.find((shelf) => shelf?.in_progress_shelf))
-        shelvesToCreate.push("in_progress_shelf");
-      if (!this.shelves.find((shelf) => shelf?.unread_shelf))
-        shelvesToCreate.push("unread_shelf");
+      if (!lockedShelves.find((s) => s?.locked_type === "all_books"))
+        shelvesToCreate.push("all_books");
+      if (!lockedShelves.find((s) => s?.locked_type === "finished"))
+        shelvesToCreate.push("finished");
+      if (!lockedShelves.find((s) => s?.locked_type === "in_progress"))
+        shelvesToCreate.push("in_progress");
+      if (!lockedShelves.find((s) => s?.locked_type === "unread"))
+        shelvesToCreate.push("unread");
       if (!shelvesToCreate.length) return;
       console.log("🚀 ~ shelvesToCreate", shelvesToCreate);
       try {
@@ -107,7 +84,7 @@ export const useShelfStore = defineStore("ShelfStore", {
         shelves = await fetchShelves();
         this.shelves = sortShelves(shelves);
         if (userAuth?.value?.id && userStore.profile)
-          await this.confirmNecessaryShelves();
+          await this.confirmLockedShelves();
       } catch (error) {
         this.loading = false;
         throw error;
