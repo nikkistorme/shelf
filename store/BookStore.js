@@ -32,26 +32,22 @@ export const useBookStore = defineStore("BookStore", {
       if (!this.userBooks?.length > 0) return null;
       return this.userBooks.find((book) => book.id === id) || null;
     },
-    getUserBooksOnShelf() {
+    booksOnShelf() {
       return (shelf) => {
         if (!this.userBooks?.length > 0) return [];
-        if (shelf?.all_books_shelf) {
-          return this.userBooks;
-        } else if (shelf?.finished_shelf) {
-          return this.userBooks.filter((book) => book.status === "finished");
-        } else if (shelf?.in_progress_shelf) {
-          return this.userBooks.filter((book) => book.status === "in_progress");
-        } else if (shelf?.unread_shelf) {
-          return this.userBooks.filter(
-            (book) =>
-              !book.readthroughs?.length && !book.status !== "in_progress"
-          );
-        } else {
-          return this.userBooks.filter((book) =>
-            book.shelves?.find(
-              (s_id) => s_id.toString() === shelf.id.toString()
-            )
-          );
+        switch (shelf?.locked_type) {
+          case "all_books":
+            return this.userBooks;
+          case "finished":
+            return this.userBooks.filter((b) => b.status === "finished");
+          case "in_progress":
+            return this.userBooks.filter((b) => b.status === "in_progress");
+          case "unread":
+            return this.userBooks.filter((b) => b.status === "unread");
+          default:
+            return this.userBooks.filter((b) =>
+              b.shelves?.find((s_id) => s_id.toString() === shelf.id.toString())
+            );
         }
       };
     },

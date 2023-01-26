@@ -1,27 +1,20 @@
 export const sortShelves = (shelves) => {
   if (!shelves?.length) return [];
-  const sorted = [...shelves];
-  const allBooksShelf = shelves.find((s) => s.all_books_shelf);
-  const finishedShelf = shelves.find((s) => s.finished_shelf);
-  const inProgressShelf = shelves.find((s) => s.in_progress_shelf);
-  const unreadShelf = shelves.find((s) => s.unread_shelf);
-  shelves.forEach((s) => {
-    if (
-      s.all_books_shelf ||
-      s.finished_shelf ||
-      s.in_progress_shelf ||
-      s.unread_shelf
-    ) {
-      const index = sorted.indexOf(s);
-      sorted.splice(index, 1);
-    }
-  });
-  sorted.sort((a, b) => (a.name > b.name ? 1 : -1));
-  if (unreadShelf) sorted.unshift(unreadShelf);
-  if (inProgressShelf) sorted.unshift(inProgressShelf);
-  if (finishedShelf) sorted.unshift(finishedShelf);
-  if (allBooksShelf) sorted.unshift(allBooksShelf);
-  return sorted;
+  const sortedShelves = [];
+  const unlockedShelves = shelves.filter((s) => !s.locked_type);
+  unlockedShelves.sort((a, b) => (a.name > b.name ? 1 : -1));
+
+  const allBooksShelf = shelves.find((s) => s.locked_type === "all_books");
+  const finishedShelf = shelves.find((s) => s.locked_type === "finished");
+  const inProgressShelf = shelves.find((s) => s.locked_type === "in_progress");
+  const unreadShelf = shelves.find((s) => s.locked_type === "unread");
+
+  if (allBooksShelf) sortedShelves.push(allBooksShelf);
+  if (finishedShelf) sortedShelves.push(finishedShelf);
+  if (inProgressShelf) sortedShelves.push(inProgressShelf);
+  if (unreadShelf) sortedShelves.push(unreadShelf);
+  sortedShelves.push(...unlockedShelves);
+  return sortedShelves;
 };
 
 export const createNecessaryShelves = async (shelfTypes) => {
@@ -32,34 +25,34 @@ export const createNecessaryShelves = async (shelfTypes) => {
       shelfTypes.map(async (type) => {
         let book_count;
         switch (type) {
-          case "all_books_shelf":
+          case "all_books":
             book_count = await getAllBooksShelfCount();
             return {
-              all_books_shelf: true,
+              locked_type: "all_books",
               user_id: userAuth.value.id,
               name: "All Books",
               book_count: book_count || 0,
             };
-          case "in_progress_shelf":
+          case "in_progress":
             book_count = await getInProgressShelfCount();
             return {
-              in_progress_shelf: true,
+              locked_type: "in_progress",
               user_id: userAuth.value.id,
               name: "In Progress",
               book_count: book_count || 0,
             };
-          case "finished_shelf":
+          case "finished":
             book_count = await getFinishedShelfCount();
             return {
-              finished_shelf: true,
+              locked_type: "finished",
               user_id: userAuth.value.id,
               name: "Finished",
               book_count: book_count || 0,
             };
-          case "unread_shelf":
+          case "unread":
             book_count = await getUnreadShelfCount();
             return {
-              unread_shelf: true,
+              locked_type: "unread",
               user_id: userAuth.value.id,
               name: "Unread",
               book_count: book_count || 0,
@@ -90,11 +83,7 @@ export const createNewShelf = async (name) => {
 export const fetchShelves = async () => {
   const supabase = useSupabaseClient();
   try {
-    const { data: shelves } = await supabase
-      .from("shelves")
-      .select(
-        "inserted_at, name, id, in_progress_shelf, all_books_shelf, finished_shelf, unread_shelf, sort, book_count"
-      );
+    const { data: shelves } = await supabase.from("shelves").select();
     return shelves;
   } catch (error) {
     throw error;
@@ -115,33 +104,39 @@ export const fetchBooksForShelf = async (shelf) => {
   const supabase = useSupabaseClient();
   let books;
   try {
-    if (shelf?.all_books_shelf) {
-      const { data } = await supabase.from("books_user").select();
-      books = data;
-    } else if (shelf?.in_progress_shelf) {
-      const { data } = await supabase
-        .from("books_user")
-        .select()
-        .eq("status", "in_progress");
-      books = data;
-    } else if (shelf?.unread_shelf) {
-      const { data } = await supabase
-        .from("books_user")
-        .select()
-        .eq("status", "unread");
-      books = data;
-    } else if (shelf?.finished_shelf) {
-      const { data } = await supabase
-        .from("books_user")
-        .select()
-        .eq("status", "finished");
-      books = data;
-    } else {
-      const { data } = await supabase
-        .from("books_user")
-        .select()
-        .contains("shelves", [shelf.id]);
-      books = data;
+    switch (shelf?.locked_type) {
+      case "all_books":
+        const { data: allBooks } = await supabase.from("books_user").select();
+        books = allBooks;
+        break;
+      case "in_progress":
+        const { data: inProgressBooks } = await supabase
+          .from("books_user")
+          .select()
+          .eq("status", "in_progress");
+        books = inProgressBooks;
+        break;
+      case "unread":
+        const { data: unreadBooks } = await supabase
+          .from("books_user")
+          .select()
+          .eq("status", "unread");
+        books = unreadBooks;
+        break;
+      case "finished":
+        const { data: finishedBooks } = await supabase
+          .from("books_user")
+          .select()
+          .eq("status", "finished");
+        books = finishedBooks;
+        break;
+      default:
+        const { data: booksForShelf } = await supabase
+          .from("books_user")
+          .select()
+          .contains("shelves", [shelf.id]);
+        books = booksForShelf;
+        break;
     }
   } catch (error) {
     throw error;
@@ -181,7 +176,7 @@ export const updateAllBooksShelfCount = async (count) => {
     const { data } = await supabase
       .from("shelves")
       .update({ book_count: count })
-      .match({ all_books_shelf: true });
+      .match({ locked_type: "all_books" });
     return data[0];
   } catch (error) {
     throw error;
@@ -236,7 +231,7 @@ export const updateInProgressShelfCount = async (count) => {
     const { data } = await supabase
       .from("shelves")
       .update({ book_count: count })
-      .match({ in_progress_shelf: true });
+      .match({ locked_type: "in_progress" });
     return data[0];
   } catch (error) {
     throw error;

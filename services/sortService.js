@@ -2,20 +2,27 @@ export const sortShelfByMethod = (a, b, shelf) => {
   const method = shelf.sort?.method;
   const descending = shelf.sort?.descending;
 
-  if (method === "date_added_to_library") {
-    return sortByDateAdded(a, b, descending);
-  } else if (method === "date-started") {
-    return sortByDateStarted(a, b, descending);
-  } else if (method === "date_added_to_shelf") {
-    return sortByDateAddedToShelf(a, b, shelf);
-  } else if (method === "percent_complete") {
-    return sortByPercentComplete(a, b, descending);
-  } else if (method === "last_updated_progress") {
-    return sortByLastUpdatedProgress(a, b, descending);
-  } else if (method === "title") {
-    return sortByTitle(a, b, descending);
-  } else {
-    return 0;
+  switch (method) {
+    case "date_added_to_library":
+      return sortByDateAdded(a, b, descending);
+    case "date-started":
+      return sortByDateStarted(a, b, descending);
+    case "date_added_to_shelf":
+      return sortByDateAddedToShelf(a, b, shelf);
+    case "percent_complete":
+      return sortByPercentComplete(a, b, descending);
+    case "last_updated_progress":
+      return sortByLastUpdatedProgress(a, b, descending);
+    case "title":
+      return sortByTitle(a, b, descending);
+    case "page_count":
+      return sortByPageCount(a, b, descending);
+    case "author":
+      return sortByAuthor(a, b, descending);
+    case "date_finished":
+      return sortByDateFinished(a, b, descending);
+    default:
+      return 0;
   }
 };
 
@@ -23,17 +30,11 @@ const sortByDateAdded = (a, b, descending) => {
   let aDateAdded = a.inserted_at;
   let bDateAdded = b.inserted_at;
 
-  if (!aDateAdded) {
-    aDateAdded = 0;
-  }
-  if (!bDateAdded) {
-    bDateAdded = 0;
-  }
-  if (descending) {
-    return aDateAdded > bDateAdded ? -1 : 1;
-  } else {
-    return aDateAdded < bDateAdded ? -1 : 1;
-  }
+  if (!aDateAdded) aDateAdded = 0;
+  if (!bDateAdded) bDateAdded = 0;
+
+  if (descending) return aDateAdded > bDateAdded ? -1 : 1;
+  else return aDateAdded < bDateAdded ? -1 : 1;
 };
 
 const sortByDateStarted = (a, b, descending) => {
@@ -42,17 +43,11 @@ const sortByDateStarted = (a, b, descending) => {
   let bDateStarted = b.changes?.find((c) => c.action === "startReading")
     ?.payload.timestamp;
 
-  if (!aDateStarted) {
-    aDateStarted = 0;
-  }
-  if (!bDateStarted) {
-    bDateStarted = 0;
-  }
-  if (descending) {
-    return aDateStarted > bDateStarted ? -1 : 1;
-  } else {
-    return aDateStarted < bDateStarted ? -1 : 1;
-  }
+  if (!aDateStarted) aDateStarted = 0;
+  if (!bDateStarted) bDateStarted = 0;
+
+  if (descending) return aDateStarted > bDateStarted ? -1 : 1;
+  else return aDateStarted < bDateStarted ? -1 : 1;
 };
 
 const sortByDateAddedToShelf = (a, b, shelf) => {
@@ -87,21 +82,12 @@ const sortByDateAddedToShelf = (a, b, shelf) => {
     bDateAddedToShelf = bRelevantChanges[0]?.payload.timestamp;
   }
 
-  if (!aDateAddedToShelf) {
-    aDateAddedToShelf = 0;
-  }
-  if (!bDateAddedToShelf) {
-    bDateAddedToShelf = 0;
-  }
-  // if (a.title === "The Red Threads of Fortune") {
-  //   console.log("🚀 ~ aDateAddedToShelf", aDateAddedToShelf);
-  //   console.log("🚀 ~ bDateAddedToShelf", bDateAddedToShelf);
-  // }
-  if (shelf.sort?.descending) {
+  if (!aDateAddedToShelf) aDateAddedToShelf = 0;
+  if (!bDateAddedToShelf) bDateAddedToShelf = 0;
+
+  if (shelf.sort?.descending)
     return aDateAddedToShelf > bDateAddedToShelf ? -1 : 1;
-  } else {
-    return aDateAddedToShelf < bDateAddedToShelf ? -1 : 1;
-  }
+  else return aDateAddedToShelf < bDateAddedToShelf ? -1 : 1;
 };
 
 const sortByPercentComplete = (a, b, descending) => {
@@ -109,17 +95,14 @@ const sortByPercentComplete = (a, b, descending) => {
   let bPercentComplete = 0;
 
   if (!a.readthroughs?.length > 0) {
-    aPercentComplete = a.readPages / a.totalPages;
+    aPercentComplete = a.current_page / a.total_pages;
   }
   if (!b.readthroughs?.length > 0) {
-    bPercentComplete = b.readPages / b.totalPages;
+    bPercentComplete = b.current_page / b.total_pages;
   }
 
-  if (descending) {
-    return aPercentComplete > bPercentComplete ? -1 : 1;
-  } else {
-    return aPercentComplete < bPercentComplete ? -1 : 1;
-  }
+  if (descending) return aPercentComplete > bPercentComplete ? -1 : 1;
+  else return aPercentComplete < bPercentComplete ? -1 : 1;
 };
 
 const sortByLastUpdatedProgress = (a, b, descending) => {
@@ -141,27 +124,18 @@ const sortByLastUpdatedProgress = (a, b, descending) => {
       .find((c) => c.action === "updatePage")?.payload.timestamp;
   }
 
-  if (!aLastUpdated) {
-    aLastUpdated = 0;
-  }
-  if (!bLastUpdated) {
-    bLastUpdated = 0;
-  }
-  if (descending) {
-    return aLastUpdated > bLastUpdated ? -1 : 1;
-  } else {
-    return aLastUpdated < bLastUpdated ? -1 : 1;
-  }
+  if (!aLastUpdated) aLastUpdated = 0;
+  if (!bLastUpdated) bLastUpdated = 0;
+
+  if (descending) return aLastUpdated > bLastUpdated ? -1 : 1;
+  else return aLastUpdated < bLastUpdated ? -1 : 1;
 };
 
 export const sortByTitle = (a, b, descending) => {
   const aTitle = a.title.toLowerCase();
   const bTitle = b.title.toLowerCase();
-  if (descending) {
-    return aTitle > bTitle ? -1 : 1;
-  } else {
-    return aTitle < bTitle ? -1 : 1;
-  }
+  if (descending) return aTitle > bTitle ? -1 : 1;
+  else return aTitle < bTitle ? -1 : 1;
 };
 
 export const filterBooksBySearchTerm = (books, searchTerm) => {
@@ -185,4 +159,30 @@ export const filterBooksBySearchTerm = (books, searchTerm) => {
     });
   }
   return books;
+};
+
+export const sortByPageCount = (a, b, descending) => {
+  if (descending) return a.total_pages > b.total_pages ? -1 : 1;
+  else return a.total_pages < b.total_pages ? -1 : 1;
+};
+
+export const sortByAuthor = (a, b, descending) => {
+  const aAuthor = a.author.toLowerCase();
+  const bAuthor = b.author.toLowerCase();
+  if (descending) return aAuthor > bAuthor ? -1 : 1;
+  else return aAuthor < bAuthor ? -1 : 1;
+};
+
+export const sortByDateFinished = (a, b, descending) => {
+  let aReadthroughs = a.readthroughs.sort((a, b) => (a.end > b.end ? -1 : 1));
+  let bReadthroughs = b.readthroughs.sort((a, b) => (a.end > b.end ? -1 : 1));
+
+  let aDateFinished = aReadthroughs[0]?.end;
+  let bDateFinished = bReadthroughs[0]?.end;
+
+  if (!aDateFinished) aDateFinished = a.status === "finished" ? "0" : "";
+  if (!bDateFinished) bDateFinished = b.status === "finished" ? "0" : "";
+
+  if (descending) return aDateFinished > bDateFinished ? -1 : 1;
+  else return aDateFinished < bDateFinished ? -1 : 1;
 };
