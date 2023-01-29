@@ -123,7 +123,6 @@ export default {
             );
             router.push("/home");
           } else if (activeForm.value === "sign-up") {
-            console.log("🚀 ~ activeForm.value", activeForm.value);
             await userStore.signUpWithEmail(
               credentials.value.email,
               credentials.value.password,
@@ -131,6 +130,7 @@ export default {
                 name: credentials.value.name,
               }
             );
+            router.push("/home");
           } else if (activeForm.value === "password-reset") {
             // await supabase.auth.api.resetPasswordForEmail(
             //   credentials.value.email

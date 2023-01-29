@@ -21,8 +21,6 @@ export const useUserStore = defineStore("UserStore", {
         const userAuth = await signUpWithEmail(email, password);
         // Create user profile
         await addUserProfile(userAuth.id, creds);
-        // Sign in
-        await signInWithPassword(email, password);
         const profile = await getProfile();
         this.profile = profile;
       } catch (error) {
