@@ -27,12 +27,16 @@
     >
       <InputDefault v-model="newShelfName" placeholder="New shelf name" />
       <IconClose color="red" class="cursor-pointer" @click="toggleEditName" />
-      <IconCheckmark
-        class="book-details__pages-edit-confirm cursor-pointer"
-        @click="updateShelfName"
-      />
+      <IconCheckmark class="cursor-pointer" @click="updateShelfName" />
     </form>
-    <ModalShelfChange v-if="selectingShelf" />
+    <ModalGeneral
+      :show="selectingShelf"
+      :close="() => (selectingShelf = false)"
+    >
+      <template #content>
+        <ShelfChange />
+      </template>
+    </ModalGeneral>
   </div>
 </template>
 
@@ -52,6 +56,11 @@ export default {
       selectingShelf.value = true;
       modalStore.openModal();
     }
+    watch(selectingShelf, (newValue) => {
+      if (!newValue) {
+        modalStore.closeModal();
+      }
+    });
 
     const { modal } = storeToRefs(modalStore);
     watch(modal, (newValue) => {

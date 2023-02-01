@@ -45,6 +45,7 @@
   --default-input-border-radius: var(--border-radius-1);
 
   --border-1: 2px solid var(--color-primary);
+  --border-2: 2px solid var(--color-gray);
 
   --content-max-width: 1525px;
 

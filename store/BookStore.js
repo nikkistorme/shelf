@@ -111,6 +111,7 @@ export const useBookStore = defineStore("BookStore", {
         const { book, userBook } = await fetchBook(book_id);
         this.book = book;
         if (userBook?.base === book.id) this.userBook = userBook;
+        else this.userBook = null;
       } catch (error) {
         this.loading = false;
         throw error;

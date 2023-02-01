@@ -1,5 +1,5 @@
 <template>
-  <div class="modal-shelf-change generic-modal flex-column">
+  <div class="flex-column">
     <div class="modal-shelf-change__wrapper d-flex flex-column ai-end">
       <ul class="modal-shelf-change__list w-100">
         <li
@@ -120,11 +120,6 @@ export default {
 </script>
 
 <style>
-.modal-shelf-change {
-  height: auto;
-  width: auto;
-  visibility: visible;
-}
 .modal-shelf-change__active-shelf-name {
   font-weight: bold;
   text-decoration: underline;

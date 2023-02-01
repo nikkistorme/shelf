@@ -1,38 +1,24 @@
 <template>
   <div class="multi-select d-flex flex-column gap-half w-100">
-    <!-- <div role="status" id="applied-filters">
-      <ul v-if="value?.length" class="d-flex gap-half flex-wrap">
-        <li v-for="(v, i) in value" :key="i">
-          {{
-            `${options.find((o) => o.value === v).label}${
-              i < value.length - 1 ? ", " : ""
-            }`
-          }}
-        </li>
-      </ul>
-    </div> -->
     <fieldset class="p-0">
-      <!-- <legend>{{ legend }}</legend> -->
       <div
         v-for="(option, i) in options"
         :key="i"
         class="option d-flex gap-half"
       >
-        <input
-          type="checkbox"
-          :checked="value.includes(option.value)"
-          :id="option.id"
-          :name="option.label"
-          :value="option.value"
-          @input="(event) => check(option.value, event.target.checked)"
-        />
-        <label :for="option.label">{{ option.label }}</label>
+        <label :for="option.id">
+          <input
+            type="checkbox"
+            :checked="value.includes(option.value)"
+            :id="option.id"
+            :name="option.label"
+            :value="option.value"
+            @input="(event) => check(option.value, event.target.checked)"
+          />
+          {{ option.label }}
+        </label>
       </div>
     </fieldset>
-    <!-- <div class="buttons d-flex jc-between">
-      <ButtonDefault @click="cancel" color="red">Cancel</ButtonDefault>
-      <ButtonDefault @click="apply">Apply</ButtonDefault>
-    </div> -->
   </div>
 </template>
 
@@ -87,20 +73,13 @@ export default {
 </script>
 
 <style scoped>
-/* .multi-select {
-  position: relative;
-  border: var(--border-1);
-  border-radius: var(--border-radius-1);
-} */
-
+.multi-select {
+  min-width: 200px;
+}
 fieldset {
   border: none;
 }
-
-/* legend {
-  position: absolute;
-  top: calc(-1 * var(--spacing-size-1));
-  left: var(--spacing-size-1);
-  background: var(--color-white);
-} */
+label {
+  white-space: nowrap;
+}
 </style>

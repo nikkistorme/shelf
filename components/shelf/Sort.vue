@@ -1,6 +1,6 @@
 <template>
-  <div class="modal-shelf-sort generic-modal d-flex flex-column gap-1">
-    <div class="d-flex gap-1">
+  <div class="d-flex flex-column gap-1">
+    <div class="d-flex jc-between gap-1 w-100">
       <h2>Sort Books</h2>
       <button
         v-show="!sortDescending"

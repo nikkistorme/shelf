@@ -2,7 +2,7 @@
   <div
     class="page-modal__overlay"
     :class="{ open: modalStore.backdrop }"
-    @click="closeAllModals"
+    @click="closeModal"
   ></div>
 </template>
 
@@ -12,11 +12,11 @@ import { useModalStore } from "~/store/ModalStore";
 export default {
   setup() {
     const modalStore = useModalStore();
-    const closeAllModals = modalStore.closeAllModals;
+    const closeModal = modalStore.closeModal;
 
     return {
       modalStore,
-      closeAllModals,
+      closeModal,
     };
   },
 };
@@ -32,7 +32,7 @@ export default {
   background-color: black;
   opacity: 0;
   visibility: hidden;
-  transition: opacity 0.3s;
+  transition: opacity 0.3s, visibility 0.3s;
   z-index: var(--z-index-modal-backdrop);
 }
 .page-modal__overlay.open {

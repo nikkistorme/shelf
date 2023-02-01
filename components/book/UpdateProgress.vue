@@ -1,6 +1,6 @@
 <template>
-  <div class="update-progress" :class="{ open: props.open }">
-    <form class="update-progress__form p-1" @submit.prevent="updateProgress">
+  <div class="update-progress">
+    <form class="update-progress__form" @submit.prevent="updateProgress">
       <!-- END PAGE -->
       <p class="mb-1">I have now read</p>
       <div class="update-progress__page d-flex ai-center gap-1 mb-2">
@@ -240,29 +240,12 @@ export default {
 </script>
 
 <style>
-.update-progress.open {
+.update-progress {
   visibility: visible;
   height: auto;
-  min-width: 350px;
+  min-width: 290px;
   width: auto;
   max-width: 450px;
-}
-.update-progress {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  visibility: hidden;
-  height: 0px;
-  width: 0px;
-  transform: translate(-50%, -50%);
-  padding: var(--spacing-size-2) var(--spacing-size-2) var(--spacing-size-2)
-    var(--spacing-size-2);
-  background-color: white;
-  border-radius: var(--border-radius-2);
-  box-shadow: var(--box-shadow-1);
-  z-index: var(--z-index-modal);
-  overflow: auto;
-  scroll-behavior: smooth;
 }
 .update-progress__page {
   grid-template-columns: repeat(2, min-content);
