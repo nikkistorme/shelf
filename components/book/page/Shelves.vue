@@ -21,20 +21,25 @@
       <IconEditPencil v-else class="cursor-pointer" />
     </div>
 
-    <ModalGeneral class="edit-shelf-modal" v-if="editingShelves">
-      <InputMultiSelect
-        legend="Shelves"
-        v-model:value="selectedShelvesIds"
-        :options="options"
-        class="mb-1"
-      />
-
-      <div class="buttons d-flex jc-between">
+    <ModalGeneral
+      :show="editingShelves"
+      :close="() => (editingShelves = false)"
+      class="edit-shelf-modal"
+    >
+      <template #content>
+        <InputMultiSelect
+          legend="Shelves"
+          v-model:value="selectedShelvesIds"
+          :options="options"
+          class="mb-1"
+        />
+      </template>
+      <template #actions>
         <ButtonDefault @click="cancelShelfEdit" color="red">
           Cancel
         </ButtonDefault>
         <ButtonDefault @click="saveBookShelves">Apply</ButtonDefault>
-      </div>
+      </template>
     </ModalGeneral>
   </div>
 </template>
@@ -141,8 +146,5 @@ export default {
   padding: 0 var(--spacing-size-half);
   border-radius: var(--border-radius-2);
   background-color: var(--color-gray);
-}
-.edit-shelf-modal {
-  min-width: 250px;
 }
 </style>

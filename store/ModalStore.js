@@ -5,15 +5,19 @@ export const useModalStore = defineStore({
   state: () => ({
     backdrop: false,
     modal: false,
+    closeFunctions: [],
   }),
   actions: {
     openModal() {
       this.backdrop = true;
       this.modal = true;
     },
-    closeModal() {
+    closeModal(type = null) {
       this.modal = false;
       this.backdrop = false;
+      this.closeFunctions.forEach((fn) => {
+        fn.function();
+      });
     },
     closeAllModals() {
       this.modal = false;

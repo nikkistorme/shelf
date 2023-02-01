@@ -10,9 +10,19 @@
   padding: var(--spacing-size-1);
 }
 
+.px-half {
+  padding-left: var(--spacing-size-half);
+  padding-right: var(--spacing-size-half);
+}
+
 .px-1 {
   padding-left: var(--spacing-size-1);
   padding-right: var(--spacing-size-1);
+}
+
+.py-half {
+  padding-top: var(--spacing-size-half);
+  padding-bottom: var(--spacing-size-half);
 }
 
 .py-1 {

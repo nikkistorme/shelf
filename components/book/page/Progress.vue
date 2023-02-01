@@ -16,11 +16,14 @@
     >
       Update
     </ButtonDefault>
-    <ModalUpdateProgress
-      v-if="updatingProgress"
-      :open="updatingProgress"
-      :book="props.book"
-    />
+    <ModalGeneral
+      :show="updatingProgress"
+      :close="() => (updatingProgress = false)"
+    >
+      <template #content>
+        <BookUpdateProgress :book="props.book" />
+      </template>
+    </ModalGeneral>
   </div>
 </template>
 
@@ -55,13 +58,6 @@ export default {
       updatingProgress.value = true;
       modalStore.openModal();
     }
-
-    const { modal } = storeToRefs(modalStore);
-    watch(modal, (newValue) => {
-      if (!newValue) {
-        updatingProgress.value = false;
-      }
-    });
 
     return {
       props,

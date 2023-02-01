@@ -11,83 +11,86 @@
       <h2>{{ displayStatus }}</h2>
     </div>
     <ModalGeneral
-      v-if="changingStatus"
+      :show="changingStatus"
+      :close="() => (changingStatus = false)"
       class="bp-status_change-modal d-flex flex-column gap-1"
     >
-      <fieldset
-        id="status-change-modal"
-        role="radio-group"
-        aria-labelledby="id-status-label"
-      >
-        <legend id="id-status-label">New Status</legend>
-        <label
-          class="d-flex ai-center gap-half"
-          role="radio"
-          v-for="(status, i) in newStatusOptions"
-          :key="i"
-          :for="status.value"
+      <template #content>
+        <fieldset
+          id="status-change-modal"
+          role="radio-group"
+          aria-labelledby="id-status-label"
         >
-          <input
-            type="radio"
-            name="new-status"
-            :id="status.value"
-            :value="status.value"
-            v-model="newStatus"
-          />
-          <span>{{ status.label }}</span>
-        </label>
-      </fieldset>
-      <div class="bp-status_additional-options">
-        <div
-          v-if="newStatusOptions.find((o) => o.value === 'unread')"
-          :style="{ visibility: newStatus !== 'unread' ? 'hidden' : '' }"
-        >
-          <p>
-            <span class="text_warning">WARNING:</span> Marking this book as
-            {{ statusOptions.unread.label }} will remove its readthrough
-            history.
-          </p>
-          <ul>
-            <li v-for="(readthrough, i) in userBook.readthroughs" :key="i">
-              -
-              <span v-if="readthrough.start">
-                Read from
-                {{ formatDateFromTimestampz(readthrough.start, "YYYY-MM-DD") }}
-                to
-              </span>
-              <span v-else>Finished on</span>
-              {{ formatDateFromTimestampz(readthrough.end, "YYYY-MM-DD") }}
-            </li>
-          </ul>
+          <legend id="id-status-label">New Status</legend>
+          <label
+            class="d-flex ai-center gap-half"
+            role="radio"
+            v-for="(status, i) in newStatusOptions"
+            :key="i"
+            :for="status.value"
+          >
+            <input
+              type="radio"
+              name="new-status"
+              :id="status.value"
+              :value="status.value"
+              v-model="newStatus"
+            />
+            <span>{{ status.label }}</span>
+          </label>
+        </fieldset>
+        <div class="bp-status_additional-options">
+          <div
+            v-if="newStatusOptions.find((o) => o.value === 'unread')"
+            :style="{ visibility: newStatus !== 'unread' ? 'hidden' : '' }"
+          >
+            <p>
+              <span class="text_warning">WARNING:</span> Marking this book as
+              {{ statusOptions.unread.label }} will remove its readthrough
+              history.
+            </p>
+            <ul>
+              <li v-for="(readthrough, i) in userBook.readthroughs" :key="i">
+                -
+                <span v-if="readthrough.start">
+                  Read from
+                  {{ formatTimestampz(readthrough.start, "YYYY-MM-DD") }}
+                  to
+                </span>
+                <span v-else>Finished on</span>
+                {{ formatTimestampz(readthrough.end, "YYYY-MM-DD") }}
+              </li>
+            </ul>
+          </div>
+          <div
+            v-if="newStatusOptions.find((o) => o.value === 'finished')"
+            :style="{ visibility: newStatus !== 'finished' ? 'hidden' : '' }"
+          >
+            <InputDefault
+              type="date"
+              id="start-date"
+              v-model="newReadthrough.start"
+              label="Started On (optional)"
+              class=""
+            />
+            <InputDefault
+              type="date"
+              id="end-date"
+              v-model="newReadthrough.end"
+              label="Finished On (optional)"
+              class=""
+            />
+          </div>
         </div>
-        <div
-          v-if="newStatusOptions.find((o) => o.value === 'finished')"
-          :style="{ visibility: newStatus !== 'finished' ? 'hidden' : '' }"
-        >
-          <InputDefault
-            type="date"
-            id="start-date"
-            v-model="newReadthrough.start"
-            label="Started On (optional)"
-            class=""
-          />
-          <InputDefault
-            type="date"
-            id="end-date"
-            v-model="newReadthrough.end"
-            label="Finished On (optional)"
-            class=""
-          />
-        </div>
-      </div>
-      <div class="buttons d-flex jc-between">
-        <ButtonDefault @click="closeStatusChange" color="red"
-          >Cancel</ButtonDefault
-        >
-        <ButtonDefault @click="applyStatusChange" :disabled="!newStatus"
-          >Apply</ButtonDefault
-        >
-      </div>
+      </template>
+      <template #actions>
+        <ButtonDefault @click="closeStatusChange" color="red">
+          Cancel
+        </ButtonDefault>
+        <ButtonDefault @click="applyStatusChange" :disabled="!newStatus">
+          Apply
+        </ButtonDefault>
+      </template>
     </ModalGeneral>
   </div>
 </template>
@@ -98,11 +101,7 @@ import { useBookStore } from "~/store/BookStore";
 import { useShelfStore } from "~/store/ShelfStore";
 import { useModalStore } from "~/store/ModalStore";
 
-import {
-  todayWithFormat,
-  dateToTimestampz,
-  formatDateFromTimestampz,
-} from "~/services/timeService.js";
+import { todayWithFormat, formatTimestampz } from "~/services/timeService.js";
 
 export default {
   setup() {
@@ -259,7 +258,7 @@ export default {
       closeStatusChange,
       applyStatusChange,
       newReadthrough,
-      formatDateFromTimestampz,
+      formatTimestampz,
     };
   },
 };

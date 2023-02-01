@@ -25,14 +25,14 @@
         >
       </p> -->
     </div>
-    <ButtonDefault class="ml-auto" flavor="tiny" @click="openUpdateGoalModal">
+    <ButtonDefault class="ml-auto" flavor="tiny" @click="updatingGoal = true">
       {{ userBook.goal?.targetDate ? "Update goal" : "Set goal" }}
     </ButtonDefault>
-    <ModalUpdateGoal
-      v-if="updatingGoal"
-      :open="updatingGoal"
-      :book="userBook"
-    />
+    <ModalGeneral :show="updatingGoal" :close="() => (updatingGoal = false)">
+      <template #content>
+        <BookUpdateGoal :book="userBook" />
+      </template>
+    </ModalGeneral>
   </div>
 </template>
 
@@ -50,7 +50,6 @@ export default {
   setup(props) {
     const bookStore = useBookStore();
     const { userBook } = storeToRefs(bookStore);
-
     const goalIsValid = computed(() => {
       const goalExists = !!props.book.goal;
       const goalDateObject = new Date(userBook.value.goal?.goalDate);
@@ -58,12 +57,10 @@ export default {
       const goalIsInFuture = goalDateObject > todayDateObject;
       return goalExists && goalIsInFuture;
     });
-
     const formattedGoalDate = computed(() => {
       const goalDate = userBook.value.goal?.goalDate;
       return formatDate(goalDate);
     });
-
     const goalPace = computed(() => {
       if (props.book.goal) {
         return getGoalPace(props.book);
@@ -71,28 +68,13 @@ export default {
         return 0;
       }
     });
-
     const updatingGoal = ref(false);
-    const modalStore = useModalStore();
-
-    function openUpdateGoalModal() {
-      updatingGoal.value = true;
-      modalStore.openModal();
-    }
-
-    const { modal } = storeToRefs(modalStore);
-    watch(modal, (newValue) => {
-      if (!newValue) {
-        updatingGoal.value = false;
-      }
-    });
 
     return {
       userBook,
       formattedGoalDate,
       goalIsValid,
       goalPace,
-      openUpdateGoalModal,
       updatingGoal,
     };
   },

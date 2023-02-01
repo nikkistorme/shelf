@@ -43,8 +43,7 @@
           <BookPageProgress :book="userBook" />
           <BookPageGoal :book="userBook" class="py-1" />
         </div>
-        <!-- TODO: Show book insights -->
-        <!-- TODO: Show book history -->
+        <BookPageUserDetails />
       </div>
 
       <div class="book-page__additional-area">
@@ -102,6 +101,7 @@ export default {
   justify-content: center;
 }
 .book-page__user-area {
+  position: relative;
   display: grid;
   grid-auto-rows: min-content;
   padding: var(--spacing-size-1);

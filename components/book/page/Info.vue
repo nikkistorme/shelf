@@ -1,8 +1,5 @@
 <template>
-  <div
-    class="book-page__update-info generic-modal d-flex flex-column gap-2"
-    :class="{ open: props.open }"
-  >
+  <div class="book-page__update-info d-flex flex-column gap-2">
     <div class="d-flex flex-column gap-1">
       <h4 class="book-page__update-info-heading">Cover</h4>
       <BookPageCoverUpload />
@@ -73,12 +70,8 @@ export default {
 </script>
 
 <style>
-.book-page__update-info.open {
-  visibility: visible;
-  height: auto;
-  min-width: 350px;
-  width: auto;
-  max-width: 450px;
+.book-page__update-info {
+  min-width: 290px;
 }
 .book-page__update-info-heading {
   margin: 0;

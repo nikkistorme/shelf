@@ -25,7 +25,15 @@
         />
       </div>
     </section>
-    <ModalShelfSort v-if="sortingShelf" />
+    <ModalGeneral :show="sortingShelf" :close="() => (sortingShelf = false)">
+      <template #content>
+        <ShelfSort />
+      </template>
+      <!-- <template #actions>
+        <ButtonDefault color="red" @click="closeModal">Cancel</ButtonDefault>
+        <ButtonDefault @click="updateShelfSort">Confirm</ButtonDefault>
+      </template> -->
+    </ModalGeneral>
   </div>
 </template>
 
@@ -55,14 +63,9 @@ export default {
       return filterBooksBySearchTerm(books, searchTerm.value);
     });
 
-    const modalStore = useModalStore();
     const sortingShelf = ref(false);
-    const { modal } = storeToRefs(modalStore);
-    watch(modal, (newValue) => {
-      if (!newValue) {
-        sortingShelf.value = false;
-      }
-    });
+    const modalStore = useModalStore();
+    const { closeModal } = modalStore;
 
     function openShelfSortModal() {
       sortingShelf.value = true;
@@ -75,6 +78,7 @@ export default {
       activeShelf,
       booksSortedAndFiltered,
       sortingShelf,
+      closeModal,
       openShelfSortModal,
       searchTerm,
     };

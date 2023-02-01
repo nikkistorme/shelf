@@ -1,5 +1,5 @@
 <template>
-  <div class="update-goal generic-modal" :class="{ open: props.open }">
+  <div class="update-goal">
     <form
       class="update-goal__form d-flex flex-column gap-1"
       @submit.prevent="updateGoal"
@@ -164,15 +164,8 @@ export default {
 </script>
 
 <style>
-.update-goal.open {
-  visibility: visible;
-  height: auto;
-  min-width: 350px;
-  width: auto;
-  max-width: 450px;
-}
-.update-goal__form {
-  padding: var(--spacing-size-1) var(--spacing-size-2);
+.update-goal {
+  min-width: 290px;
 }
 .update-goal__input {
   margin: 0;
