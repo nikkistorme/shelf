@@ -9,7 +9,7 @@
   "devDependencies": {
     "@nuxt/image-edge": "^1.0.0-27840416.dc1ed65",
     "@nuxtjs/supabase": "^0.1.14",
-    "nuxt": "^3.0.0"
+    "nuxt": "^3.4.2"
   },
   "dependencies": {
     "@pinia/nuxt": "^0.4.2",
