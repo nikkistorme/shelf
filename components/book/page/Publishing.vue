@@ -6,24 +6,15 @@
   </p>
 </template>
 
-<script>
+<script setup lang="ts">
 import { formatDate } from "~/services/timeService";
 
-export default {
-  props: {
-    book: Object,
-  },
-  setup(props) {
-    const publishedDate = ref(formatDate(props.book.published));
-    const publisher = ref(props.book.publisher);
+const props = defineProps<{
+  book: BookEdition;
+}>();
 
-    return {
-      publishedDate,
-      publisher,
-      props,
-    };
-  },
-};
+const publishedDate = ref(formatDate(props.book.published));
+const publisher = ref(props.book.publisher);
 </script>
 
 <style>

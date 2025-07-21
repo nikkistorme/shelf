@@ -1,18 +1,11 @@
 <template>
-  <p class="book-page__author">{{ props.book.author }}</p>
+  <p class="book-page__author">{{ author }}</p>
 </template>
 
-<script>
-export default {
-  props: {
-    book: Object,
-  },
-  setup(props) {
-    return {
-      props,
-    };
-  },
-};
+<script setup lang="ts">
+defineProps<{
+  author: string;
+}>();
 </script>
 
 <style>

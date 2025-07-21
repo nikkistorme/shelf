@@ -10,57 +10,58 @@
   />
 </template>
 
-<script>
+<script setup lang="ts">
 import { storeToRefs } from "pinia";
 import { useBookStore } from "~~/store/BookStore";
 import { newChange, sortChanges } from "~~/services/changeService";
 
-const fileFromEvent = (event) => {
-  const file = event.target.files[0];
-  return file;
+const fileFromEvent = (e: Event): File | null => {
+  const target = e.target as HTMLInputElement;
+  if (target.files) return target.files[0];
+  else return null;
 };
 
-export default {
-  setup() {
-    const bookStore = useBookStore();
-    const { loading, userBook } = storeToRefs(bookStore);
+const bookStore = useBookStore();
+const { loading, userBook } = storeToRefs(bookStore);
 
-    async function uploadImage(event) {
-      const form = new FormData();
-      loading.value = true;
-      form.append("file", fileFromEvent(event));
+async function uploadImage(e: Event): Promise<void> {
+  if (!e.target) return;
 
-      const { id, uploadURL } = await $fetch("/api/image", {
-        method: "post",
-      });
+  const form = new FormData();
+  const file = fileFromEvent(e);
+  if (!file) return;
 
-      const response = await fetch(uploadURL, {
-        method: "POST",
-        body: form,
-      });
-      const data = await response.json();
+  form.append("file", file);
 
-      const imageURL = data.result.variants[0];
+  const { uploadURL } = await $fetch("/api/image", {
+    method: "post",
+  });
 
-      if (imageURL) {
-        const change = newChange("updateCover", userBook.value, {
-          cover: imageURL,
-        });
-        let newChanges = [...userBook.value.changes, change];
-        newChanges = sortChanges(newChanges);
-        const bookUpdates = {
-          changes: newChanges,
-          cover: imageURL,
-        };
-        await bookStore.uploadNewCoverImage(userBook.value.id, bookUpdates);
-      }
-    }
+  const response = await fetch(uploadURL, {
+    method: "POST",
+    body: form,
+  });
+  const data = await response.json();
 
-    return {
-      uploadImage,
+  const imageURL = data.result.variants[0];
+
+  if (imageURL && userBook.value) {
+    const change: Change = newChange(
+      "updateCover",
+      userBook.value as UserBook,
+      {
+        cover: imageURL,
+      } as MiscUpdateParam
+    );
+    let newChanges = [...userBook.value.changes, change];
+    newChanges = sortChanges(newChanges);
+    const bookUpdates = {
+      changes: newChanges,
+      cover: imageURL,
     };
-  },
-};
+    await bookStore.uploadNewCoverImage(userBook.value.id, bookUpdates);
+  }
+}
 </script>
 
 <style>

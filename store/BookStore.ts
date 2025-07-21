@@ -11,30 +11,42 @@ import {
   updateProgress,
   updateUserBook,
   removeBookFromLibrary,
-} from "~/services/bookService";
+} from "~~/services/bookService";
+
+type BookId = UserBook["id"];
+
+type UserState = {
+  userBooks: UserBook[]
+  book: BookEdition | null
+  userBook: UserBook | null
+  loading: boolean
+  bookToAdd: BookEdition | null
+}
 
 export const useBookStore = defineStore("BookStore", {
-  state: () => ({
+  state: (): UserState => ({
     userBooks: [],
     book: null,
-    userBook: {},
+    userBook: null,
     loading: false,
     bookToAdd: null,
   }),
   getters: {
-    inProgressBooks() {
-      if (!this.userBooks?.length > 0) return [];
+    inProgressBooks(): UserBook[] {
+      if (!this.userBooks?.length) return [];
       return (
         this.userBooks.filter((book) => book.status === "in_progress") || []
       );
     },
-    getBookById(id) {
-      if (!this.userBooks?.length > 0) return null;
-      return this.userBooks.find((book) => book.id === id) || null;
+    getBookById() {
+      return (bookId: BookId): UserBook | null => {
+        if (!this.userBooks?.length) return null;
+        return this.userBooks.find((b: UserBook) => b.id === bookId) || null;
+      };
     },
     booksOnShelf() {
-      return (shelf) => {
-        if (!this.userBooks?.length > 0) return [];
+      return (shelf: Shelf) => {
+        if (!this.userBooks?.length) return [];
         switch (shelf?.locked_type) {
           case "all_books":
             return this.userBooks;
@@ -53,7 +65,8 @@ export const useBookStore = defineStore("BookStore", {
     },
   },
   actions: {
-    async addNewBook() {
+    async addNewBook(): Promise<void> {
+      if (!this.bookToAdd) return;
       this.loading = true;
       let newBook;
       try {
@@ -66,7 +79,7 @@ export const useBookStore = defineStore("BookStore", {
       this.book = newBook;
       this.loading = false;
     },
-    async addBookToLibrary(book = null) {
+    async addBookToLibrary(book: BookEdition | null = null): Promise<void> {
       this.loading = true;
       if (!book?.id) {
         book = this.book;
@@ -82,7 +95,7 @@ export const useBookStore = defineStore("BookStore", {
       this.userBooks.push(userBook);
       this.loading = false;
     },
-    async fetchUserBooks() {
+    async fetchUserBooks(): Promise<void> {
       this.loading = true;
       try {
         const books = await fetchUserBooks();
@@ -93,19 +106,19 @@ export const useBookStore = defineStore("BookStore", {
       }
       this.loading = false;
     },
-    async fetchInProgressBooks() {
+    async fetchInProgressBooks(): Promise<void> {
       this.loading = true;
-      let books;
+      let books: UserBook[] | [] = [];
       try {
         books = await fetchInProgressBooks();
+        this.userBooks = books;
       } catch (error) {
         this.loading = false;
         throw error;
       }
-      this.userBooks = books;
       this.loading = false;
     },
-    async fetchBook(book_id) {
+    async fetchBook(book_id: UserBook["id"]): Promise<void> {
       this.loading = true;
       try {
         const { book, userBook } = await fetchBook(book_id);
@@ -118,9 +131,9 @@ export const useBookStore = defineStore("BookStore", {
       }
       this.loading = false;
     },
-    async startReadingBook(user_book) {
+    async startReadingBook(user_book: UserBook): Promise<void> {
       this.loading = true;
-      let updatedBook;
+      let updatedBook: UserBook | null;
       try {
         updatedBook = await startReadingBook(user_book);
         const shelfStore = useShelfStore();
@@ -131,12 +144,14 @@ export const useBookStore = defineStore("BookStore", {
       }
       if (updatedBook?.id) {
         this.userBook = updatedBook;
-        this.userBooks.filter((book) => book.id !== updatedBook.id);
-        this.userBooks.push(updatedBook);
+        this.userBooks = this.userBooks.map((book: UserBook): UserBook => {
+          if (book?.id === updatedBook?.id) return updatedBook;
+          return book;
+        });
       }
       this.loading = false;
     },
-    async updateProgress(user_book_id, book_updates) {
+    async updateProgress(user_book_id: UserBook["id"], book_updates: Partial<UserBook>): Promise<void> {
       this.loading = true;
       let updatedBook;
       try {
@@ -147,7 +162,7 @@ export const useBookStore = defineStore("BookStore", {
       if (updatedBook?.id) this.userBook = updatedBook;
       this.loading = false;
     },
-    async setGoal(user_book_id, book_updates) {
+    async setGoal(user_book_id: UserBook["id"], book_updates: Partial<UserBook>): Promise<void> {
       this.loading = true;
       let updatedBook;
       try {
@@ -158,7 +173,7 @@ export const useBookStore = defineStore("BookStore", {
       if (updatedBook?.id) this.userBook = updatedBook;
       this.loading = false;
     },
-    async finishReadingBook(user_book_id, book_updates) {
+    async finishReadingBook(user_book_id: UserBook["id"], book_updates: Partial<UserBook>): Promise<void> {
       this.loading = true;
       let updatedBook;
       try {
@@ -172,7 +187,7 @@ export const useBookStore = defineStore("BookStore", {
       if (updatedBook?.id) this.userBook = updatedBook;
       this.loading = false;
     },
-    async uploadNewCoverImage(user_book_id, book_updates) {
+    async uploadNewCoverImage(user_book_id: UserBook["id"], book_updates: Partial<UserBook>): Promise<void> {
       this.loading = true;
       let updatedBook;
       try {
@@ -183,7 +198,7 @@ export const useBookStore = defineStore("BookStore", {
       if (updatedBook?.id) this.userBook = updatedBook;
       this.loading = false;
     },
-    async updateUserBook(user_book_id, book_updates) {
+    async updateUserBook(user_book_id: UserBook["id"], book_updates: Partial<UserBook>): Promise<void> {
       this.loading = true;
       let updatedBook;
       try {
@@ -199,18 +214,15 @@ export const useBookStore = defineStore("BookStore", {
       if (updatedBook?.id) this.userBook = updatedBook;
       this.loading = false;
     },
-    async removeBookFromLibrary(book_id = null) {
+    async removeBookFromLibrary(book_id: UserBook["id"]): Promise<void> {
       this.loading = true;
-      if (!book_id) {
-        book_id = this.userBook.id;
-      }
       try {
         await removeBookFromLibrary(book_id);
       } catch (error) {
         this.loading = false;
         throw error;
       }
-      this.userBook = {};
+      this.userBook = null;
       this.loading = false;
     },
   },

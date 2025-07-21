@@ -61,7 +61,7 @@ export const createNecessaryShelves = async (shelfTypes) => {
       })
     );
     const { data } = await supabase.from("shelves").insert(shelves);
-    return data;
+    return data || [];
   } catch (error) {
     throw error;
   }

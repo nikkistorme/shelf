@@ -99,92 +99,88 @@
   </div>
 </template>
 
-<script>
+<script setup lang="ts">
 import { storeToRefs } from "pinia";
 import { useBookStore } from "~/store/BookStore";
 import { formatDate, formatTimestampz } from "~/services/timeService";
+import { Ref } from "vue";
 
-export default {
-  setup() {
-    const bookStore = useBookStore();
-    const { userBook } = storeToRefs(bookStore);
+interface EditableReadthrough {
+  start: string;
+  end: string;
+  index: number;
+}
 
-    const readthroughs = computed(() => {
-      return userBook.value.readthroughs.sort((a, b) => {
-        return a.end > b.end ? -1 : 1;
-      });
-    });
+const bookStore = useBookStore();
+const { userBook } = storeToRefs(bookStore);
 
-    const editingReadthrough = ref(null);
-    const editReadthrough = (readthrough, index) => {
-      editingReadthrough.value = {
-        start: null,
-        end: null,
-        index,
-      };
-      if (readthrough.start)
-        editingReadthrough.value.start = formatTimestampz(
-          readthrough.start,
-          "MM/DD/YYYY"
-        );
-      if (readthrough.end)
-        editingReadthrough.value.end = formatTimestampz(
-          readthrough.end,
-          "MM/DD/YYYY"
-        );
-      newReadthrough.value = null;
-    };
+const readthroughs = computed((): Readthrough[] => {
+  return (
+    userBook?.value?.readthroughs.sort((a, b) => {
+      return a.end > b.end ? -1 : 1;
+    }) || []
+  );
+});
 
-    const newReadthrough = ref(null);
-    const addReadthrough = () => {
-      newReadthrough.value = {
-        start: null,
-        end: null,
-        index: -1,
-      };
-      editingReadthrough.value = null;
-    };
+const editingReadthrough: Ref<EditableReadthrough | null> = ref(null);
+const editReadthrough = (readthrough: Readthrough, index: number) => {
+  editingReadthrough.value = {
+    start: "",
+    end: "",
+    index,
+  };
+  if (readthrough.start)
+    editingReadthrough.value.start = formatTimestampz(
+      readthrough.start,
+      "MM/DD/YYYY"
+    );
+  if (readthrough.end)
+    editingReadthrough.value.end = formatTimestampz(
+      readthrough.end,
+      "MM/DD/YYYY"
+    );
+  newReadthrough.value = null;
+};
 
-    const saveReadthrough = async (newRt) => {
-      let rtToAdd = {
-        start: newRt.start,
-        end: newRt.end,
-      };
-      rtToAdd = formatReadthrough(rtToAdd, "mm/dd/yyyy");
+const newReadthrough: Ref<EditableReadthrough | null> = ref(null);
+const addReadthrough = () => {
+  newReadthrough.value = {
+    start: "",
+    end: "",
+    index: -1,
+  };
+  editingReadthrough.value = null;
+};
 
-      const updatedReadthroughs = readthroughs.value.map((rt, i) => {
-        if (i === newRt.index) return rtToAdd;
-        return rt;
-      });
-      if (newRt.index === -1) updatedReadthroughs.push(rtToAdd);
+const saveReadthrough = async (
+  newRt: EditableReadthrough | null
+): Promise<void> => {
+  if (!newRt) return;
+  let rtToAdd = {
+    start: newRt.start,
+    end: newRt.end,
+  };
+  rtToAdd = formatReadthrough(rtToAdd, "mm/dd/yyyy");
 
-      if (userBook.value.status === "unread") {
-        await bookStore.updateUserBook(userBook.value.id, {
-          status: "finished",
-          readthroughs: updatedReadthroughs,
-        });
-      } else {
-        await bookStore.updateUserBook(userBook.value.id, {
-          readthroughs: updatedReadthroughs,
-        });
-      }
+  const updatedReadthroughs = readthroughs.value.map((rt, i) => {
+    if (i === newRt.index) return rtToAdd;
+    return rt;
+  });
+  if (newRt.index === -1) updatedReadthroughs.push(rtToAdd);
 
-      editingReadthrough.value = null;
-      newReadthrough.value = null;
-    };
+  if (userBook?.value?.status === "unread") {
+    await bookStore.updateUserBook(userBook.value.id, {
+      status: "finished",
+      readthroughs: updatedReadthroughs,
+    } as Partial<UserBook>);
+  } else if (userBook?.value?.status) {
+    await bookStore.updateUserBook(userBook.value.id, {
+      readthroughs: updatedReadthroughs,
+    } as Partial<UserBook>);
+  }
 
-    return {
-      userBook,
-      readthroughs,
-      formatDate,
-      formatTimestampz,
-      editingReadthrough,
-      editReadthrough,
-      saveReadthrough,
-      newReadthrough,
-      addReadthrough,
-    };
-  },
+  editingReadthrough.value = null;
+  newReadthrough.value = null;
 };
 </script>
 

@@ -1,52 +1,40 @@
 <template>
   <div class="book-page__cover d-flex jc-center">
-    <nuxt-img
-      v-if="coverImage"
-      :src="coverImage"
-      :alt="coverAltText"
-      format="webp"
-    />
+    <nuxt-img v-if="coverImage" :src="coverImage" :alt="title" format="webp" />
     <div
       v-else
       class="book-page__cover-placeholder d-flex flex-column jc-between ai-center p-1"
     >
-      <h5>{{ userBook.title }}</h5>
-      <p>{{ userBook.author }}</p>
+      <h5>{{ title }}</h5>
+      <p>{{ author }}</p>
     </div>
   </div>
 </template>
 
-<script>
+<script setup lang="ts">
 import { storeToRefs } from "pinia";
 import { useBookStore } from "~/store/BookStore";
 
-export default {
-  setup() {
-    const bookStore = useBookStore();
-    const { book, userBook } = storeToRefs(bookStore);
+const bookStore = useBookStore();
+const { book, userBook } = storeToRefs(bookStore);
 
-    const coverImage = computed(() => {
-      if (userBook?.value?.cover) return userBook.value.cover;
-      if (book?.value?.cover) return book.value.cover;
-      return null;
-    });
+const coverImage = computed(() => {
+  if (userBook.value?.cover) return userBook.value.cover;
+  if (book.value?.cover) return book.value.cover;
+  return "";
+});
 
-    const coverAltText = computed(() => {
-      if (userBook?.value?.title) return userBook.value.title;
-      if (book?.value?.title) return book.value.title;
-      return "";
-    });
+const title = computed(() => {
+  if (userBook?.value?.title) return userBook.value.title;
+  else if (book?.value?.title) return book.value.title;
+  return "";
+});
 
-    const userAuth = useSupabaseUser();
-
-    return {
-      coverImage,
-      coverAltText,
-      userBook,
-      userAuth,
-    };
-  },
-};
+const author = computed(() => {
+  if (userBook?.value?.author) return userBook.value.author;
+  if (book?.value?.author) return book.value.author;
+  return "";
+});
 </script>
 
 <style scoped>

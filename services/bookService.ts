@@ -4,46 +4,48 @@ import {
   updateAllBooksShelfCount,
 } from "./shelfService";
 
-export const bookSchema = () => {
+export const bookSchema = (): BookEdition => {
   return {
-    title: "",
+    id: null,
+    inserted_at: null,
+    updated_at: null,
+    title: null,
     total_pages: null,
-    author: "",
-    description: "",
-    cover: "",
+    author: null,
+    description: null,
+    cover: null,
     published: null,
     published_original: null,
-    average_rating: null,
-    publisher: "",
-    isbn: "",
-    isbn_13: "",
+    publisher: null,
+    isbn: null,
+    isbn13: null,
+    average_rating: null
   };
 };
 
-export const userBookSchema = () => {
+export const userBookSchema = (): UserBook => {
   return {
-    title: "",
-    author: "",
-    description: "",
-    goal: {
-      startDate: "",
-      targetDate: "",
-      targetPage: null,
-    },
-    cover: "",
+    id: null,
+    inserted_at: null,
+    updated_at: null,
+    title: null,
+    author: null,
+    description: null,
+    goal: null,
+    cover: null,
     current_page: null,
     total_pages: null,
-    user_id: "",
-    base: "",
-    shelves: [],
-    changes: [],
+    user_id: null,
+    base: null,
+    shelves: null,
+    changes: null,
     minutes_per_page: null,
-    status: "unread",
-    readthroughs: [],
+    status: null,
+    readthroughs: null,
   };
 };
 
-export const addNewBook = async (book) => {
+export const addNewBook = async (book: BookEdition): Promise<BookEdition> => {
   const supabase = useSupabaseClient();
   try {
     const { data: newBook, error } = await supabase
@@ -57,10 +59,11 @@ export const addNewBook = async (book) => {
   }
 };
 
-export const addBookToLibrary = async (book) => {
+export const addBookToLibrary = async (book: BookEdition): Promise<UserBook> => {
   const supabase = useSupabaseClient();
   const userAuth = useSupabaseUser();
-  const change = newChange("addBookToLibrary", book);
+  if (!userAuth.value) throw new Error("User not logged in");
+  const change: Change = newChange("addBookToLibrary", book);
   let newBook = userBookSchema();
   newBook.author = book.author;
   newBook.base = book.id;
@@ -71,21 +74,22 @@ export const addBookToLibrary = async (book) => {
   newBook.total_pages = book.total_pages;
   newBook.user_id = userAuth.value.id;
   try {
-    const { data: userBook, error: userBookError } = await supabase
+    const { data: userBook } = await supabase
       .from("books_user")
       .insert([newBook]);
 
     const allBooksShelfCount = await getAllBooksShelfCount();
     await updateAllBooksShelfCount(allBooksShelfCount);
 
-    return userBook[0];
+    if (userBook?.length) return userBook[0];
+    else throw new Error("No book returned");
   } catch (error) {
     console.log("🚀 ~ error", error);
     throw error;
   }
 };
 
-export const fetchUserBooks = async () => {
+export const fetchUserBooks = async (): Promise<UserBook[]> => {
   const supabase = useSupabaseClient();
   try {
     const { data: books, error } = await supabase.from("books_user").select();
@@ -96,20 +100,21 @@ export const fetchUserBooks = async () => {
   }
 };
 
-export const fetchInProgressBooks = async () => {
+export const fetchInProgressBooks = async (): Promise<UserBook[]> => {
   const supabase = useSupabaseClient();
   try {
     const { data } = await supabase
       .from("books_user")
       .select()
       .eq("status", "in_progress");
-    return data;
+    if (data?.length) return data;
+    return [];
   } catch (error) {
     throw error;
   }
 };
 
-export const fetchBook = async (book_id) => {
+export const fetchBook = async (book_id: BookEdition["id"]): Promise<{book: BookEdition, userBook: UserBook}> => {
   const supabase = useSupabaseClient();
   try {
     const { data: book, error: bookError } = await supabase
@@ -128,14 +133,15 @@ export const fetchBook = async (book_id) => {
   }
 };
 
-export const startReadingBook = async (user_book) => {
+export const startReadingBook = async (user_book: UserBook) => {
   const supabase = useSupabaseClient();
-  const change = newChange("startReadingBook", user_book);
+  const change: Change = newChange("startReadingBook", user_book);
+  if (!user_book.changes) user_book.changes = [];
   const bookUpdates = {
     current_page: 0,
     changes: [...user_book.changes, change],
     status: "in_progress",
-  };
+  } as Partial<UserBook>;
   bookUpdates.changes.sort((a, b) => {
     return a.created > b.created ? -1 : 1;
   });

@@ -1,22 +1,13 @@
 <template>
-  <h1 class="book-page__title">{{ book.title }}</h1>
+  <h1 class="book-page__title">{{ book?.title ? book.title : "" }}</h1>
 </template>
 
-<script>
+<script setup lang="ts">
 import { storeToRefs } from "pinia";
 import { useBookStore } from "~/store/BookStore";
 
-export default {
-  setup() {
-    const bookStore = useBookStore();
-    const { book, userBook } = storeToRefs(bookStore);
-
-    return {
-      book,
-      userBook,
-    };
-  },
-};
+const bookStore = useBookStore();
+const { book } = storeToRefs(bookStore);
 </script>
 
 <style>

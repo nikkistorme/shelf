@@ -15,35 +15,44 @@ import {
 import { useBookStore } from "./BookStore";
 import { useUserStore } from "./UserStore";
 
+type ShelfState = {
+  shelves: Shelf[]
+  activeShelf: Shelf | null
+  loading: boolean
+}
+
 export const useShelfStore = defineStore("ShelfStore", {
-  state: () => ({
+  state: (): ShelfState => ({
     shelves: [],
     activeShelf: null,
     loading: false,
   }),
   getters: {
-    allBooksShelf() {
-      return this.shelves.find((shelf) => shelf?.locked_type === "all_books");
+    allBooksShelf(): Shelf | null {
+      return this.shelves.find((shelf) => shelf?.locked_type === "all_books") || null;
     },
-    finishedShelf() {
-      return this.shelves.find((shelf) => shelf?.locked_type === "finished");
+    finishedShelf(): Shelf | null {
+      return this.shelves.find((shelf) => shelf?.locked_type === "finished") || null;
     },
-    inProgressShelf() {
-      return this.shelves.find((shelf) => shelf?.locked_type === "in_progress");
+    inProgressShelf(): Shelf | null {
+      return this.shelves.find((shelf) => shelf?.locked_type === "in_progress") || null;
     },
-    unreadShelf() {
-      return this.shelves.find((shelf) => shelf?.locked_type === "unread");
+    unreadShelf(): Shelf | null {
+      return this.shelves.find((shelf) => shelf?.locked_type === "unread") || null;
     },
     getShelfById() {
-      return (id) => this.shelves.find((shelf) => shelf.id === parseInt(id));
+      return (id: Shelf["id"]): Shelf | null => {
+        if (typeof id === "string") id = parseInt(id);
+        return this.shelves.find((shelf) => shelf.id === id) || null;
+      };
     },
-    getSortedShelves() {
+    getSortedShelves(): Shelf[] {
       return sortShelves(this.shelves);
     },
   },
   actions: {
     async confirmLockedShelves() {
-      const lockedShelves = this.shelves.filter((shelf) => shelf.locked_type);
+      const lockedShelves: Shelf[] = this.shelves.filter((shelf) => shelf.locked_type);
       if (lockedShelves.length === 4) return;
       const shelvesToCreate = [];
       if (!lockedShelves.find((s) => s?.locked_type === "all_books"))
@@ -57,14 +66,14 @@ export const useShelfStore = defineStore("ShelfStore", {
       if (!shelvesToCreate.length) return;
       console.log("🚀 ~ shelvesToCreate", shelvesToCreate);
       try {
-        const newShelves = await createNecessaryShelves(shelvesToCreate);
+        const newShelves: Shelf[] = await createNecessaryShelves(shelvesToCreate);
         this.shelves = sortShelves([...this.shelves, ...newShelves]);
         return;
       } catch (error) {
         throw error;
       }
     },
-    async createNewShelf(name) {
+    async createNewShelf(name: Shelf["name"]) {
       this.loading = true;
       let newShelf;
       try {
@@ -91,53 +100,57 @@ export const useShelfStore = defineStore("ShelfStore", {
       }
       this.loading = false;
     },
-    async setActiveShelf(shelf) {
+    async setActiveShelf(shelf: Shelf) {
       const bookStore = useBookStore();
       this.loading = true;
       this.activeShelf = shelf;
-      let userBooks;
+      let userBooks: UserBook[] | null;
       try {
         userBooks = await fetchBooksForShelf(shelf);
         // This can be done in the synchronously background
         this.setShelfProperties(shelf.id, {
-          book_count: userBooks.length,
+          book_count: userBooks?.length ? userBooks.length : 0,
         });
       } catch (error) {
         this.loading = false;
         throw error;
       }
-      bookStore.userBooks = userBooks;
+      if (userBooks?.length) bookStore.userBooks = userBooks;
       this.loading = false;
     },
-    async updateShelfSort(shelf) {
+    async updateShelfSort(shelf: Shelf) {
       this.loading = true;
-      let updatedShelf;
+      let updatedShelf: Shelf | null;
       try {
         updatedShelf = await updateShelfSort(shelf);
       } catch (error) {
         this.loading = false;
         throw error;
       }
-      this.shelves = this.shelves.filter((s) => s.id !== updatedShelf.id);
-      this.shelves.push(updatedShelf);
+      this.shelves = this.shelves.map((s: Shelf) => {
+        if (s.id === updatedShelf?.id) return updatedShelf;
+        return s;
+      })
       this.loading = false;
     },
-    async updateShelfName(shelf_id, newName) {
+    async updateShelfName(shelf_id: Shelf["id"], newName: Shelf["name"]) {
       this.loading = true;
-      let updatedShelf;
+      let updatedShelf: Shelf | null;
       try {
         updatedShelf = await updateShelfName(shelf_id, newName);
       } catch (error) {
         this.loading = false;
         throw error;
       }
-      this.shelves = this.shelves.filter((s) => s.id !== updatedShelf.id);
-      this.shelves.push(updatedShelf);
+      this.shelves = this.shelves.map((s: Shelf) => {
+        if (s.id === updatedShelf?.id) return updatedShelf;
+        return s;
+      })
       if (updatedShelf?.id === this.activeShelf?.id)
         this.activeShelf = updatedShelf;
       this.loading = false;
     },
-    async deleteShelf(shelf_id) {
+    async deleteShelf(shelf_id: Shelf["id"]) {
       this.loading = true;
       try {
         await deleteShelf(shelf_id);
@@ -148,7 +161,7 @@ export const useShelfStore = defineStore("ShelfStore", {
       this.shelves = this.shelves.filter((s) => s.id !== shelf_id);
       this.loading = false;
     },
-    async setShelfProperties(shelf_id, properties) {
+    async setShelfProperties(shelf_id: Shelf["id"], properties: Partial<Shelf>) {
       this.loading = true;
       try {
         await setShelfProperties(shelf_id, properties);
@@ -158,13 +171,17 @@ export const useShelfStore = defineStore("ShelfStore", {
       }
       this.loading = false;
     },
-    async incrementShelfCount(shelf_id, count) {
+    async incrementShelfCount(shelf_id: Shelf["id"], count: number) {
       this.loading = true;
       const oldShelf = this.shelves.find(
         (s) => s.id.toString() === shelf_id.toString()
       );
+      if (!oldShelf) {
+        this.loading = false;
+        throw new Error("Shelf not found");
+      }
       const newCount = oldShelf.book_count + count;
-      let updatedShelf;
+      let updatedShelf: Shelf | null;
       try {
         updatedShelf = await setShelfProperties(shelf_id, {
           book_count: newCount,
@@ -173,8 +190,10 @@ export const useShelfStore = defineStore("ShelfStore", {
         this.loading = false;
         throw error;
       }
-      this.shelves = this.shelves.filter((s) => s.id !== updatedShelf.id);
-      this.shelves.push(updatedShelf);
+      this.shelves = this.shelves.map((s: Shelf) => {
+        if (s.id === updatedShelf?.id) return updatedShelf;
+        return s;
+      })
       this.loading = false;
     },
     async updateInProgressShelfCount() {

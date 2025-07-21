@@ -100,7 +100,7 @@
   </div>
 </template>
 
-<script>
+<script setup lang="ts">
 import { useBookStore } from "~/store/BookStore";
 import {
   progressTypeOptions as progressServiceTypeOptions,
@@ -112,130 +112,127 @@ import {
   todayWithFormat,
 } from "~~/services/timeService.js";
 import { getNewMinutesPerPage } from "~~/services/statsService";
-import { newChange, sortChanges } from "~/services/changeService";
+import { newChange, sortChanges } from "~~/services/changeService";
 import { useModalStore } from "~~/store/ModalStore";
 
-export default {
-  props: {
-    book: Object,
-    open: Boolean,
-  },
-  setup(props) {
-    const endAt = ref(props.book.current_page);
-    const progressTypeOptions = ref(progressServiceTypeOptions);
-    const progressType = ref("pages");
+const props = defineProps<{
+  book: UserBook;
+  open: boolean;
+}>();
 
-    watch(progressType, (newValue) => {
-      if (newValue === "percent") {
-        endAt.value = Math.round(
-          (props.book.current_page / props.book.total_pages) * 100
-        );
-      } else {
-        endAt.value = props.book.current_page;
-      }
-    });
+const endAt = ref(props.book.current_page);
+const progressTypeOptions = ref(progressServiceTypeOptions);
+const progressType = ref("pages");
 
-    const updateProgressDisabled = computed(() => {
-      if (progressType.value === "percent")
-        return endAt.value <= 0 || endAt.value > 100;
-      else return endAt.value <= 0 || endAt.value > props.book.total_pages;
-    });
+watch(progressType, (newValue) => {
+  if (newValue === "percent") {
+    endAt.value = Math.round(
+      (props.book.current_page / props.book.total_pages) * 100
+    );
+  } else {
+    endAt.value = props.book.current_page;
+  }
+});
 
-    // Duration
-    const durationForm = ref(progressServiceDurationForm);
-    function setDurationStartOrEnd(type) {
-      const nowTime = getTimeString(new Date());
-      durationForm.value[type] = nowTime;
-    }
+const updateProgressDisabled = computed(() => {
+  if (progressType.value === "percent")
+    return endAt.value <= 0 || endAt.value > 100;
+  else return endAt.value <= 0 || endAt.value > props.book.total_pages;
+});
 
-    function convertPercentsToPages() {
-      let finalEnd = endAt.value;
-      if (progressType.value === "percent") {
-        finalEnd = Math.round((finalEnd / 100) * props.book.total_pages);
-      }
-      return finalEnd;
-    }
+// Duration
+const durationForm = ref(progressServiceDurationForm);
+function setDurationStartOrEnd(type: string): void {
+  const nowTime = getTimeString(new Date());
+  durationForm.value[type] = nowTime;
+}
 
-    const getFinalDuration = () => {
-      const startEnd =
-        durationForm.value.logDuration &&
-        durationForm.value.durationType === "start-end";
-      const length =
-        durationForm.value.logDuration &&
-        durationForm.value.durationType === "length";
-      if (startEnd) {
-        return HhMmDifferenceInMinutes(
-          durationForm.value.durationStart,
-          durationForm.value.durationEnd
-        );
-      } else if (length) {
-        return durationForm.value.duration;
-      } else {
-        return null;
-      }
-    };
+function convertPercentsToPages() {
+  let finalEnd = endAt.value;
+  if (progressType.value === "percent") {
+    finalEnd = Math.round((finalEnd / 100) * props.book.total_pages);
+  }
+  return finalEnd;
+}
 
-    const bookStore = useBookStore();
-    const modalStore = useModalStore();
-    async function updateProgress() {
-      const finalEnd = convertPercentsToPages();
-      const change = newChange("updateProgress", props.book, {
-        endAt: finalEnd,
-        duration: getFinalDuration(),
-        oldGoal: props.book.goal,
-      });
-      let newChanges = [...props.book.changes, change];
-      newChanges = sortChanges(newChanges);
-      const bookUpdates = {
-        changes: newChanges,
-        current_page: finalEnd,
-        minutes_per_page: getNewMinutesPerPage(newChanges),
-      };
-      await bookStore.updateProgress(props.book.id, bookUpdates);
-      modalStore.closeModal();
-    }
+const getFinalDuration = () => {
+  const startEnd =
+    durationForm.value.logDuration &&
+    durationForm.value.durationType === "start-end";
+  const length =
+    durationForm.value.logDuration &&
+    durationForm.value.durationType === "length";
+  if (startEnd) {
+    return HhMmDifferenceInMinutes(
+      durationForm.value.durationStart,
+      durationForm.value.durationEnd
+    );
+  } else if (length) {
+    return durationForm.value.duration;
+  } else {
+    return null;
+  }
+};
 
-    const newReadthrough = ref({
-      start: null,
-      end: todayWithFormat("YYYY-MM-DD"),
-    });
+const bookStore = useBookStore();
+const modalStore = useModalStore();
+async function updateProgress() {
+  const finalEnd = convertPercentsToPages();
+  const change = newChange("updateProgress", props.book, {
+    endAt: finalEnd,
+    duration: getFinalDuration(),
+    oldGoal: props.book.goal,
+  });
+  let newChanges = [...props.book.changes, change];
+  newChanges = sortChanges(newChanges);
+  const bookUpdates = {
+    changes: newChanges,
+    current_page: finalEnd,
+    minutes_per_page: getNewMinutesPerPage(newChanges),
+  };
+  await bookStore.updateProgress(props.book.id, bookUpdates);
+  modalStore.closeModal();
+}
 
-    const finishReadingBook = async () => {
-      const finalEnd = props.book.total_pages;
+const newReadthrough = ref({
+  start: null,
+  end: todayWithFormat("YYYY-MM-DD"),
+});
 
-      const change = newChange("finishReadingBook", props.book, {
-        endAt: finalEnd,
-        duration: getFinalDuration(),
-        goal: props.book.goal,
-      });
-      let newChanges = [...props.book.changes, change];
-      newChanges = sortChanges(newChanges);
+const finishReadingBook = async () => {
+  const finalEnd = props.book.total_pages;
 
-      const finalReadthrough = formatReadthrough(newReadthrough.value);
-      const bookUpdates = {
-        changes: newChanges,
-        minutes_per_page: getNewMinutesPerPage(newChanges),
-        current_page: finalEnd,
-        goal: null,
-        status: "finished",
-        readthroughs: [...props.book.readthroughs, finalReadthrough],
-      };
-      await bookStore.finishReadingBook(props.book.id, bookUpdates);
-      modalStore.closeModal();
-    };
+  const change = newChange("finishReadingBook", props.book, {
+    endAt: finalEnd,
+    duration: getFinalDuration(),
+    goal: props.book.goal,
+  });
+  let newChanges = [...props.book.changes, change];
+  newChanges = sortChanges(newChanges);
 
-    return {
-      props,
-      endAt,
-      progressType,
-      progressTypeOptions,
-      durationForm,
-      setDurationStartOrEnd,
-      updateProgressDisabled,
-      updateProgress,
-      finishReadingBook,
-    };
-  },
+  const finalReadthrough = formatReadthrough(newReadthrough.value);
+  const bookUpdates = {
+    changes: newChanges,
+    minutes_per_page: getNewMinutesPerPage(newChanges),
+    current_page: finalEnd,
+    goal: null,
+    status: "finished",
+    readthroughs: [...props.book.readthroughs, finalReadthrough],
+  };
+  await bookStore.finishReadingBook(props.book.id, bookUpdates);
+  modalStore.closeModal();
+};
+
+return {
+  props,
+  endAt,
+  progressType,
+  progressTypeOptions,
+  durationForm,
+  setDurationStartOrEnd,
+  updateProgressDisabled,
+  updateProgress,
+  finishReadingBook,
 };
 </script>
 

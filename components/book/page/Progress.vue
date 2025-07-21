@@ -27,46 +27,34 @@
   </div>
 </template>
 
-<script>
-import { storeToRefs } from "pinia";
+<script setup lang="ts">
 import { pagesReadToday as statsPagesToday } from "~/services/statsService";
 import { useModalStore } from "~/store/ModalStore";
 
-export default {
-  props: {
-    book: Object,
-  },
-  setup(props) {
-    const percentComplete = computed(() => {
-      if (props.book.total_pages && props.book.current_page) {
-        let percent = props.book.current_page / props.book.total_pages;
-        percent = Math.round(percent * 100);
-        return percent;
-      } else {
-        return 0;
-      }
-    });
+const props = defineProps<{
+  book: UserBook;
+}>();
 
-    const pagesReadToday = computed(() => {
-      return statsPagesToday([props.book]);
-    });
+const percentComplete = computed((): number => {
+  if (props.book.total_pages && props.book.current_page) {
+    let percent = props.book.current_page / props.book.total_pages;
+    percent = Math.round(percent * 100);
+    return percent;
+  } else {
+    return 0;
+  }
+});
 
-    const updatingProgress = ref(false);
-    const modalStore = useModalStore();
+const pagesReadToday = computed((): number => {
+  return statsPagesToday([props.book]);
+});
 
-    function openUpdateProgressModal() {
-      updatingProgress.value = true;
-      modalStore.openModal();
-    }
+const updatingProgress = ref(false);
+const modalStore = useModalStore();
 
-    return {
-      props,
-      percentComplete,
-      pagesReadToday,
-      updatingProgress,
-      openUpdateProgressModal,
-    };
-  },
+const openUpdateProgressModal = () => {
+  updatingProgress.value = true;
+  modalStore.openModal();
 };
 </script>
 

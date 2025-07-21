@@ -1,21 +1,21 @@
 <template>
-  <div v-if="userBook.id" class="book-page__goals d-flex ai-center w-100">
+  <div v-if="userBook?.id" class="book-page__goals d-flex ai-center w-100">
     <IconGoals
-      v-if="!userBook.goal?.goalDate"
+      v-if="!userBook.goal?.goal_date"
       class="book-page__goals-icon mr-1"
     />
     <IconTarget
-      v-if="userBook.goal?.goalDate"
+      v-if="userBook.goal?.goal_date"
       class="book-page__target-icon"
-      :goal-date="userBook.goal?.goalDate"
+      :goal-date="userBook.goal?.goal_date"
     />
     <div v-if="goalIsValid" class="d-flex flex-column jc-center">
       <p>
-        Page {{ userBook.goal.targetPage }}
+        Page {{ userBook.goal.target_page }}
         <br />
         <span>by {{ formattedGoalDate }}</span>
       </p>
-      <p>{{ goalPace.pagesPerDay }} pages / day</p>
+      <p v-if="goalPace?.pagesPerDay">{{ goalPace.pagesPerDay }} pages / day</p>
       <!-- <p>
         <span v-if="goalPace.hoursPerDay > 0"
           >{{ goalPace.hoursPerDay }}h
@@ -26,7 +26,7 @@
       </p> -->
     </div>
     <ButtonDefault class="ml-auto" flavor="tiny" @click="updatingGoal = true">
-      {{ userBook.goal?.targetDate ? "Update goal" : "Set goal" }}
+      {{ userBook.goal?.goal_date ? "Update goal" : "Set goal" }}
     </ButtonDefault>
     <ModalGeneral :show="updatingGoal" :close="() => (updatingGoal = false)">
       <template #content>
@@ -36,49 +36,47 @@
   </div>
 </template>
 
-<script>
+<script setup lang="ts">
 import { storeToRefs } from "pinia";
 import { useBookStore } from "~~/store/BookStore";
-import { useModalStore } from "~~/store/ModalStore";
 import { getGoalPace } from "~~/services/statsService";
 import { formatDate } from "~~/services/timeService";
 
-export default {
-  props: {
-    book: Object,
-  },
-  setup(props) {
-    const bookStore = useBookStore();
-    const { userBook } = storeToRefs(bookStore);
-    const goalIsValid = computed(() => {
-      const goalExists = !!props.book.goal;
-      const goalDateObject = new Date(userBook.value.goal?.goalDate);
-      const todayDateObject = new Date();
-      const goalIsInFuture = goalDateObject > todayDateObject;
-      return goalExists && goalIsInFuture;
-    });
-    const formattedGoalDate = computed(() => {
-      const goalDate = userBook.value.goal?.goalDate;
-      return formatDate(goalDate);
-    });
-    const goalPace = computed(() => {
-      if (props.book.goal) {
-        return getGoalPace(props.book);
-      } else {
-        return 0;
-      }
-    });
-    const updatingGoal = ref(false);
+interface GoalPace {
+  pagesPerDay: number;
+  hoursPerDay: number;
+  leftoverMinsPerDay: number;
+}
 
-    return {
-      userBook,
-      formattedGoalDate,
-      goalIsValid,
-      goalPace,
-      updatingGoal,
-    };
-  },
-};
+const props = defineProps<{
+  book: UserBook;
+}>();
+
+const bookStore = useBookStore();
+const { userBook } = storeToRefs(bookStore);
+
+const goalIsValid = computed((): boolean => {
+  const goalExists = !!props.book.goal;
+  if (!userBook?.value?.goal?.goal_date) return false;
+  const goalDateObject = new Date(userBook.value.goal?.goal_date);
+  const todayDateObject = new Date();
+  const goalIsInFuture = goalDateObject > todayDateObject;
+  return goalExists && goalIsInFuture;
+});
+
+const formattedGoalDate = computed((): string => {
+  if (!userBook?.value?.goal?.goal_date) return "";
+  const goalDate = userBook.value.goal?.goal_date;
+  return formatDate(goalDate);
+});
+const goalPace = computed((): GoalPace | null => {
+  if (props?.book?.goal) {
+    return getGoalPace(props.book);
+  } else {
+    return null;
+  }
+});
+const updatingGoal = ref(false);
 </script>
 
 <style>

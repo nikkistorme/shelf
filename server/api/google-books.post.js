@@ -1,4 +1,4 @@
-import { bookSchema } from "~/services/bookService";
+import { bookSchema } from "~~/services/bookService";
 
 export default defineEventHandler(async (event) => {
   const { query, quantity } = await readBody(event);

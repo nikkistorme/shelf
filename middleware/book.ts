@@ -1,4 +1,4 @@
-import { useBookStore } from "~/store/BookStore";
+import { useBookStore } from "~~/store/BookStore";
 
 export default defineNuxtRouteMiddleware(async (to, from) => {
   const bookStore = useBookStore();

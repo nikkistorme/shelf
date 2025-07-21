@@ -1,14 +1,20 @@
 import { defineStore } from "pinia";
 import { getPagesThisWeek } from "~/services/statsService";
 
+type StatsState = {
+  loading: boolean
+  pagesToday: number
+  pagesThisWeek: number
+}
+
 export const useStatsStore = defineStore("StatsStore", {
-  state: () => ({
+  state: (): StatsState => ({
     loading: false,
     pagesToday: 0,
     pagesThisWeek: 0,
   }),
   actions: {
-    async getRecentPageData() {
+    async getRecentPageData(): Promise<void> {
       this.loading = true;
       let pagesToday = 0;
       let pagesThisWeek = 0;

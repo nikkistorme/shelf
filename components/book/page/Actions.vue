@@ -14,38 +14,26 @@
   </div>
 </template>
 
-<script>
+<script setup lang="ts">
 import { storeToRefs } from "pinia";
 import { useBookStore } from "~/store/BookStore";
 
-export default {
-  setup() {
-    const userAuth = useSupabaseUser();
+const userAuth = useSupabaseUser();
 
-    const bookStore = useBookStore();
-    const { userBook } = storeToRefs(bookStore);
+const bookStore = useBookStore();
+const { userBook } = storeToRefs(bookStore);
 
-    const addBookToLibrary = async () => {
-      await bookStore.addBookToLibrary();
-    };
+const addBookToLibrary = async () => {
+  await bookStore.addBookToLibrary();
+};
 
-    const shareTip = ref("Copy book URL");
-    const copyBookLink = () => {
-      const url = window.location.href;
-      navigator.clipboard.writeText(url);
-      shareTip.value = "Copied!";
-      setTimeout(() => {
-        shareTip.value = "Copy book URL";
-      }, 2000);
-    };
-
-    return {
-      userAuth,
-      userBook,
-      addBookToLibrary,
-      shareTip,
-      copyBookLink,
-    };
-  },
+const shareTip = ref("Copy book URL");
+const copyBookLink = () => {
+  const url = window.location.href;
+  navigator.clipboard.writeText(url);
+  shareTip.value = "Copied!";
+  setTimeout(() => {
+    shareTip.value = "Copy book URL";
+  }, 2000);
 };
 </script>

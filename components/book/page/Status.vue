@@ -42,14 +42,14 @@
         <div class="bp-status_additional-options">
           <div
             v-if="newStatusOptions.find((o) => o.value === 'unread')"
-            :style="{ visibility: newStatus !== 'unread' ? 'hidden' : '' }"
+            :style="unreadOptionsStyle"
           >
             <p>
               <span class="text_warning">WARNING:</span> Marking this book as
               {{ statusOptions.unread.label }} will remove its readthrough
               history.
             </p>
-            <ul>
+            <ul v-if="userBook?.readthroughs">
               <li v-for="(readthrough, i) in userBook.readthroughs" :key="i">
                 -
                 <span v-if="readthrough.start">
@@ -64,7 +64,7 @@
           </div>
           <div
             v-if="newStatusOptions.find((o) => o.value === 'finished')"
-            :style="{ visibility: newStatus !== 'finished' ? 'hidden' : '' }"
+            :style="finishedOptionsStyle"
           >
             <InputDefault
               type="date"
@@ -95,173 +95,184 @@
   </div>
 </template>
 
-<script>
+<script setup lang="ts">
 import { storeToRefs } from "pinia";
 import { useBookStore } from "~/store/BookStore";
 import { useShelfStore } from "~/store/ShelfStore";
 import { useModalStore } from "~/store/ModalStore";
 
 import { todayWithFormat, formatTimestampz } from "~/services/timeService.js";
+import { CSSProperties, Ref } from "vue";
 
-export default {
-  setup() {
-    const bookStore = useBookStore();
-    const shelfStore = useShelfStore();
-    const modalStore = useModalStore();
+interface StatusOption {
+  value: string;
+  label: string;
+}
 
-    const { userBook } = storeToRefs(bookStore);
+interface StatusOptions {
+  finished: StatusOption;
+  in_progress: StatusOption;
+  unread: StatusOption;
+  shelved: StatusOption;
+}
 
-    const displayStatus = computed(() => {
-      let shelf;
-      switch (userBook.value.status) {
-        case "finished":
-          shelf = shelfStore.finishedShelf;
-          return shelf?.name ? shelf.name : "Finished";
-        case "in_progress":
-          shelf = shelfStore.inProgressShelf;
-          return shelf?.name ? shelf.name : "In Progress";
-        case "unread":
-          shelf = shelfStore.unreadShelf;
-          return shelf?.name ? shelf.name : "Unread";
-        default:
-          shelf = shelfStore.unreadShelf;
-          return shelf?.name ? shelf.name : "Unread";
-      }
-    });
+const bookStore = useBookStore();
+const shelfStore = useShelfStore();
+const modalStore = useModalStore();
 
-    const statusOptions = ref({
-      finished: { value: "finished", label: "Finished" },
-      in_progress: { value: "in_progress", label: "In Progress" },
-      unread: { value: "unread", label: "Unread" },
-      shelved: { value: "shelved", label: "Shelved" },
-    });
+const { userBook } = storeToRefs(bookStore);
 
-    const changingStatus = ref(false);
-    const beginChangeStatus = () => {
-      changingStatus.value = true;
-      modalStore.openModal();
-    };
+const displayStatus = computed((): string => {
+  let shelf;
+  if (!userBook.value) return "Unread";
+  switch (userBook.value.status) {
+    case "finished":
+      shelf = shelfStore.finishedShelf;
+      return shelf?.name ? shelf.name : "Finished";
+    case "in_progress":
+      shelf = shelfStore.inProgressShelf;
+      return shelf?.name ? shelf.name : "In Progress";
+    case "unread":
+      shelf = shelfStore.unreadShelf;
+      return shelf?.name ? shelf.name : "Unread";
+    default:
+      shelf = shelfStore.unreadShelf;
+      return shelf?.name ? shelf.name : "Unread";
+  }
+});
 
-    const { modal } = storeToRefs(modalStore);
-    watch(modal, (newValue) => {
-      if (!newValue) {
-        changingStatus.value = false;
-      }
-    });
+const statusOptions: Ref<StatusOptions> = ref({
+  finished: { value: "finished", label: "Finished" },
+  in_progress: { value: "in_progress", label: "In Progress" },
+  unread: { value: "unread", label: "Unread" },
+  shelved: { value: "shelved", label: "Shelved" },
+});
 
-    const newStatusOptions = computed(() => {
-      const allOptions = statusOptions.value;
-      let options = [];
-      switch (userBook.value.status) {
-        case "finished":
-          options = [allOptions.in_progress, allOptions.unread];
-          break;
-        case "in_progress":
-          options = [allOptions.finished, allOptions.shelved];
-          break;
-        case "unread":
-          options = [allOptions.in_progress, allOptions.finished];
-          break;
-        default:
-          options = [allOptions.in_progress, allOptions.finished];
-          break;
-      }
-      return options;
-    });
+const changingStatus = ref(false);
+const beginChangeStatus = () => {
+  changingStatus.value = true;
+  modalStore.openModal();
+};
 
-    const newStatus = ref(null);
+const { modal } = storeToRefs(modalStore);
+watch(modal, (newValue) => {
+  if (!newValue) {
+    changingStatus.value = false;
+  }
+});
 
-    const closeStatusChange = () => {
-      newStatus.value = null;
-      changingStatus.value = false;
-      modalStore.closeModal();
-    };
+const newStatusOptions = computed(() => {
+  if (!userBook?.value) return [];
 
-    const newReadthrough = ref({
-      start: null,
-      end: todayWithFormat("YYYY-MM-DD"),
-    });
+  const allOptions = statusOptions.value;
+  let options = [];
+  switch (userBook.value.status) {
+    case "finished":
+      options = [allOptions.in_progress, allOptions.unread];
+      break;
+    case "in_progress":
+      options = [allOptions.finished, allOptions.shelved];
+      break;
+    case "unread":
+      options = [allOptions.in_progress, allOptions.finished];
+      break;
+    default:
+      options = [allOptions.in_progress, allOptions.finished];
+      break;
+  }
+  return options;
+});
 
-    const applyFinished = async () => {
-      const readthroughFinal = formatReadthrough(newReadthrough.value);
-      if (!userBook.value.readthroughs?.length)
-        userBook.value.readthroughs = [];
-      const bookUpdates = {
-        readthroughs: [...userBook.value.readthroughs, readthroughFinal],
-        status: "finished",
-      };
+const newStatus: Ref<Status | null> = ref(null);
+
+const closeStatusChange = () => {
+  newStatus.value = null;
+  changingStatus.value = false;
+  modalStore.closeModal();
+};
+
+const newReadthrough = ref({
+  start: null,
+  end: todayWithFormat("YYYY-MM-DD"),
+});
+
+const applyFinished = async (): Promise<void> => {
+  if (!userBook.value) return;
+  const readthroughFinal = formatReadthrough(newReadthrough.value);
+  if (!userBook.value.readthroughs?.length) userBook.value.readthroughs = [];
+  const bookUpdates = {
+    readthroughs: [...userBook.value.readthroughs, readthroughFinal],
+    status: "finished",
+  } as Partial<UserBook>;
+  try {
+    await bookStore.finishReadingBook(userBook.value.id, bookUpdates);
+  } catch (error) {
+    throw error;
+  }
+};
+
+const applyStatusChange = async () => {
+  if (!userBook?.value) return;
+  let bookUpdates;
+  switch (newStatus.value) {
+    case "in_progress":
       try {
-        await bookStore.finishReadingBook(userBook.value.id, bookUpdates);
+        await bookStore.startReadingBook(userBook.value);
       } catch (error) {
+        closeStatusChange();
+        break;
+      }
+      closeStatusChange();
+      break;
+    case "finished":
+      try {
+        await applyFinished();
+      } catch (error) {
+        closeStatusChange();
+        break;
+      }
+      closeStatusChange();
+      break;
+    case "unread":
+      bookUpdates = {
+        status: "unread",
+        readthroughs: [],
+      } as Partial<UserBook>;
+      try {
+        await bookStore.updateUserBook(userBook.value.id, bookUpdates);
+      } catch (error) {
+        closeStatusChange();
+        break;
+      }
+      closeStatusChange();
+      break;
+    default:
+      bookUpdates = {
+        status: userBook.value.readthroughs.length ? "finished" : "unread",
+        goal: null,
+      } as Partial<UserBook>;
+      try {
+        await bookStore.updateUserBook(userBook.value.id, bookUpdates);
+      } catch (error) {
+        closeStatusChange();
         throw error;
       }
-    };
-
-    const applyStatusChange = async () => {
-      let bookUpdates;
-      switch (newStatus.value) {
-        case "in_progress":
-          try {
-            await bookStore.startReadingBook(userBook.value);
-          } catch (error) {
-            closeStatusChange();
-            break;
-          }
-          closeStatusChange();
-          break;
-        case "finished":
-          try {
-            await applyFinished();
-          } catch (error) {
-            closeStatusChange();
-            break;
-          }
-          closeStatusChange();
-          break;
-        case "unread":
-          bookUpdates = {
-            status: "unread",
-            readthroughs: [],
-          };
-          try {
-            await bookStore.updateUserBook(userBook.value.id, bookUpdates);
-          } catch (error) {
-            closeStatusChange();
-            break;
-          }
-          closeStatusChange();
-          break;
-        default:
-          bookUpdates = {
-            status: userBook.value.readthroughs.length ? "finished" : "unread",
-            goal: null,
-          };
-          try {
-            await bookStore.updateUserBook(userBook.value.id, bookUpdates);
-          } catch (error) {
-            closeStatusChange();
-            throw error;
-          }
-          closeStatusChange();
-          break;
-      }
-    };
-
-    return {
-      userBook,
-      displayStatus,
-      changingStatus,
-      beginChangeStatus,
-      statusOptions,
-      newStatusOptions,
-      newStatus,
-      closeStatusChange,
-      applyStatusChange,
-      newReadthrough,
-      formatTimestampz,
-    };
-  },
+      closeStatusChange();
+      break;
+  }
 };
+
+const unreadOptionsStyle = computed((): CSSProperties => {
+  return {
+    visibility: newStatus.value !== "unread" ? "hidden" : "visible",
+  };
+});
+
+const finishedOptionsStyle = computed((): CSSProperties => {
+  return {
+    visibility: newStatus.value !== "finished" ? "hidden" : "visible",
+  };
+});
 </script>
 
 <style scoped>

@@ -60,12 +60,16 @@
   </div>
 </template>
 
-<script>
-import { newChange, sortChanges } from "~/services/changeService";
+<script setup lang="ts">
+import { newChange, sortChanges } from "~~/services/changeService";
 import { useBookStore } from "~/store/BookStore";
 import { useModalStore } from "~~/store/ModalStore";
 
-const setDate = (timestamp = null) => {
+const props = defineProps<{
+  book: UserBook;
+}>();
+
+const setDate = (timestamp: number | null = null): string => {
   if (timestamp) {
     const day = new Date(timestamp);
     const year = day.getFullYear();
@@ -83,84 +87,64 @@ const setDate = (timestamp = null) => {
   }
 };
 
-export default {
-  props: {
-    open: Boolean,
-    book: Object,
-  },
-  setup(props) {
-    const targetPage = ref(props.book.total_pages);
-    const goalDate = ref(setDate());
+const targetPage = ref(props.book.total_pages);
+const goalDate = ref(setDate());
 
-    function setGoalToTwoWeeks() {
-      goalDate.value = setDate(Date.now() + 12096e5);
-    }
+function setGoalToTwoWeeks(): void {
+  goalDate.value = setDate(Date.now() + 12096e5);
+}
 
-    function setGoalToOneMonth() {
-      goalDate.value = setDate(Date.now() + 2628e6);
-    }
+function setGoalToOneMonth(): void {
+  goalDate.value = setDate(Date.now() + 2628e6);
+}
 
-    function setGoalToTwoMonths() {
-      goalDate.value = setDate(Date.now() + 5256e6);
-    }
+function setGoalToTwoMonths(): void {
+  goalDate.value = setDate(Date.now() + 5256e6);
+}
 
-    const disableUpdateGoal = computed(() => {
-      return (
-        targetPage.value < props.book.current_page ||
-        new Date(goalDate.value) < new Date(setDate())
-      );
-    });
+const disableUpdateGoal = computed((): boolean => {
+  return (
+    targetPage.value < props.book.current_page ||
+    new Date(goalDate.value) < new Date(setDate())
+  );
+});
 
-    const bookStore = useBookStore();
-    const modalStore = useModalStore();
-    async function updateGoal() {
-      const newGoal = {
-        targetPage: targetPage.value,
-        goalDate: new Date(goalDate.value).toISOString(),
-        startDate: new Date().toISOString(),
-      };
-      const change = newChange("setGoal", props.book, {
-        targetPage: newGoal.targetPage,
-        goalDate: newGoal.goalDate,
-        oldGoal: props.book.goal,
-      });
-      let newChanges = [...props.book.changes, change];
-      newChanges = sortChanges(newChanges);
-      const bookUpdates = {
-        changes: newChanges,
-        goal: newGoal,
-      };
-      await bookStore.setGoal(props.book.id, bookUpdates);
-      modalStore.closeModal();
-    }
+const bookStore = useBookStore();
+const modalStore = useModalStore();
+async function updateGoal(): Promise<void> {
+  const newGoal = {
+    target_page: targetPage.value,
+    goal_date: new Date(goalDate.value).toISOString(),
+    start_date: new Date().toISOString(),
+  };
+  const change = newChange("setGoal", props.book, {
+    targetPage: newGoal.target_page,
+    goalDate: newGoal.goal_date,
+    oldGoal: props.book.goal,
+  } as MiscUpdateParam);
+  let newChanges = [...props.book.changes, change];
+  newChanges = sortChanges(newChanges);
+  const bookUpdates = {
+    changes: newChanges,
+    goal: newGoal,
+  };
+  await bookStore.setGoal(props.book.id, bookUpdates);
+  modalStore.closeModal();
+}
 
-    async function removeGoal() {
-      const change = newChange("removeGoal", props.book, {
-        oldGoal: props.book.goal,
-      });
-      let newChanges = [...props.book.changes, change];
-      newChanges = sortChanges(newChanges);
-      const bookUpdates = {
-        changes: newChanges,
-        goal: null,
-      };
-      await bookStore.setGoal(props.book.id, bookUpdates);
-      modalStore.closeModal();
-    }
-
-    return {
-      props,
-      targetPage,
-      goalDate,
-      setGoalToTwoWeeks,
-      setGoalToOneMonth,
-      setGoalToTwoMonths,
-      disableUpdateGoal,
-      updateGoal,
-      removeGoal,
-    };
-  },
-};
+async function removeGoal(): Promise<void> {
+  const change = newChange("removeGoal", props.book, {
+    oldGoal: props.book.goal,
+  } as MiscUpdateParam);
+  let newChanges = [...props.book.changes, change];
+  newChanges = sortChanges(newChanges);
+  const bookUpdates = {
+    changes: newChanges,
+    goal: null,
+  };
+  await bookStore.setGoal(props.book.id, bookUpdates);
+  modalStore.closeModal();
+}
 </script>
 
 <style>

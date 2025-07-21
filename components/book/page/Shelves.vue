@@ -44,100 +44,89 @@
   </div>
 </template>
 
-<script>
+<script setup lang="ts">
 import { storeToRefs } from "pinia";
 import { useBookStore } from "~/store/BookStore";
 import { useShelfStore } from "~/store/ShelfStore";
 import { useModalStore } from "~/store/ModalStore";
 
-export default {
-  async setup() {
-    const bookStore = useBookStore();
-    const shelfStore = useShelfStore();
-    const modalStore = useModalStore();
+const bookStore = useBookStore();
+const shelfStore = useShelfStore();
+const modalStore = useModalStore();
 
-    const { userBook } = storeToRefs(bookStore);
-    const { shelves } = storeToRefs(shelfStore);
+const { userBook } = storeToRefs(bookStore);
+const { shelves } = storeToRefs(shelfStore);
 
-    if (!shelves?.value?.length) await shelfStore.fetchShelves();
+if (!shelves?.value?.length) await shelfStore.fetchShelves();
 
-    const selectedShelves = computed(() => {
-      return shelves.value
-        .filter((s) =>
-          userBook.value.shelves.find(
-            (s_id) => s.id.toString() === s_id.toString()
-          )
-        )
-        .sort((a, b) => a.name > b.name);
+const selectedShelves = computed(() => {
+  return shelves.value
+    .filter((s) =>
+      userBook?.value?.shelves.find(
+        (s_id) => s.id.toString() === s_id.toString()
+      )
+    )
+    .sort((a, b) => (a.name > b.name ? 1 : -1));
+});
+
+const selectedShelvesIds = ref(
+  userBook?.value?.shelves ? [...userBook.value.shelves] : []
+);
+
+const options = computed(() => {
+  return shelves.value
+    .filter((s) => !s.locked_type)
+    .map((shelf) => {
+      return {
+        value: shelf.id.toString(),
+        id: `shelf-${shelf.id}`,
+        label: shelf.name,
+      };
     });
+});
 
-    const selectedShelvesIds = ref([...userBook.value.shelves]);
-
-    const options = computed(() => {
-      return shelves.value
-        .filter((s) => !s.locked_type)
-        .map((shelf) => {
-          return {
-            value: shelf.id.toString(),
-            id: `shelf-${shelf.id}`,
-            label: shelf.name,
-          };
-        });
-    });
-
-    const editingShelves = ref(false);
-    const beginShelvesEdit = () => {
-      editingShelves.value = true;
-      modalStore.openModal();
-    };
-
-    const cancelShelfEdit = () => {
-      editingShelves.value = false;
-      modalStore.closeModal();
-    };
-
-    const saveBookShelves = async () => {
-      const newShelves = selectedShelvesIds.value;
-      const oldShelves = userBook.value.shelves;
-      let removedShelves = oldShelves.filter((x) => !newShelves.includes(x));
-      let addedShelves = newShelves.filter((x) => !oldShelves.includes(x));
-
-      userBook.value.shelves = selectedShelvesIds.value;
-      await bookStore.updateUserBook(userBook.value.id, {
-        shelves: userBook.value.shelves,
-      });
-
-      for (const shelfId of removedShelves) {
-        await shelfStore.incrementShelfCount(shelfId, -1);
-      }
-      for (const shelfId of addedShelves) {
-        await shelfStore.incrementShelfCount(shelfId, 1);
-      }
-
-      editingShelves.value = false;
-      modalStore.closeModal();
-    };
-
-    const { modal } = storeToRefs(modalStore);
-    watch(modal, (newValue) => {
-      if (!newValue) {
-        editingShelves.value = false;
-      }
-    });
-
-    return {
-      userBook,
-      selectedShelvesIds,
-      selectedShelves,
-      options,
-      shelves,
-      editingShelves,
-      beginShelvesEdit,
-      cancelShelfEdit,
-      saveBookShelves,
-    };
-  },
+const editingShelves = ref(false);
+const beginShelvesEdit = (): void => {
+  editingShelves.value = true;
+  modalStore.openModal();
 };
+
+const cancelShelfEdit = (): void => {
+  editingShelves.value = false;
+  modalStore.closeModal();
+};
+
+const saveBookShelves = async (): Promise<void> => {
+  if (!userBook?.value?.shelves) return;
+
+  const newShelves = selectedShelvesIds.value;
+  const oldShelves = userBook.value.shelves;
+
+  let removedShelves = oldShelves.filter((x) => !newShelves.includes(x));
+  let addedShelves = newShelves.filter((x) => !oldShelves.includes(x));
+
+  userBook.value.shelves = selectedShelvesIds.value;
+  await bookStore.updateUserBook(userBook.value.id, {
+    shelves: userBook.value.shelves,
+  });
+
+  for (const shelfId of removedShelves) {
+    await shelfStore.incrementShelfCount(shelfId, -1);
+  }
+  for (const shelfId of addedShelves) {
+    await shelfStore.incrementShelfCount(shelfId, 1);
+  }
+
+  editingShelves.value = false;
+  modalStore.closeModal();
+};
+
+const { modal } = storeToRefs(modalStore);
+watch(modal, (newValue) => {
+  if (!newValue) {
+    editingShelves.value = false;
+  }
+});
 </script>
 
 <style scoped>

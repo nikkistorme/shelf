@@ -45,7 +45,7 @@ export const pagesReadToday = (books: any[]) => {
       );
       todayChanges.forEach((change: { updates: any[]; }) => {
         const pageUpdate = change.updates.find((update) => update.field === 'current_page');
-        pages += pageUpdate.newValue - pageUpdate.oldValue;
+        pages += pageUpdate.new_value - pageUpdate.old_value;
       });
     }
   });
@@ -58,9 +58,9 @@ export const getNewMinutesPerPage = (changes: any) => {
   changesWithDuration.forEach((change) => {
     const currentPageUpdate = change.updates.find((update: any) => update.field === 'current_page');
     const durationUpdate = change.updates.find((update: any) => update.field === 'duration');
-    const pagesRead = currentPageUpdate.newValue - currentPageUpdate.oldValue;
-    if (pagesRead > 0 && durationUpdate.newValue > 0) {
-      pagesPerMinData.push(pagesRead / durationUpdate.newValue);
+    const pagesRead = currentPageUpdate.new_value - currentPageUpdate.old_value;
+    if (pagesRead > 0 && durationUpdate.new_value > 0) {
+      pagesPerMinData.push(pagesRead / durationUpdate.new_value);
     }
   });
   if (pagesPerMinData?.length > 0) {
@@ -71,7 +71,7 @@ export const getNewMinutesPerPage = (changes: any) => {
   } else return null;
 }
 
-export const getGoalPace = (book: { goal: { targetPage: number; goalDate: string | number | Date; }; current_page: number; minutes_per_page: any; }) => {
+export const getGoalPace = (book: UserBook) => {
   const pagesRemaining = book.goal.targetPage - book.current_page;
   const today = new Date();
   const goalDate = new Date(book.goal.goalDate);
@@ -101,8 +101,8 @@ export const getPagesThisWeek = async () => {
         if (!dateIsThisWeek(c.created)) return;
         const pageUpdate = c.updates.find((update: { field: string }) => update.field === 'current_page') || {};
         if (!pageUpdate) return;
-        pagesThisWeek += pageUpdate.newValue - pageUpdate.oldValue;
-        if (dateIsToday(c.created)) pagesToday += pageUpdate.newValue - pageUpdate.oldValue;
+        pagesThisWeek += pageUpdate.new_value - pageUpdate.old_value;
+        if (dateIsToday(c.created)) pagesToday += pageUpdate.new_value - pageUpdate.old_value;
       })
     });
   } catch (error) {

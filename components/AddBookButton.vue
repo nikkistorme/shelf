@@ -63,7 +63,7 @@
 </template>
 
 <script>
-import { searchBooks, searchGoogleBooks } from "~/services/bookService";
+import { searchBooks, searchGoogleBooks } from "~~/services/bookService";
 import { useBookStore } from "~~/store/BookStore";
 
 export default {

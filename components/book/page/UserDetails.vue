@@ -21,13 +21,8 @@
   </div>
 </template>
 
-<script>
-export default {
-  setup() {
-    const viewingDetails = ref(false);
-    return { viewingDetails };
-  },
-};
+<script setup lang="ts">
+const viewingDetails = ref(false);
 </script>
 
 <style scoped>

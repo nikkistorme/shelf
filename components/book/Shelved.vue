@@ -23,25 +23,16 @@
   </div>
 </template>
 
-<script>
-export default {
-  props: {
-    book: Object,
-    location: String,
-  },
-  setup(props) {
-    const router = useRouter();
+<script setup lang="ts">
+const props = defineProps<{
+  book: UserBook;
+  location?: string;
+}>();
+const router = useRouter();
 
-    async function viewBookDetails() {
-      await router.push(`/books/${props.book.base}`);
-    }
-    return {
-      router,
-      props,
-      viewBookDetails,
-    };
-  },
-};
+async function viewBookDetails() {
+  await router.push(`/books/${props.book.base}`);
+}
 </script>
 
 <style>

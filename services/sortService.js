@@ -73,11 +73,11 @@ const sortByDateAddedToShelf = (a, b, shelf) => {
       .timestamp;
   } else {
     const aRelevantChanges = a.changes?.filter(
-      (c) => c.payload?.newValue === shelf.id
+      (c) => c.payload?.new_value === shelf.id
     );
     aDateAddedToShelf = aRelevantChanges[0]?.payload.timestamp;
     const bRelevantChanges = b.changes?.filter(
-      (c) => c.payload?.newValue === shelf.id
+      (c) => c.payload?.new_value === shelf.id
     );
     bDateAddedToShelf = bRelevantChanges[0]?.payload.timestamp;
   }

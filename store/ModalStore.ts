@@ -1,8 +1,13 @@
 import { defineStore } from "pinia";
 
-export const useModalStore = defineStore({
-  id: "ModalStore",
-  state: () => ({
+type ModalState = {
+  backdrop: boolean
+  modal: boolean
+  closeFunctions: { function: () => void }[]
+}
+
+export const useModalStore = defineStore("ModalStore", {
+  state: (): ModalState => ({
     backdrop: false,
     modal: false,
     closeFunctions: [],
@@ -12,7 +17,7 @@ export const useModalStore = defineStore({
       this.backdrop = true;
       this.modal = true;
     },
-    closeModal(type = null) {
+    closeModal() {
       this.modal = false;
       this.backdrop = false;
       this.closeFunctions.forEach((fn) => {

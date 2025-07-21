@@ -9,22 +9,6 @@
   </div>
 </template>
 
-<script>
-export default {
-  setup() {
-    const updatingInfo = ref(false);
-
-    return {
-      updatingInfo,
-    };
-  },
-};
+<script setup lang="ts">
+const updatingInfo = ref(false);
 </script>
-
-<style scoped>
-/* .book-page__edit-icon {
-  position: absolute;
-  top: var(--spacing-size-1);
-  right: var(--spacing-size-1);
-} */
-</style>

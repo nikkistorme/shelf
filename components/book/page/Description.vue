@@ -1,7 +1,7 @@
 <template>
-  <div v-if="description" class="book-page__description">
+  <div v-if="displayDescription" class="book-page__description">
     <p class="book-page__description-text">
-      {{ description }}
+      {{ displayDescription }}
 
       <ButtonInline
         v-if="truncateDescription"
@@ -15,40 +15,30 @@
   </div>
 </template>
 
-<script>
-export default {
-  props: {
-    book: Object,
-  },
-  setup(props) {
-    const description = ref(props.book.description);
-    const truncateDescription = ref(false);
-    const expandDescription = ref(false);
+<script setup lang="ts">
+const props = defineProps<{
+  description: string;
+}>();
 
-    const checkDescription = (string) => {
-      const newString = string;
-      if (!expandDescription.value && newString?.length > 350) {
-        truncateDescription.value = true;
-        return `${newString.substring(0, 346).trim()}...`;
-      } else return newString;
-    };
+const displayDescription = ref(props.description);
+const truncateDescription = ref(false);
+const expandDescription = ref(false);
 
-    watch(expandDescription, () => {
-      description.value = checkDescription(props.book.description);
-    });
+const checkDescription = (string: string): string => {
+  const newString: string = string;
+  if (!expandDescription.value && newString?.length > 350) {
+    truncateDescription.value = true;
+    return `${newString.substring(0, 346).trim()}...`;
+  } else return newString;
+};
 
-    description.value = checkDescription(props.book.description);
+watch(expandDescription, () => {
+  displayDescription.value = checkDescription(props.description);
+});
 
-    const toggleDescription = () => {
-      expandDescription.value = !expandDescription.value;
-    };
+displayDescription.value = checkDescription(props.description);
 
-    return {
-      description,
-      truncateDescription,
-      expandDescription,
-      toggleDescription,
-    };
-  },
+const toggleDescription = (): void => {
+  expandDescription.value = !expandDescription.value;
 };
 </script>

@@ -26,7 +26,7 @@
 
       <div class="book-page__base-area d-flex flex-column gap-half w-100">
         <BookPageTitle v-if="book?.title" />
-        <BookPageAuthor v-if="book?.author" :book="book" />
+        <BookPageAuthor v-if="book?.author" :author="book.author" />
         <div class="book-page__base-extra d-flex ai-baseline gap-half">
           <BookPageTotalPages v-if="book?.total_pages" />
           <BookPagePublishing v-if="book?.publisher" :book="book" />
@@ -47,7 +47,10 @@
       </div>
 
       <div class="book-page__additional-area">
-        <BookPageDescription v-if="book?.description" :book="book" />
+        <BookPageDescription
+          v-if="book?.description"
+          :description="book.description"
+        />
       </div>
     </div>
   </div>

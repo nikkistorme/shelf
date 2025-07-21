@@ -1,9 +1,9 @@
 export const updateSchema = () => {
   return {
     field: "",
-    oldValue: null,
-    newValue: null,
-    newValueSoft: null,
+    old_value: null,
+    new_value: null,
+    new_value_soft: null,
   };
 };
 
@@ -16,52 +16,55 @@ export const changeSchema = () => {
   return change;
 };
 
-const getNewUpdate = (action, field, book, misc = null) => {
-  let newUpdate = updateSchema();
+const getNewUpdate = (action: string, field: string, book: UserBook, misc: MiscUpdateParam | null = null) => {
+  let newUpdate: Update = updateSchema();
   newUpdate.field = field;
   switch (field) {
     case "in_progress":
-      newUpdate.oldValue = book.status;
+      newUpdate.old_value = book.status;
       if (action === "startReadingBook") {
-        newUpdate.newValue = true;
+        newUpdate.new_value = true;
       } else if (action === "finishReadingBook") {
-        newUpdate.newValue = false;
+        newUpdate.new_value = false;
       }
       break;
     case "current_page":
-      newUpdate.oldValue = book.current_page ? book.current_page : 0;
+      newUpdate.old_value = book.current_page ? book.current_page : 0;
       if (action === "startReadingBook") {
-        newUpdate.newValue = 0;
-      } else if (["updateProgress", "finishReadingBook"].includes(action)) {
-        newUpdate.newValue = misc.endAt;
+        newUpdate.new_value = 0;
+      } else if (["updateProgress", "finishReadingBook"].includes(action) && misc?.endAt) {
+        newUpdate.new_value = misc.endAt;
       }
       break;
     case "duration":
-      newUpdate.newValue = misc.duration;
+      if (misc?.duration) newUpdate.new_value = misc.duration;
       break;
     case "goal":
-      newUpdate.oldValue = misc.oldGoal;
+      if (!misc?.oldGoal && !misc?.targetPage && !misc?.goalDate) break;
+      newUpdate.old_value = misc.oldGoal;
       if (action === "setGoal") {
-        newUpdate.newValue = {
-          targetPage: misc.targetPage,
-          goalDate: misc.goalDate,
-          startDate: new Date().toISOString(),
-        };
+        newUpdate.new_value = {
+          target_page: misc.targetPage,
+          goal_date: misc.goalDate,
+          start_date: new Date().toISOString(),
+        } as Goal;
       } else if (action === "removeGoal") {
-        newUpdate.newValue = null;
+        newUpdate.new_value = null;
       }
       break;
     case "finished":
-      newUpdate.oldValue = book.finished;
-      newUpdate.newValue = true;
+      newUpdate.old_value = book.status;
+      newUpdate.new_value = "finished";
       break;
     case "cover":
-      newUpdate.oldValue = book.cover;
-      newUpdate.newValue = misc.cover;
+      if (!misc?.cover) break;
+      newUpdate.old_value = book.cover;
+      newUpdate.new_value = misc.cover;
       break;
     case "total_pages":
-      newUpdate.oldValue = book.total_pages;
-      newUpdate.newValue = misc.total_pages;
+      if (!misc?.total_pages) break;
+      newUpdate.old_value = book.total_pages;
+      newUpdate.new_value = misc.total_pages;
       break;
     default:
       break;
@@ -69,8 +72,8 @@ const getNewUpdate = (action, field, book, misc = null) => {
   return newUpdate;
 };
 
-export const newChange = (action, book, misc = null) => {
-  let newChange = changeSchema();
+export const newChange = (action: string, book: UserBook | BookEdition, misc: MiscUpdateParam | null = null) => {
+  let newChange: Change = changeSchema();
   newChange.action = action;
   newChange.created = new Date().toISOString();
   switch (action) {
@@ -86,7 +89,7 @@ export const newChange = (action, book, misc = null) => {
       newChange.updates.push(
         getNewUpdate("updateProgress", "current_page", book, misc)
       );
-      if (misc.duration)
+      if (misc?.duration)
         newChange.updates.push(
           getNewUpdate("updateProgress", "duration", book, misc)
         );
@@ -107,11 +110,11 @@ export const newChange = (action, book, misc = null) => {
       newChange.updates.push(
         getNewUpdate("finishReadingBook", "finished", book)
       );
-      if (misc.duration)
+      if (misc?.duration)
         newChange.updates.push(
           getNewUpdate("finishReadingBook", "duration", book, misc)
         );
-      if (misc.oldGoal)
+      if (misc?.oldGoal)
         newChange.updates.push(
           getNewUpdate("finishReadingBook", "goal", book, misc)
         );
@@ -128,7 +131,7 @@ export const newChange = (action, book, misc = null) => {
   return newChange;
 };
 
-export const newChangeFromForm = (action, book, form) => {
+export const newChangeFromForm = (action: string, book: UserBook) => {
   let newChange = changeSchema();
   newChange.action = action;
   newChange.created = new Date().toISOString();
@@ -139,7 +142,7 @@ export const newChangeFromForm = (action, book, form) => {
   return newChange;
 };
 
-export const sortChanges = (changes) => {
+export const sortChanges = (changes: Change[]) => {
   return changes.sort((a, b) => {
     return a.created > b.created ? -1 : 1;
   });
